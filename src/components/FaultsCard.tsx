@@ -22,7 +22,7 @@ export function FaultsCard() {
 
   return (
     <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <span className="text-xs font-medium text-slate-500">
+      <span className="text-sm font-semibold text-navy-700">
         Faults &amp; Connectivity Loss
       </span>
 
