@@ -29,6 +29,13 @@
   color-scheme: light;
 }
 
+html,
+body {
+  /* Prevent any child (e.g. Leaflet tile layers) from creating a horizontal
+     scroll + white gutter. `clip` does not break position: sticky. */
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
