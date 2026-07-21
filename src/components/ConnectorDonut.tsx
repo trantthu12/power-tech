@@ -39,7 +39,7 @@ export function ConnectorDonut() {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <ul className="flex-1 space-y-2 text-sm">
+        <ul className="min-w-0 flex-1 space-y-2 text-sm">
           {rows.map((r) => (
             <li key={r.connector} className="flex items-center gap-2">
               <span

@@ -19,7 +19,7 @@ export function KpiCard({
   accent = false,
 }: KpiCardProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-xs font-medium text-slate-500">{label}</span>
         {badge && (
