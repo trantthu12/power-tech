@@ -11,7 +11,7 @@ export function ConnectorDonut() {
 
   return (
     <Card>
-      <CardHeader title="Charging Stations Connector" />
+      <CardHeader title="Charging Stations Connector" simulated />
       <div className="flex items-center gap-4">
         <div className="h-32 w-32 shrink-0">
           <ResponsiveContainer width="100%" height="100%">

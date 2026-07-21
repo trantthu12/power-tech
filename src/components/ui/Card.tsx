@@ -19,13 +19,22 @@ interface CardHeaderProps {
   title: string;
   subtitle?: string;
   action?: ReactNode;
+  /** Append a small * marking this card's figures as simulated. */
+  simulated?: boolean;
 }
 
-export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
+export function CardHeader({ title, subtitle, action, simulated }: CardHeaderProps) {
   return (
     <div className="mb-4 flex items-start justify-between">
       <div>
-        <h3 className="text-sm font-semibold text-navy-800">{title}</h3>
+        <h3 className="text-sm font-semibold text-navy-800">
+          {title}
+          {simulated && (
+            <sup className="ml-0.5 text-brand-500" title="Simulated data">
+              *
+            </sup>
+          )}
+        </h3>
         {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
       </div>
       {action}

@@ -24,6 +24,7 @@ export function FaultsCard() {
     <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <span className="text-sm font-semibold text-navy-700">
         Faults &amp; Connectivity Loss
+        <sup className="ml-0.5 text-brand-500" title="Simulated data">*</sup>
       </span>
 
       <div className="mt-3 flex items-baseline gap-3">

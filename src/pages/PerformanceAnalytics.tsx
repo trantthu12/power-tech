@@ -3,6 +3,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { SiteComparisonChart } from "@/components/charts/SiteComparisonChart";
 import { Heatmap } from "@/components/charts/Heatmap";
+import { SimulatedNote } from "@/components/ui/SimulatedNote";
 import { useFilter } from "@/lib/filter-context";
 import {
   useEnergyTrend,
@@ -31,20 +32,24 @@ export function PerformanceAnalytics() {
           label="Avg Session Duration"
           value={stats ? stats.avgSessionDurationMin : "—"}
           unit="min"
+          simulated
         />
         <KpiCard
           label="Avg Energy / Session"
           value={stats ? stats.avgEnergyPerSession : "—"}
           unit="kWh"
+          simulated
         />
         <KpiCard
           label="Sessions / Day"
           value={stats ? formatNumber(stats.sessionsPerDay) : "—"}
+          simulated
         />
         <KpiCard
           label="Charger Utilization"
           value={stats ? `${stats.utilizationPct}%` : "—"}
           accent
+          simulated
         />
       </div>
 
@@ -54,6 +59,7 @@ export function PerformanceAnalytics() {
           <CardHeader
             title="Energy Delivered"
             subtitle={`Total kWh per ${filter.granularity}`}
+            simulated
           />
           {energy.data && (
             <TrendChart
@@ -68,6 +74,7 @@ export function PerformanceAnalytics() {
           <CardHeader
             title="Revenue"
             subtitle={`Total revenue per ${filter.granularity}`}
+            simulated
           />
           {revenue.data && (
             <TrendChart
@@ -83,13 +90,14 @@ export function PerformanceAnalytics() {
       {/* Site comparison */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Site Comparison — Energy" subtitle="Top sites by kWh" />
+          <CardHeader title="Site Comparison — Energy" subtitle="Top sites by kWh" simulated />
           {sites.data && <SiteComparisonChart data={sites.data} metric="energyKwh" />}
         </Card>
         <Card>
           <CardHeader
             title="Site Comparison — Revenue"
             subtitle="Top sites by revenue"
+            simulated
           />
           {sites.data && <SiteComparisonChart data={sites.data} metric="revenue" />}
         </Card>
@@ -101,16 +109,19 @@ export function PerformanceAnalytics() {
           <CardHeader
             title="Utilization Heatmap"
             subtitle="Energy demand by day & hour"
+            simulated
           />
           {utilization.data && <Heatmap data={utilization.data} color="#5fa32f" valueSuffix=" kWh" />}
         </Card>
         <Card>
-          <CardHeader title="Revenue Heatmap" subtitle="Revenue by day & hour" />
+          <CardHeader title="Revenue Heatmap" subtitle="Revenue by day & hour" simulated />
           {revenueHeat.data && (
             <Heatmap data={revenueHeat.data} color="#3b4a6b" valuePrefix="$" />
           )}
         </Card>
       </div>
+
+      <SimulatedNote />
     </div>
   );
 }

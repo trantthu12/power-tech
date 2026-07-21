@@ -4,6 +4,7 @@ import { ConnectorDonut } from "@/components/ConnectorDonut";
 import { CityBreakdown } from "@/components/CityBreakdown";
 import { FaultsCard } from "@/components/FaultsCard";
 import { StationMap } from "@/components/StationMap";
+import { SimulatedNote } from "@/components/ui/SimulatedNote";
 import { useNetworkKpis } from "@/lib/queries";
 import { formatCompact, formatCurrency, formatNumber } from "@/lib/format";
 
@@ -23,10 +24,13 @@ export function NetworkOverview() {
           label="Active Charging Sessions"
           value={kpis ? formatNumber(kpis.activeSessions) : "—"}
           accent
+          simulated
         />
         <KpiCard
           label="Charging Sessions"
-          value={kpis ? formatCompact(kpis.totalSessions) : "—"}        />
+          value={kpis ? formatCompact(kpis.totalSessions) : "—"}
+          simulated
+        />
       </div>
 
       {/* KPI row 2 */}
@@ -35,14 +39,18 @@ export function NetworkOverview() {
           label="Total Energy"
           value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
           unit="kWh"
+          simulated
         />
         <KpiCard
           label="Total Revenue"
           value={kpis ? formatCurrency(kpis.totalRevenue) : "—"}
+          simulated
         />
         <KpiCard
           label="New Users"
-          value={kpis ? formatNumber(kpis.newUsers) : "—"}        />
+          value={kpis ? formatNumber(kpis.newUsers) : "—"}
+          simulated
+        />
       </div>
 
       {/* KPI row 3 + donuts */}
@@ -53,6 +61,8 @@ export function NetworkOverview() {
       </div>
 
       <StationMap />
+
+      <SimulatedNote />
     </div>
   );
 }

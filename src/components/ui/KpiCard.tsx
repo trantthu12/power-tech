@@ -8,6 +8,8 @@ interface KpiCardProps {
   badge?: string;
   deltaPct?: number;
   accent?: boolean;
+  /** Mark the value as simulated (adds a small *). */
+  simulated?: boolean;
 }
 
 export function KpiCard({
@@ -17,11 +19,19 @@ export function KpiCard({
   badge,
   deltaPct,
   accent = false,
+  simulated = false,
 }: KpiCardProps) {
   return (
     <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-sm font-semibold text-navy-700">{label}</span>
+        <span className="text-sm font-semibold text-navy-700">
+          {label}
+          {simulated && (
+            <sup className="ml-0.5 text-brand-500" title="Simulated data">
+              *
+            </sup>
+          )}
+        </span>
         {badge && (
           <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
             {badge}
