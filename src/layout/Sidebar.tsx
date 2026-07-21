@@ -35,7 +35,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           </span>
         </div>
 
-        <nav className="mt-2 flex-1 overflow-y-auto px-3">
+        <nav className="mt-2 flex-1 overflow-y-auto py-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
@@ -46,26 +46,35 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={({ isActive }) =>
                   [
-                    "group mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                    "group relative flex items-center gap-3 border-l-[3px] px-5 py-3 text-sm transition-colors",
                     isActive
-                      ? "bg-sidebar-hover text-white"
-                      : "text-slate-400 hover:bg-sidebar-hover hover:text-white",
+                      ? "border-brand-500 bg-white/[0.06] font-medium text-brand-500"
+                      : "border-transparent text-slate-400 hover:bg-white/[0.04] hover:text-white",
                   ].join(" ")
                 }
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="flex-1 truncate">{item.label}</span>
-                {item.sprint === 3 && (
-                  <span className="rounded bg-slate-600 px-1.5 py-0.5 text-[10px] font-medium text-slate-200">
-                    S3
-                  </span>
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      className={[
+                        "h-[18px] w-[18px] shrink-0",
+                        isActive ? "text-brand-500" : "text-slate-400 group-hover:text-white",
+                      ].join(" ")}
+                    />
+                    <span className="flex-1 truncate">{item.label}</span>
+                    {item.sprint === 3 && (
+                      <span className="rounded bg-slate-600/70 px-1.5 py-0.5 text-[10px] font-medium text-slate-200">
+                        S3
+                      </span>
+                    )}
+                  </>
                 )}
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="px-5 py-4 text-[11px] text-slate-500">
+        <div className="border-t border-white/5 px-5 py-4 text-[11px] text-slate-500">
           Sprint 2 &middot; Demo data
         </div>
       </aside>

@@ -2,12 +2,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardHeader } from "./ui/Card";
 import { useConnectorBreakdown } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
-
-const COLORS: Record<string, string> = {
-  J1772: "#7ac943",
-  CCS: "#3b4a6b",
-  CHAdeMO: "#93cc4a",
-};
+import { CONNECTOR_COLORS as COLORS } from "@/lib/colors";
 
 export function ConnectorDonut() {
   const { data } = useConnectorBreakdown();

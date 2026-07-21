@@ -1,7 +1,6 @@
 import { Card, CardHeader } from "./ui/Card";
 import { useCityBreakdown } from "@/lib/queries";
-
-const DOT_COLORS = ["#7ac943", "#3b4a6b", "#93cc4a", "#5fa32f", "#aeda72"];
+import { CATEGORICAL as DOT_COLORS } from "@/lib/colors";
 
 export function CityBreakdown() {
   const { data } = useCityBreakdown();
