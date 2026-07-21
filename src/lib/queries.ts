@@ -61,6 +61,13 @@ export function useSiteComparison() {
   });
 }
 
+export function useLoadStats(siteId?: string) {
+  return useQuery({
+    queryKey: ["load-stats", siteId ?? "all"],
+    queryFn: () => api.getLoadStats(siteId),
+  });
+}
+
 export function usePerformanceStats() {
   return useQuery({
     queryKey: ["performance-stats"],

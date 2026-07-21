@@ -110,6 +110,18 @@ export interface SiteComparison {
   utilizationPct: number;
 }
 
+/** Load Utilization headline stats (per station or whole network). */
+export interface LoadStats {
+  /** % of ports busy on average (0..100) */
+  portOccupancyPct: number;
+  /** Hour of day (0..23) with the highest average demand */
+  peakHour: number;
+  /** Average kWh delivered during the peak hour */
+  peakLoadKwh: number;
+  /** Total energy over the window (kWh) */
+  totalEnergyKwh: number;
+}
+
 /** Headline performance stats for the analytics page. */
 export interface PerformanceStats {
   avgSessionDurationMin: number;

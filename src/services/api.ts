@@ -9,6 +9,7 @@ import type {
   FaultRecord,
   Granularity,
   HeatmapCell,
+  LoadStats,
   NetworkKpis,
   PerformanceStats,
   Site,
@@ -245,6 +246,33 @@ export function getSiteComparison(): Promise<SiteComparison[]> {
     };
   });
   return delay(rows.sort((a, b) => b.energyKwh - a.energyKwh));
+}
+
+export function getLoadStats(siteId?: string): Promise<LoadStats> {
+  const { sites, sessions } = dataset();
+  const scoped = sessions.filter((s) => !siteId || s.siteId === siteId);
+  const scopedSites = sites.filter((s) => !siteId || s.id === siteId);
+
+  const totalEnergy = scoped.reduce((sum, s) => sum + s.energyKwh, 0);
+  const ports = scopedSites.reduce((sum, s) => sum + s.numPorts, 0);
+  const windowHours = 90 * 24;
+  const usedHours = scoped.reduce((sum, s) => sum + s.durationMin / 60, 0);
+
+  // Average kWh per hour-of-day (summed across ~90 days, then per-day mean).
+  const hourSum = new Array(24).fill(0) as number[];
+  for (const s of scoped) hourSum[new Date(s.startTime).getHours()] += s.energyKwh;
+  let peakHour = 0;
+  for (let h = 1; h < 24; h++) if (hourSum[h] > hourSum[peakHour]) peakHour = h;
+  const peakLoadKwh = hourSum[peakHour] / 90;
+
+  return delay({
+    portOccupancyPct: ports
+      ? +Math.min(100, (usedHours / (ports * windowHours)) * 100).toFixed(1)
+      : 0,
+    peakHour,
+    peakLoadKwh: +peakLoadKwh.toFixed(1),
+    totalEnergyKwh: Math.round(totalEnergy),
+  });
 }
 
 export function getPerformanceStats(): Promise<PerformanceStats> {
