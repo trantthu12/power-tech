@@ -19,7 +19,7 @@ export function Header({ onOpenNav }: HeaderProps) {
     ) ?? NAV_ITEMS[0];
 
   return (
-    <header className="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
       <div className="flex min-w-0 items-center gap-3">
         <button
           onClick={onOpenNav}

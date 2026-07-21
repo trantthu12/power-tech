@@ -22,7 +22,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
       <aside
         className={[
           "fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 flex-col bg-sidebar text-slate-300 transition-transform duration-200",
-          "lg:static lg:z-auto lg:translate-x-0",
+          "lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
