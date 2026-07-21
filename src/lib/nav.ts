@@ -42,7 +42,6 @@ export const NAV_ITEMS: NavItem[] = [
     icon: BarChart3,
     audience: "All stakeholders",
     sprint: 2,
-    hasFilter: true,
   },
   {
     label: "Infrastructure Planning",

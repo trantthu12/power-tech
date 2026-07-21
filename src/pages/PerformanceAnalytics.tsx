@@ -2,9 +2,11 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { SiteComparisonChart } from "@/components/charts/SiteComparisonChart";
+import { useState } from "react";
 import { Heatmap } from "@/components/charts/Heatmap";
 import { SimulatedNote } from "@/components/ui/SimulatedNote";
-import { useFilter } from "@/lib/filter-context";
+import { GranularityToggle } from "@/components/ui/GranularityToggle";
+import type { Granularity } from "@/types";
 import {
   useEnergyTrend,
   usePerformanceStats,
@@ -16,10 +18,10 @@ import {
 import { formatCurrency, formatEnergy, formatNumber } from "@/lib/format";
 
 export function PerformanceAnalytics() {
-  const { filter } = useFilter();
+  const [granularity, setGranularity] = useState<Granularity>("month");
   const { data: stats, isLoading: statsLoading } = usePerformanceStats();
-  const energy = useEnergyTrend(filter.granularity);
-  const revenue = useRevenueTrend(filter.granularity);
+  const energy = useEnergyTrend(granularity);
+  const revenue = useRevenueTrend(granularity);
   const sites = useSiteComparison();
   const utilization = useUtilizationHeatmap();
   const revenueHeat = useRevenueHeatmap();
@@ -58,17 +60,21 @@ export function PerformanceAnalytics() {
       </div>
 
       {/* Trends */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-navy-800">Trends</h2>
+        <GranularityToggle value={granularity} onChange={setGranularity} />
+      </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Energy Delivered"
-            subtitle={`Total kWh per ${filter.granularity}`}
+            subtitle={`Total kWh per ${granularity}`}
             simulated
           />
           {energy.data && (
             <TrendChart
               data={energy.data}
-              granularity={filter.granularity}
+              granularity={granularity}
               color="#7ac943"
               valueFormatter={formatEnergy}
             />
@@ -77,13 +83,13 @@ export function PerformanceAnalytics() {
         <Card>
           <CardHeader
             title="Revenue"
-            subtitle={`Total revenue per ${filter.granularity}`}
+            subtitle={`Total revenue per ${granularity}`}
             simulated
           />
           {revenue.data && (
             <TrendChart
               data={revenue.data}
-              granularity={filter.granularity}
+              granularity={granularity}
               color="#3b4a6b"
               valueFormatter={formatCurrency}
             />
@@ -94,13 +100,13 @@ export function PerformanceAnalytics() {
       {/* Site comparison */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Site Comparison — Energy" subtitle="Top sites by kWh" simulated />
+          <CardHeader title="Site Comparison — Energy" subtitle="Top sites by kWh · all-time" simulated />
           {sites.data && <SiteComparisonChart data={sites.data} metric="energyKwh" />}
         </Card>
         <Card>
           <CardHeader
             title="Site Comparison — Revenue"
-            subtitle="Top sites by revenue"
+            subtitle="Top sites by revenue · all-time"
             simulated
           />
           {sites.data && <SiteComparisonChart data={sites.data} metric="revenue" />}
@@ -112,13 +118,13 @@ export function PerformanceAnalytics() {
         <Card>
           <CardHeader
             title="Utilization Heatmap"
-            subtitle="Energy demand by day & hour"
+            subtitle="Energy demand by day & hour · all-time"
             simulated
           />
           {utilization.data && <Heatmap data={utilization.data} color="#5fa32f" valueSuffix=" kWh" />}
         </Card>
         <Card>
-          <CardHeader title="Revenue Heatmap" subtitle="Revenue by day & hour" simulated />
+          <CardHeader title="Revenue Heatmap" subtitle="Revenue by day & hour · all-time" simulated />
           {revenueHeat.data && (
             <Heatmap data={revenueHeat.data} color="#3b4a6b" valuePrefix="$" />
           )}
