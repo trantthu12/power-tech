@@ -31,7 +31,8 @@ export function StatusBanner() {
       </span>
       {!allOk && (
         <span className="truncate text-amber-600">
-          {offline.map((s) => s.name).join(", ")}
+          {offline.slice(0, 2).map((s) => s.name).join(", ")}
+          {offline.length > 2 ? ` +${offline.length - 2} more` : ""}
         </span>
       )}
       <button
