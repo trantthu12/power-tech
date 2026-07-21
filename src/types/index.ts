@@ -114,6 +114,28 @@ export interface SiteComparison {
   utilizationPct: number;
 }
 
+/** One hour of forecasted demand. */
+export interface ForecastPoint {
+  /** ISO timestamp of the hour */
+  timestamp: string;
+  /** Forecasted energy demand (kWh) */
+  kwh: number;
+}
+
+export interface HourDemand {
+  hour: number; // 0..23
+  kwh: number;
+}
+
+/** Load optimization suggestion derived from the hourly demand profile. */
+export interface LoadOptimization {
+  peakHours: HourDemand[];
+  offPeakHours: HourDemand[];
+  peakKwh: number;
+  /** kWh above the daily average sitting in the peak hours (shiftable) */
+  shiftableKwh: number;
+}
+
 /** Load Utilization headline stats (per station or whole network). */
 export interface LoadStats {
   /** % of ports busy on average (0..100) */

@@ -68,6 +68,20 @@ export function useLoadStats(siteId?: string) {
   });
 }
 
+export function useDemandForecast(siteId?: string) {
+  return useQuery({
+    queryKey: ["demand-forecast", siteId ?? "all"],
+    queryFn: () => api.getDemandForecast(siteId),
+  });
+}
+
+export function useLoadOptimization(siteId?: string) {
+  return useQuery({
+    queryKey: ["load-optimization", siteId ?? "all"],
+    queryFn: () => api.getLoadOptimization(siteId),
+  });
+}
+
 export function usePerformanceStats() {
   return useQuery({
     queryKey: ["performance-stats"],

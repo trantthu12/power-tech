@@ -8,7 +8,9 @@ import type {
   ConnectorBreakdown,
   FaultRecord,
   Granularity,
+  ForecastPoint,
   HeatmapCell,
+  LoadOptimization,
   LoadStats,
   NetworkKpis,
   PerformanceStats,
@@ -272,6 +274,62 @@ export function getLoadStats(siteId?: string): Promise<LoadStats> {
     peakHour,
     peakLoadKwh: +peakLoadKwh.toFixed(1),
     totalEnergyKwh: Math.round(totalEnergy),
+  });
+}
+
+/** Average kWh delivered per hour-of-day (0..23) for a scope, over ~90 days. */
+function hourlyProfile(siteId?: string): number[] {
+  const { sessions } = dataset();
+  const sum = new Array(24).fill(0) as number[];
+  for (const s of sessions) {
+    if (siteId && s.siteId !== siteId) continue;
+    sum[new Date(s.startTime).getHours()] += s.energyKwh;
+  }
+  return sum.map((v) => +(v / 90).toFixed(1)); // per-day average
+}
+
+/** 48-hour demand forecast from the fixed demo "now", per hour. */
+export function getDemandForecast(siteId?: string): Promise<ForecastPoint[]> {
+  const profile = hourlyProfile(siteId);
+  const points: ForecastPoint[] = [];
+  const start = new Date(DEMO_NOW_MS);
+  start.setMinutes(0, 0, 0);
+  for (let i = 1; i <= 48; i++) {
+    const t = new Date(start.getTime() + i * 60 * 60 * 1000);
+    const dow = t.getDay();
+    const weekend = dow === 0 || dow === 6 ? 0.7 : 1;
+    // Deterministic small wiggle so the line isn't perfectly periodic.
+    const wiggle = 1 + (((i * 7) % 5) - 2) / 40;
+    points.push({
+      timestamp: t.toISOString(),
+      kwh: +(profile[t.getHours()] * weekend * wiggle).toFixed(1),
+    });
+  }
+  return delay(points);
+}
+
+export function getLoadOptimization(siteId?: string): Promise<LoadOptimization> {
+  const profile = hourlyProfile(siteId);
+  const ranked = profile
+    .map((kwh, hour) => ({ hour, kwh }))
+    .sort((a, b) => b.kwh - a.kwh);
+  const avg = profile.reduce((s, v) => s + v, 0) / 24;
+  const peakHours = ranked.slice(0, 3);
+  // Lowest-demand hours (tie-break to the earliest hour → natural overnight
+  // windows like 00:00–02:00 rather than random zero-demand hours).
+  const offPeakHours = profile
+    .map((kwh, hour) => ({ hour, kwh }))
+    .sort((a, b) => a.kwh - b.kwh || a.hour - b.hour)
+    .slice(0, 3)
+    .sort((a, b) => a.hour - b.hour);
+  const shiftableKwh = +peakHours
+    .reduce((s, h) => s + Math.max(0, h.kwh - avg), 0)
+    .toFixed(1);
+  return delay({
+    peakHours,
+    offPeakHours,
+    peakKwh: peakHours[0]?.kwh ?? 0,
+    shiftableKwh,
   });
 }
 

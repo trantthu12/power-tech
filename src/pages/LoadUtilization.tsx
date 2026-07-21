@@ -2,9 +2,17 @@ import { useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Heatmap } from "@/components/charts/Heatmap";
+import { ForecastChart } from "@/components/charts/ForecastChart";
+import { LoadOptimizationPanel } from "@/components/LoadOptimizationPanel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SimulatedNote } from "@/components/ui/SimulatedNote";
-import { useSites, useUtilizationHeatmap, useLoadStats } from "@/lib/queries";
+import {
+  useSites,
+  useUtilizationHeatmap,
+  useLoadStats,
+  useDemandForecast,
+  useLoadOptimization,
+} from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 
 function formatHour(h: number): string {
@@ -16,6 +24,8 @@ export function LoadUtilization() {
   const [siteId, setSiteId] = useState("");
   const heatmap = useUtilizationHeatmap(siteId || undefined);
   const stats = useLoadStats(siteId || undefined);
+  const forecast = useDemandForecast(siteId || undefined);
+  const optimization = useLoadOptimization(siteId || undefined);
 
   const sortedSites = [...(sites ?? [])].sort((a, b) =>
     a.name.localeCompare(b.name)
@@ -98,6 +108,39 @@ export function LoadUtilization() {
           overload.
         </p>
       </Card>
+
+      {/* Forecast + optimization */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader
+            title="48-Hour Demand Forecast"
+            subtitle={`Predicted kWh per hour — ${selectedName}`}
+            simulated
+          />
+          {forecast.data ? (
+            <ForecastChart data={forecast.data} />
+          ) : (
+            <Skeleton className="h-56 w-full rounded-lg" />
+          )}
+          <p className="mt-3 text-xs text-slate-400">
+            Dashed line = forecast for the next 48h (mock; Sprint 3 replaces it
+            with the Python model). Lets the Load Manager pre-plan capacity.
+          </p>
+        </Card>
+
+        <Card>
+          <CardHeader
+            title="Load Optimization"
+            subtitle="Where to shift charging to flatten the peak"
+            simulated
+          />
+          {optimization.data ? (
+            <LoadOptimizationPanel data={optimization.data} />
+          ) : (
+            <Skeleton className="h-56 w-full rounded-lg" />
+          )}
+        </Card>
+      </div>
 
       <SimulatedNote />
     </div>
