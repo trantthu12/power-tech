@@ -17,7 +17,7 @@ import { formatCurrency, formatEnergy, formatNumber } from "@/lib/format";
 
 export function PerformanceAnalytics() {
   const { filter } = useFilter();
-  const { data: stats } = usePerformanceStats();
+  const { data: stats, isLoading: statsLoading } = usePerformanceStats();
   const energy = useEnergyTrend(filter.granularity);
   const revenue = useRevenueTrend(filter.granularity);
   const sites = useSiteComparison();
@@ -33,23 +33,27 @@ export function PerformanceAnalytics() {
           value={stats ? stats.avgSessionDurationMin : "—"}
           unit="min"
           simulated
+          loading={statsLoading}
         />
         <KpiCard
           label="Avg Energy / Session"
           value={stats ? stats.avgEnergyPerSession : "—"}
           unit="kWh"
           simulated
+          loading={statsLoading}
         />
         <KpiCard
           label="Sessions / Day"
           value={stats ? formatNumber(stats.sessionsPerDay) : "—"}
           simulated
+          loading={statsLoading}
         />
         <KpiCard
           label="Charger Utilization"
           value={stats ? `${stats.utilizationPct}%` : "—"}
           accent
           simulated
+          loading={statsLoading}
         />
       </div>
 

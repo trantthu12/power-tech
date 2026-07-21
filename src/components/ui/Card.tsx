@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SimulatedMark } from "./SimulatedMark";
 
 interface CardProps {
   children: ReactNode;
@@ -29,11 +30,7 @@ export function CardHeader({ title, subtitle, action, simulated }: CardHeaderPro
       <div>
         <h3 className="text-sm font-semibold text-navy-800">
           {title}
-          {simulated && (
-            <sup className="ml-0.5 text-brand-500" title="Simulated data">
-              *
-            </sup>
-          )}
+          {simulated && <SimulatedMark />}
         </h3>
         {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
       </div>

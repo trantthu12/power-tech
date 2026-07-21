@@ -1,15 +1,27 @@
 import { useState } from "react";
 import { CheckCircle2, AlertCircle, X } from "lucide-react";
 import { useSites } from "@/lib/queries";
+import { Skeleton } from "./ui/Skeleton";
 
 export function StatusBanner() {
-  const { data: sites } = useSites();
+  const { data: sites, isLoading } = useSites();
   const [dismissed, setDismissed] = useState(false);
 
-  const offline = sites?.filter((s) => !s.online) ?? [];
-  const allOk = offline.length === 0;
-
   if (dismissed) return null;
+
+  // While loading, show a neutral placeholder — never flash the green
+  // "all operational" state before the real status is known.
+  if (isLoading || !sites) {
+    return (
+      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-5 py-3">
+        <Skeleton className="h-5 w-5 rounded-full" />
+        <Skeleton className="h-4 w-48" />
+      </div>
+    );
+  }
+
+  const offline = sites.filter((s) => !s.online);
+  const allOk = offline.length === 0;
 
   return (
     <div

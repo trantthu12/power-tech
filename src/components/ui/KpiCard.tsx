@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { Skeleton } from "./Skeleton";
+import { SimulatedMark } from "./SimulatedMark";
 
 interface KpiCardProps {
   label: string;
@@ -8,8 +10,10 @@ interface KpiCardProps {
   badge?: string;
   deltaPct?: number;
   accent?: boolean;
-  /** Mark the value as simulated (adds a small *). */
+  /** Mark the value as simulated (adds a * with tooltip on the title). */
   simulated?: boolean;
+  /** Show a shimmer placeholder instead of the value. */
+  loading?: boolean;
 }
 
 export function KpiCard({
@@ -20,17 +24,14 @@ export function KpiCard({
   deltaPct,
   accent = false,
   simulated = false,
+  loading = false,
 }: KpiCardProps) {
   return (
     <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-sm font-semibold text-navy-700">
           {label}
-          {simulated && (
-            <sup className="ml-0.5 text-brand-500" title="Simulated data">
-              *
-            </sup>
-          )}
+          {simulated && <SimulatedMark />}
         </span>
         {badge && (
           <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
@@ -38,17 +39,21 @@ export function KpiCard({
           </span>
         )}
       </div>
-      <div className="flex items-end gap-1.5">
-        <span
-          className={`text-3xl font-bold leading-none ${
-            accent ? "text-brand-600" : "text-navy-800"
-          }`}
-        >
-          {value}
-        </span>
-        {unit && <span className="pb-0.5 text-sm text-slate-400">{unit}</span>}
-      </div>
-      {deltaPct !== undefined && (
+      {loading ? (
+        <Skeleton className="h-8 w-28" />
+      ) : (
+        <div className="flex items-end gap-1.5">
+          <span
+            className={`text-3xl font-bold leading-none ${
+              accent ? "text-brand-600" : "text-navy-800"
+            }`}
+          >
+            {value}
+          </span>
+          {unit && <span className="pb-0.5 text-sm text-slate-400">{unit}</span>}
+        </div>
+      )}
+      {!loading && deltaPct !== undefined && (
         <div
           className={`mt-2 flex items-center gap-1 text-xs font-medium ${
             deltaPct >= 0 ? "text-brand-600" : "text-rose-500"

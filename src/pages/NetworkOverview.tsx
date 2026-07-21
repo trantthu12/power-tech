@@ -9,7 +9,7 @@ import { useNetworkKpis } from "@/lib/queries";
 import { formatCompact, formatCurrency, formatNumber } from "@/lib/format";
 
 export function NetworkOverview() {
-  const { data: kpis } = useNetworkKpis();
+  const { data: kpis, isLoading } = useNetworkKpis();
 
   return (
     <div className="space-y-5">
@@ -19,17 +19,21 @@ export function NetworkOverview() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           label="New Charging Stations"
-          value={kpis ? formatNumber(kpis.newChargingStations) : "—"}        />
+          value={kpis ? formatNumber(kpis.newChargingStations) : "—"}
+          loading={isLoading}
+        />
         <KpiCard
           label="Active Charging Sessions"
           value={kpis ? formatNumber(kpis.activeSessions) : "—"}
           accent
           simulated
+          loading={isLoading}
         />
         <KpiCard
           label="Charging Sessions"
           value={kpis ? formatCompact(kpis.totalSessions) : "—"}
           simulated
+          loading={isLoading}
         />
       </div>
 
@@ -40,16 +44,19 @@ export function NetworkOverview() {
           value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
           unit="kWh"
           simulated
+          loading={isLoading}
         />
         <KpiCard
           label="Total Revenue"
           value={kpis ? formatCurrency(kpis.totalRevenue) : "—"}
           simulated
+          loading={isLoading}
         />
         <KpiCard
           label="New Users"
           value={kpis ? formatNumber(kpis.newUsers) : "—"}
           simulated
+          loading={isLoading}
         />
       </div>
 
