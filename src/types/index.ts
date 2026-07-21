@@ -97,3 +97,25 @@ export interface HeatmapCell {
   hour: number;
   value: number;
 }
+
+/** Per-site aggregate for the site comparison chart/table. */
+export interface SiteComparison {
+  siteId: string;
+  name: string;
+  city: string;
+  energyKwh: number;
+  revenue: number;
+  sessions: number;
+  /** Average utilization estimate 0..100 (%) */
+  utilizationPct: number;
+}
+
+/** Headline performance stats for the analytics page. */
+export interface PerformanceStats {
+  avgSessionDurationMin: number;
+  avgEnergyPerSession: number;
+  sessionsPerDay: number;
+  /** Session efficiency = delivered kWh / (ports * hours available), 0..100 */
+  utilizationPct: number;
+  totalSessions: number;
+}

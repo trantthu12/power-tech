@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
 import { NetworkOverview } from "@/pages/NetworkOverview";
+import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
 export default function App() {
@@ -25,24 +26,7 @@ export default function App() {
             />
           }
         />
-        <Route
-          path="performance"
-          element={
-            <PlaceholderPage
-              title="Performance Analytics"
-              audience="All stakeholders"
-              sprint={2}
-              widgets={[
-                "KPI trend charts (session efficiency, utilization trend)",
-                "Site comparison (energy & financial)",
-                "Peak demand",
-                "Distribution system variations (capacity profiles)",
-                "Underutilization tracking",
-                "Occupancy per region per day",
-              ]}
-            />
-          }
-        />
+        <Route path="performance" element={<PerformanceAnalytics />} />
         <Route
           path="infrastructure"
           element={

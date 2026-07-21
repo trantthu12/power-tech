@@ -47,6 +47,27 @@ export function useUtilizationHeatmap(siteId?: string) {
   });
 }
 
+export function useRevenueHeatmap(siteId?: string) {
+  return useQuery({
+    queryKey: ["revenue-heatmap", siteId ?? "all"],
+    queryFn: () => api.getRevenueHeatmap(siteId),
+  });
+}
+
+export function useSiteComparison() {
+  return useQuery({
+    queryKey: ["site-comparison"],
+    queryFn: api.getSiteComparison,
+  });
+}
+
+export function usePerformanceStats() {
+  return useQuery({
+    queryKey: ["performance-stats"],
+    queryFn: api.getPerformanceStats,
+  });
+}
+
 export function useFaults() {
   return useQuery({ queryKey: ["faults"], queryFn: api.getFaults });
 }

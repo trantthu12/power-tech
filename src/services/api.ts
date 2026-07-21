@@ -10,7 +10,9 @@ import type {
   Granularity,
   HeatmapCell,
   NetworkKpis,
+  PerformanceStats,
   Site,
+  SiteComparison,
   TimeSeriesPoint,
 } from "@/types";
 import { generateDataset } from "./mock-data";
@@ -189,4 +191,77 @@ export function getRecentSessions(limit = 50): Promise<ChargingSession[]> {
       )
       .slice(0, limit)
   );
+}
+
+// --- Performance Analytics ---
+
+export function getRevenueHeatmap(siteId?: string): Promise<HeatmapCell[]> {
+  const { sessions } = dataset();
+  const grid = new Map<string, number>();
+  for (const s of sessions) {
+    if (siteId && s.siteId !== siteId) continue;
+    const d = new Date(s.startTime);
+    const key = `${d.getDay()}-${d.getHours()}`;
+    grid.set(key, (grid.get(key) ?? 0) + s.revenue);
+  }
+  const cells: HeatmapCell[] = [];
+  for (let dow = 0; dow < 7; dow++) {
+    for (let hour = 0; hour < 24; hour++) {
+      cells.push({
+        dayOfWeek: dow,
+        hour,
+        value: Math.round(grid.get(`${dow}-${hour}`) ?? 0),
+      });
+    }
+  }
+  return delay(cells);
+}
+
+export function getSiteComparison(): Promise<SiteComparison[]> {
+  const { sites, sessions } = dataset();
+  const byId = new Map<string, { energy: number; revenue: number; count: number }>();
+  for (const s of sessions) {
+    const cur = byId.get(s.siteId) ?? { energy: 0, revenue: 0, count: 0 };
+    cur.energy += s.energyKwh;
+    cur.revenue += s.revenue;
+    cur.count += 1;
+    byId.set(s.siteId, cur);
+  }
+  // 90-day window used by the generator.
+  const windowHours = 90 * 24;
+  const rows: SiteComparison[] = sites.map((site) => {
+    const agg = byId.get(site.id) ?? { energy: 0, revenue: 0, count: 0 };
+    // Rough utilization: assume avg 45 min/session vs port-hours available.
+    const portHours = site.numPorts * windowHours;
+    const usedHours = (agg.count * 45) / 60;
+    return {
+      siteId: site.id,
+      name: site.name,
+      city: site.city,
+      energyKwh: Math.round(agg.energy),
+      revenue: +agg.revenue.toFixed(2),
+      sessions: agg.count,
+      utilizationPct: +Math.min(100, (usedHours / portHours) * 100).toFixed(1),
+    };
+  });
+  return delay(rows.sort((a, b) => b.energyKwh - a.energyKwh));
+}
+
+export function getPerformanceStats(): Promise<PerformanceStats> {
+  const { sites, sessions } = dataset();
+  const total = sessions.length;
+  const totalDuration = sessions.reduce((sum, s) => sum + s.durationMin, 0);
+  const totalEnergy = sessions.reduce((sum, s) => sum + s.energyKwh, 0);
+  const totalPorts = sites.reduce((sum, s) => sum + s.numPorts, 0);
+  const windowHours = 90 * 24;
+  const usedHours = (total * (totalDuration / total)) / 60;
+  return delay({
+    avgSessionDurationMin: total ? Math.round(totalDuration / total) : 0,
+    avgEnergyPerSession: total ? +(totalEnergy / total).toFixed(1) : 0,
+    sessionsPerDay: Math.round(total / 90),
+    utilizationPct: totalPorts
+      ? +Math.min(100, (usedHours / (totalPorts * windowHours)) * 100).toFixed(1)
+      : 0,
+    totalSessions: total,
+  });
 }
