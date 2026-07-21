@@ -4,10 +4,23 @@ import { NAV_ITEMS } from "@/lib/nav";
 import { useFilter } from "@/lib/filter-context";
 import type { Granularity } from "@/types";
 
-const GRANULARITIES: Granularity[] = ["day", "week", "month"];
+const GRANULARITIES: { value: Granularity; label: string }[] = [
+  { value: "day", label: "24h" },
+  { value: "week", label: "7 days" },
+  { value: "month", label: "30 days" },
+];
 
-interface HeaderProps {
-  onOpenNav: () => void;
+function formatRange(fromIso: string, toIso: string): string {
+  const from = new Date(fromIso);
+  const to = new Date(toIso);
+  const sameYear = from.getFullYear() === to.getFullYear();
+  const fmt = (d: Date, withYear: boolean) =>
+    d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      ...(withYear ? { year: "numeric" } : {}),
+    });
+  return `${fmt(from, !sameYear)} – ${fmt(to, true)}`;
 }
 
 export function Header({ onOpenNav }: HeaderProps) {
@@ -36,22 +49,31 @@ export function Header({ onOpenNav }: HeaderProps) {
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1 rounded-lg bg-slate-100 p-1">
-        {GRANULARITIES.map((g) => (
-          <button
-            key={g}
-            onClick={() => setGranularity(g)}
-            className={[
-              "rounded-md px-2.5 py-1.5 text-xs font-medium capitalize transition-colors sm:px-3",
-              filter.granularity === g
-                ? "bg-white text-navy-800 shadow-sm"
-                : "text-slate-500 hover:text-navy-700",
-            ].join(" ")}
-          >
-            {g}
-          </button>
-        ))}
+      <div className="flex shrink-0 flex-col items-end gap-1">
+        <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
+          {GRANULARITIES.map((g) => (
+            <button
+              key={g.value}
+              onClick={() => setGranularity(g.value)}
+              className={[
+                "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3",
+                filter.granularity === g.value
+                  ? "bg-white text-navy-800 shadow-sm"
+                  : "text-slate-500 hover:text-navy-700",
+              ].join(" ")}
+            >
+              {g.label}
+            </button>
+          ))}
+        </div>
+        <span className="hidden text-[11px] text-slate-400 sm:block">
+          {formatRange(filter.from, filter.to)}
+        </span>
       </div>
     </header>
   );
+}
+
+interface HeaderProps {
+  onOpenNav: () => void;
 }
