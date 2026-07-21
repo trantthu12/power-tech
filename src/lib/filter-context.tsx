@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { DateRangeFilter, Granularity } from "@/types";
+import { DEMO_NOW_MS } from "./demo-time";
 
 interface FilterContextValue {
   filter: DateRangeFilter;
@@ -10,7 +11,7 @@ interface FilterContextValue {
 const FilterContext = createContext<FilterContextValue | null>(null);
 
 function rangeForGranularity(granularity: Granularity): DateRangeFilter {
-  const to = new Date();
+  const to = new Date(DEMO_NOW_MS);
   const from = new Date(to);
   if (granularity === "day") from.setDate(from.getDate() - 1);
   if (granularity === "week") from.setDate(from.getDate() - 7);

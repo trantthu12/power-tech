@@ -11,7 +11,11 @@ export function ConnectorDonut() {
 
   return (
     <Card>
-      <CardHeader title="Charging Stations Connector" simulated />
+      <CardHeader
+        title="Sessions by Connector"
+        subtitle="Share of charging sessions per connector type"
+        simulated
+      />
       <div className="flex items-center gap-4">
         <div className="h-32 w-32 shrink-0">
           <ResponsiveContainer width="100%" height="100%">

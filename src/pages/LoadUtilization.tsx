@@ -20,6 +20,16 @@ export function LoadUtilization() {
   const sortedSites = [...(sites ?? [])].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
+  // Many OCM stations share a name (e.g. "SWTCH Energy" ×6); disambiguate
+  // duplicates with the address + a short id so the selector is usable.
+  const nameCounts = new Map<string, number>();
+  for (const s of sortedSites)
+    nameCounts.set(s.name, (nameCounts.get(s.name) ?? 0) + 1);
+  const optionLabel = (s: (typeof sortedSites)[number]) => {
+    if ((nameCounts.get(s.name) ?? 0) <= 1) return `${s.name} · ${s.city}`;
+    const extra = s.address && s.address !== s.name ? s.address : s.city;
+    return `${s.name} · ${extra} (#${s.id.replace("OCM", "")})`;
+  };
   const selectedName = siteId
     ? sites?.find((s) => s.id === siteId)?.name ?? "—"
     : "All stations";
@@ -71,7 +81,7 @@ export function LoadUtilization() {
               <option value="">All stations</option>
               {sortedSites.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name} · {s.city}
+                  {optionLabel(s)}
                 </option>
               ))}
             </select>

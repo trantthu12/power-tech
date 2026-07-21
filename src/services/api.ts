@@ -18,13 +18,11 @@ import type {
 } from "@/types";
 import { generateDataset } from "./mock-data";
 import type { MockDataset } from "./mock-data";
-
-// Fixed "now" so the dataset is deterministic. Update when refreshing the demo.
-const DEMO_NOW = new Date("2026-07-20T12:00:00Z").getTime();
+import { DEMO_NOW_MS } from "@/lib/demo-time";
 
 let cache: MockDataset | null = null;
 function dataset(): MockDataset {
-  if (!cache) cache = generateDataset(DEMO_NOW);
+  if (!cache) cache = generateDataset(DEMO_NOW_MS);
   return cache;
 }
 
@@ -50,7 +48,7 @@ export function getNetworkKpis(range: {
   from: string;
   to: string;
 }): Promise<NetworkKpis> {
-  const { sites, sessions, faults } = dataset();
+  const { sites, sessions, faults, uptimePct, successRatePct } = dataset();
   const fromMs = new Date(range.from).getTime();
   const toMs = new Date(range.to).getTime();
   const inRange = sessions.filter((s) => withinRange(s.startTime, fromMs, toMs));
@@ -58,20 +56,22 @@ export function getNetworkKpis(range: {
   const totalEnergyKwh = inRange.reduce((sum, s) => sum + s.energyKwh, 0);
   const totalRevenue = inRange.reduce((sum, s) => sum + s.revenue, 0);
   const customers = new Set(inRange.map((s) => s.customerId));
-  const activeSessions = sessions.filter((s) =>
-    withinRange(new Date().toISOString(), new Date(s.startTime).getTime(), new Date(s.endTime).getTime())
-  ).length;
+  // "Active now" — ~2% of the window's sessions charging concurrently. Stable and
+  // timezone-independent (a single-instant overlap lands in dead hours and reads 0).
+  const activeSessions = Math.round(inRange.length * 0.02);
   const offline = sites.filter((s) => !s.online).length;
 
   return delay({
     newChargingStations: sites.length,
-    activeSessions: Math.max(activeSessions, Math.round(inRange.length * 0.02)),
+    activeSessions,
     totalSessions: inRange.length,
     totalEnergyKwh: Math.round(totalEnergyKwh),
     totalRevenue: +totalRevenue.toFixed(2),
     newUsers: customers.size,
     faults: faults.filter((f) => f.status !== "resolved").length,
     connectivityLossPct: +((offline / sites.length) * 100).toFixed(1),
+    uptimePct,
+    successRatePct,
   });
 }
 

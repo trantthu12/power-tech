@@ -64,6 +64,8 @@ export interface MockDataset {
   sites: Site[];
   sessions: ChargingSession[];
   faults: FaultRecord[];
+  uptimePct: number;
+  successRatePct: number;
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -88,7 +90,7 @@ export function generateDataset(nowMs: number, seed = 42): MockDataset {
       zip: s.zip,
       connectorTypes: s.connectorTypes as ConnectorType[],
       numPorts: s.numPorts,
-      online: rng() > 0.06, // ~6% shown offline for the demo
+      online: rng() > 0.03, // ~3% shown offline for the demo
       commissionedDate: commissioned.toISOString(),
     };
   });
@@ -133,7 +135,10 @@ export function generateDataset(nowMs: number, seed = 42): MockDataset {
         energyKwh,
         portType,
         plugType: pick(rng, PLUGS),
-        connectorType: pick(rng, site.connectorTypes),
+        // Connector reflects how it's charged: DC fast → CCS/CHAdeMO, AC → J1772.
+        // (Session usage, not station availability — gives a realistic 3-way mix.)
+        connectorType:
+          portType === "DC" ? (rng() > 0.3 ? "CCS" : "CHAdeMO") : "J1772",
         co2SavedKg: +(energyKwh * 0.4).toFixed(2),
         revenue: +(energyKwh * rate).toFixed(2),
         customerId: `C${String(1 + Math.floor(rng() * 1200)).padStart(4, "0")}`,
@@ -169,5 +174,9 @@ export function generateDataset(nowMs: number, seed = 42): MockDataset {
     });
   }
 
-  return { sites, sessions, faults };
+  // Network-level reliability headline metrics (seeded, stable).
+  const uptimePct = +(98 + rng() * 1.7).toFixed(1); // 98.0–99.7%
+  const successRatePct = +(94 + rng() * 4.5).toFixed(1); // 94.0–98.5%
+
+  return { sites, sessions, faults, uptimePct, successRatePct };
 }

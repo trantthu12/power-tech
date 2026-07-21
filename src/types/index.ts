@@ -65,6 +65,10 @@ export interface NetworkKpis {
   newUsers: number;
   faults: number;
   connectivityLossPct: number;
+  /** Network availability % (station-time online) */
+  uptimePct: number;
+  /** Share of charging sessions that completed successfully % */
+  successRatePct: number;
 }
 
 export interface ConnectorBreakdown {

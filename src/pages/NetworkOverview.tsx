@@ -15,17 +15,29 @@ export function NetworkOverview() {
     <div className="space-y-5">
       <StatusBanner />
 
-      {/* KPI row 1 */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* KPI grid (8 cards) */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Total Charging Stations"
           value={kpis ? formatNumber(kpis.newChargingStations) : "—"}
           loading={isLoading}
         />
         <KpiCard
+          label="Network Uptime"
+          value={kpis ? `${kpis.uptimePct}%` : "—"}
+          accent
+          simulated
+          loading={isLoading}
+        />
+        <KpiCard
+          label="Session Success Rate"
+          value={kpis ? `${kpis.successRatePct}%` : "—"}
+          simulated
+          loading={isLoading}
+        />
+        <KpiCard
           label="Active Charging Sessions"
           value={kpis ? formatNumber(kpis.activeSessions) : "—"}
-          accent
           simulated
           loading={isLoading}
         />
@@ -35,10 +47,6 @@ export function NetworkOverview() {
           simulated
           loading={isLoading}
         />
-      </div>
-
-      {/* KPI row 2 */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           label="Total Energy"
           value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
