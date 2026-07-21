@@ -23,6 +23,7 @@ export function Stations() {
   const { data: faults } = useFaults();
 
   const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<"all" | "online" | "offline" | "faults">("all");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [asc, setAsc] = useState(true);
   const [page, setPage] = useState(1);
@@ -45,14 +46,30 @@ export function Stations() {
     }));
   }, [sites, faults]);
 
+  const counts = useMemo(
+    () => ({
+      all: rows.length,
+      online: rows.filter((r) => r.online).length,
+      offline: rows.filter((r) => !r.online).length,
+      faults: rows.filter((r) => r.faults > 0).length,
+    }),
+    [rows]
+  );
+
   const filtered = useMemo(() => {
+    const byTab = rows.filter((r) => {
+      if (tab === "online") return r.online;
+      if (tab === "offline") return !r.online;
+      if (tab === "faults") return r.faults > 0;
+      return true;
+    });
     const q = query.trim().toLowerCase();
     const list = q
-      ? rows.filter(
+      ? byTab.filter(
           (r) =>
             r.name.toLowerCase().includes(q) || r.city.toLowerCase().includes(q)
         )
-      : rows;
+      : byTab;
     const dir = asc ? 1 : -1;
     return [...list].sort((a, b) => {
       switch (sortKey) {
@@ -68,7 +85,7 @@ export function Stations() {
           return a.name.localeCompare(b.name) * dir;
       }
     });
-  }, [rows, query, sortKey, asc]);
+  }, [rows, tab, query, sortKey, asc]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
@@ -118,6 +135,43 @@ export function Stations() {
   return (
     <div className="space-y-5">
       <Card className="p-0">
+        {/* Status tabs */}
+        <div className="flex gap-1 overflow-x-auto border-b border-slate-100 px-4 pt-3">
+          {(
+            [
+              { key: "all", label: "All" },
+              { key: "online", label: "Online" },
+              { key: "offline", label: "Offline" },
+              { key: "faults", label: "Has faults" },
+            ] as const
+          ).map((t) => (
+            <button
+              key={t.key}
+              onClick={() => {
+                setTab(t.key);
+                setPage(1);
+              }}
+              className={[
+                "flex items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition-colors",
+                tab === t.key
+                  ? "border-brand-500 text-navy-800"
+                  : "border-transparent text-slate-500 hover:text-navy-700",
+              ].join(" ")}
+            >
+              {t.label}
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                  tab === t.key
+                    ? "bg-brand-100 text-brand-700"
+                    : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                {counts[t.key]}
+              </span>
+            </button>
+          ))}
+        </div>
+
         {/* Toolbar */}
         <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-xs">
