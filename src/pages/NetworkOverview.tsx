@@ -17,9 +17,7 @@ export function NetworkOverview() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           label="New Charging Stations"
-          value={kpis ? formatNumber(kpis.newChargingStations) : "—"}
-          badge="Month to Date"
-        />
+          value={kpis ? formatNumber(kpis.newChargingStations) : "—"}        />
         <KpiCard
           label="Active Charging Sessions"
           value={kpis ? formatNumber(kpis.activeSessions) : "—"}
@@ -27,9 +25,7 @@ export function NetworkOverview() {
         />
         <KpiCard
           label="Charging Sessions"
-          value={kpis ? formatCompact(kpis.totalSessions) : "—"}
-          badge="Month to Date"
-        />
+          value={kpis ? formatCompact(kpis.totalSessions) : "—"}        />
       </div>
 
       {/* KPI row 2 */}
@@ -45,9 +41,7 @@ export function NetworkOverview() {
         />
         <KpiCard
           label="New Users"
-          value={kpis ? formatNumber(kpis.newUsers) : "—"}
-          badge="Month to Date"
-        />
+          value={kpis ? formatNumber(kpis.newUsers) : "—"}        />
       </div>
 
       {/* KPI row 3 + donuts */}
