@@ -2,6 +2,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { StatusBanner } from "@/components/StatusBanner";
 import { ConnectorDonut } from "@/components/ConnectorDonut";
 import { CityBreakdown } from "@/components/CityBreakdown";
+import { FaultsCard } from "@/components/FaultsCard";
 import { StationMap } from "@/components/StationMap";
 import { useNetworkKpis } from "@/lib/queries";
 import { formatCompact, formatCurrency, formatNumber } from "@/lib/format";
@@ -46,11 +47,7 @@ export function NetworkOverview() {
 
       {/* KPI row 3 + donuts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <KpiCard
-          label="Faults & Connectivity Loss"
-          value={kpis ? formatNumber(kpis.faults) : "—"}
-          deltaPct={kpis ? -kpis.connectivityLossPct : undefined}
-        />
+        <FaultsCard />
         <ConnectorDonut />
         <CityBreakdown />
       </div>
