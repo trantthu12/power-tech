@@ -54,15 +54,20 @@ Dữ liệu thô lấy từ 2 nhóm:
 - **Site Registry (danh bạ trạm):** toạ độ GPS, địa chỉ, mã bưu chính (zip), ngày lắp đặt,
   tổng thời gian hoạt động, thời gian sạc.
 
-**Nguồn dữ liệu:** dữ liệu mở (open data) của thành phố **Palo Alto** và **Boulder** (Mỹ).
-Link Boulder có trong doc.
+**Nguồn dữ liệu hiện tại (2 loại, phải tách bạch):**
 
-> 📌 **Vì sao dùng dữ liệu Mỹ dù PowerTech hoạt động ở Canada?**
-> Ở **Canada không có sẵn dữ liệu trạm sạc công khai (open data)** để dùng, nên nhóm **buộc
-> phải dùng dữ liệu mở của Mỹ** (Palo Alto, Boulder) làm nguồn thay thế. Đây là các bộ dữ
-> liệu trạm sạc công khai, đầy đủ và tin cậy. Cấu trúc dữ liệu (phiên sạc, danh bạ trạm)
-> tương đương nhau, nên toàn bộ phân tích và dashboard vẫn áp dụng được — nếu sau này có dữ
-> liệu thật của Canada thì chỉ cần thay nguồn, không phải làm lại.
+1. **Danh bạ trạm (Site Registry) — DÙNG DỮ LIỆU THẬT:** lấy **trạm sạc thật ở Metro
+   Vancouver, BC** từ **Open Charge Map (OCM)** — toạ độ, tên, thành phố, loại đầu sạc đều
+   thật. Đây chính là "mạng lưới PowerTech" hiển thị trên bản đồ và các thẻ.
+2. **Session Logs (kWh, doanh thu, CO₂, khách hàng…) — DÙNG DỮ LIỆU GIẢ:** **không nơi nào
+   công khai dữ liệu phiên sạc thật của Canada**. OCM chỉ cho *vị trí* trạm, không cho phiên
+   sạc. Nên phần này là **synthetic (giả lập)**, tạo có kiểm soát và gắn lên chính các trạm
+   thật ở trên. Requirement doc gợi ý tham chiếu dataset **Palo Alto / Boulder** (Mỹ) cho
+   *hình dạng* của session logs.
+
+> 📌 **Tóm tắt:** vị trí trạm = thật (OCM Vancouver); số liệu vận hành (điện/tiền/phiên) =
+> giả lập. Khi PowerTech có dữ liệu vận hành thật, chỉ cần thay nguồn ở tầng service
+> (`src/services/api.ts`), giao diện giữ nguyên.
 
 > ⚠️ Một số nhóm dữ liệu **CHƯA CÓ** (lỗi/bảo trì/công suất tối đa) → **kế hoạch dùng dữ liệu
 > giả lập (synthetic data) ở Sprint 3.**
@@ -125,12 +130,16 @@ Block diagram chia rõ 2 giai đoạn:
 - **Recharts** — vẽ biểu đồ đường/cột/donut.
 - **ECharts** — vẽ heatmap 24×7.
 - **React-Leaflet + OpenStreetMap** — bản đồ trạm sạc.
+- **Open Charge Map** — nguồn trạm sạc thật (Metro Vancouver), lấy 1 lần rồi lưu file.
 - **TanStack Query** — quản lý việc lấy dữ liệu.
 
 ### 5.2. Cách tổ chức dữ liệu (quan trọng)
-Hiện **chưa có backend thật**, nên FE dùng **dữ liệu giả (mock data)** đặt tại
-`src/services/`. Mock data được tạo có kiểm soát (seed cố định) dựa trên các thành phố thật
-(Boulder, Denver, Palo Alto...) để biểu đồ trông thuyết phục.
+Hiện **chưa có backend thật**, nên FE dùng cách kết hợp:
+- **Trạm sạc = thật:** 180 trạm Metro Vancouver lấy từ Open Charge Map, lưu sẵn trong
+  `src/data/ocm-sites.json` (script `scripts/fetch-ocm.mjs` lấy 1 lần; key để trong `.env`,
+  **không** đưa vào bundle).
+- **Session/số liệu vận hành = giả lập:** tạo có kiểm soát (seed cố định) và gắn lên chính
+  180 trạm thật đó → map, "Locations by City", donut, KPI **khớp nhau hết**.
 
 👉 Điểm hay: mọi trang lấy dữ liệu qua **một lớp trung gian** `src/services/api.ts`.
 Khi team backend Python làm xong API thật, **chỉ cần sửa 1 file này** để trỏ sang API thật —
@@ -143,10 +152,12 @@ Deploy tại: **https://power-tech-dashboard.vercel.app** (tự động cập nh
   responsive (chạy tốt cả điện thoại — sidebar thu thành menu hamburger).
 - ✅ **Trang 1 — Network Overview**:
   - 6 thẻ KPI: số trạm mới, phiên đang sạc, tổng phiên, tổng điện (kWh), doanh thu, lỗi.
-  - Thanh trạng thái hệ thống ("1 station offline...").
-  - Biểu đồ donut loại đầu sạc (J1772 / CCS / CHAdeMO).
-  - Danh sách trạm theo thành phố.
-  - Bản đồ trạm (chấm xanh = online, đỏ = offline, bấm vào xem chi tiết).
+  - Thanh trạng thái hệ thống (liệt kê trạm offline, có nút đóng).
+  - Biểu đồ donut loại đầu sạc (J1772 / CCS / CHAdeMO) — màu tách biệt rõ.
+  - Danh sách trạm theo thành phố (Vancouver / Burnaby / Richmond / North Vancouver / Surrey).
+  - **Bản đồ toàn mạng lưới**: 180 trạm thật Metro Vancouver (Leaflet + OpenStreetMap), tự
+    fit khung để zoom ra thấy hết; chấm xanh = online, đỏ = offline, bấm xem chi tiết.
+  - Bộ lọc thời gian **24h / 7 days / 30 days** kèm khoảng ngày cụ thể.
 - ✅ **Trang 3 — Performance Analytics**:
   - 4 thẻ chỉ số: thời lượng phiên TB, điện TB/phiên, phiên/ngày, tỉ lệ sử dụng.
   - 2 biểu đồ xu hướng: Điện năng & Doanh thu (đổi theo bộ lọc thời gian).
