@@ -16,6 +16,8 @@ export interface NavItem {
   audience: string;
   /** Sprint 2 = built now, Sprint 3 = stub */
   sprint: 2 | 3;
+  /** Whether the day/week/month time filter actually affects this page */
+  hasFilter?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -25,6 +27,7 @@ export const NAV_ITEMS: NavItem[] = [
     icon: LayoutDashboard,
     audience: "All stakeholders",
     sprint: 2,
+    hasFilter: true,
   },
   {
     label: "Load Utilization",
@@ -39,6 +42,7 @@ export const NAV_ITEMS: NavItem[] = [
     icon: BarChart3,
     audience: "All stakeholders",
     sprint: 2,
+    hasFilter: true,
   },
   {
     label: "Infrastructure Planning",

@@ -49,6 +49,7 @@ export function Header({ onOpenNav }: HeaderProps) {
         </div>
       </div>
 
+      {current.hasFilter && (
       <div className="flex shrink-0 flex-col items-end gap-1">
         <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
           {GRANULARITIES.map((g) => (
@@ -70,6 +71,7 @@ export function Header({ onOpenNav }: HeaderProps) {
           {formatRange(filter.from, filter.to)}
         </span>
       </div>
+      )}
     </header>
   );
 }
