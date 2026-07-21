@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
 import { NetworkOverview } from "@/pages/NetworkOverview";
+import { Stations } from "@/pages/Stations";
 import { LoadUtilization } from "@/pages/LoadUtilization";
 import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
@@ -10,6 +11,7 @@ export default function App() {
     <Routes>
       <Route element={<DashboardLayout />}>
         <Route index element={<NetworkOverview />} />
+        <Route path="stations" element={<Stations />} />
         <Route path="load-utilization" element={<LoadUtilization />} />
         <Route path="performance" element={<PerformanceAnalytics />} />
         <Route

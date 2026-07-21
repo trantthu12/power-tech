@@ -1,5 +1,6 @@
 import {
   LayoutDashboard,
+  Table2,
   Gauge,
   BarChart3,
   Map,
@@ -28,6 +29,13 @@ export const NAV_ITEMS: NavItem[] = [
     audience: "All stakeholders",
     sprint: 2,
     hasFilter: true,
+  },
+  {
+    label: "Stations",
+    path: "/stations",
+    icon: Table2,
+    audience: "All stakeholders",
+    sprint: 2,
   },
   {
     label: "Load Utilization",
