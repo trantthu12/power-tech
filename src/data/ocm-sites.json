@@ -1,0 +1,2356 @@
+[
+  {
+    "id": "OCM250273",
+    "name": "777 HORBY HORNBY 3",
+    "lat": 49.282973,
+    "lng": -123.121714,
+    "address": "777 Hornby St",
+    "city": "Vancouver",
+    "zip": "V6Z 1S4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250271",
+    "name": "777 HORBY HORNBY 1",
+    "lat": 49.282959,
+    "lng": -123.121725,
+    "address": "777 Hornby St",
+    "city": "Vancouver",
+    "zip": "V6Z 1S4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM126863",
+    "name": "Vancouver, BC - Pacific Centre Supercharger",
+    "lat": 49.282005,
+    "lng": -123.120232,
+    "address": "701 W Georgia Street",
+    "city": "Vancouver",
+    "zip": "V7Y 1G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 22
+  },
+  {
+    "id": "OCM383169",
+    "name": "CF Pacific Centre - Tesla Supercharger",
+    "lat": 49.282005,
+    "lng": -123.120232,
+    "address": "701 W Georgia Street",
+    "city": "Vancouver",
+    "zip": "V7Y 1G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250275",
+    "name": "777 HORBY HORNBY 2",
+    "lat": 49.283008,
+    "lng": -123.121768,
+    "address": "777 Hornby St",
+    "city": "Vancouver",
+    "zip": "V6Z 1S4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM79370",
+    "name": "The Fairmont Hotel Vancouver",
+    "lat": 49.283791,
+    "lng": -123.120989,
+    "address": "900 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6C 2W6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250280",
+    "name": "FLO - Cadillac Fairview - Pacific Centre HSBC",
+    "lat": 49.283763,
+    "lng": -123.1197,
+    "address": "885 West Georgia",
+    "city": "Vancouver",
+    "zip": "V6C 2G2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM9308",
+    "name": "900 west Georgia Street",
+    "lat": 49.284034,
+    "lng": -123.120691,
+    "address": "900 west Georgia Street",
+    "city": "Vancouver",
+    "zip": "V6C2W6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250278",
+    "name": "EasyPark - Lot 9 - CF Pacific Centre Section A",
+    "lat": 49.281659,
+    "lng": -123.119407,
+    "address": "701 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V7Y 1G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383177",
+    "name": "GoPark - Burrard Street",
+    "lat": 49.28274,
+    "lng": -123.12297,
+    "address": "800 Burrard St",
+    "city": "Vancouver",
+    "zip": "V6Z 2E7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383197",
+    "name": "E.V. STATION CATHEDRAL 7",
+    "lat": 49.284103,
+    "lng": -123.119895,
+    "address": "925 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6C 3L2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469080",
+    "name": "GWLRA LOT #952 A",
+    "lat": 49.280996,
+    "lng": -123.121683,
+    "address": "840 Howe Street",
+    "city": "Vancouver",
+    "zip": "V6Z 2L2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469079",
+    "name": "GWLRA LOT #952 B",
+    "lat": 49.280967,
+    "lng": -123.121704,
+    "address": "840 Howe Street",
+    "city": "Vancouver",
+    "zip": "V6Z 2L2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250262",
+    "name": "VANCOUVER HOUSE STATION 1",
+    "lat": 49.281319,
+    "lng": -123.118376,
+    "address": "753 Seymour St",
+    "city": "Vancouver",
+    "zip": "V6B 5J3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM112014",
+    "name": "AUTO WEST BMW",
+    "lat": 49.2829368,
+    "lng": -123.1240276,
+    "address": "845 Burrard St",
+    "city": "Vancouver",
+    "zip": "V6Z 2K6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383167",
+    "name": "IPCC IMPARK P1 #1",
+    "lat": 49.281677,
+    "lng": -123.117621,
+    "address": "733 Seymour St",
+    "city": "Vancouver",
+    "zip": "V6B 5J3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM97726",
+    "name": "Diamond Parking",
+    "lat": 49.284829,
+    "lng": -123.122178,
+    "address": "1030 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6E 2Y3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 4
+  },
+  {
+    "id": "OCM383205",
+    "name": "Diamond Parking - Tesla Destination",
+    "lat": 49.284829,
+    "lng": -123.122178,
+    "address": "1030 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6E 2Y3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250285",
+    "name": "PARK PLACE PARK PLACE 3",
+    "lat": 49.284804,
+    "lng": -123.119128,
+    "address": "666 Burrard St",
+    "city": "Vancouver",
+    "zip": "V6C 2X8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250283",
+    "name": "888 Dunsmuir St",
+    "lat": 49.284425,
+    "lng": -123.118167,
+    "address": "888 Dunsmuir",
+    "city": "Vancouver",
+    "zip": "V6C 3K4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383200",
+    "name": "888 Dunsmuir St - 2",
+    "lat": 49.284425,
+    "lng": -123.118167,
+    "address": "888 Dunsmuir",
+    "city": "Vancouver",
+    "zip": "V6C 3K4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383180",
+    "name": "Sutton Parkade 1",
+    "lat": 49.2828611,
+    "lng": -123.1243611,
+    "address": "845 Burrard Street",
+    "city": "Vancouver",
+    "zip": "V6Z 2K6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383195",
+    "name": "EasyPark - Lot 9 - CF Pacific Centre Section C",
+    "lat": 49.283974,
+    "lng": -123.11755,
+    "address": "701 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V7Y 1G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383206",
+    "name": "PARK PLACE PARK PLACE DC 1",
+    "lat": 49.284873,
+    "lng": -123.118988,
+    "address": "666 Burrard St",
+    "city": "Vancouver",
+    "zip": "V6C 3P6",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250267",
+    "name": "Paramount Place",
+    "lat": 49.2820489,
+    "lng": -123.1244235,
+    "address": "900 Burrard",
+    "city": "Vancouver",
+    "zip": "V6Z 3G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM295636",
+    "name": "SWTCH Energy Inc.",
+    "lat": 49.2804,
+    "lng": -123.119,
+    "address": "550 Robson St",
+    "city": "Vancouver",
+    "zip": "V6B 2B7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383202",
+    "name": "625 Howe Street - 2",
+    "lat": 49.284527,
+    "lng": -123.117874,
+    "address": "625 Howe St",
+    "city": "Vancouver",
+    "zip": "V6C 2T6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM270605",
+    "name": "Swtch Energy",
+    "lat": 49.285265,
+    "lng": -123.1216604,
+    "address": "1055 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6E 3N9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250256",
+    "name": "TGR 777 RETAIL 02",
+    "lat": 49.280476,
+    "lng": -123.11785,
+    "address": "777 Richards",
+    "city": "Vancouver",
+    "zip": "V6B 1A6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383147",
+    "name": "TGO TGO 03",
+    "lat": 49.280983,
+    "lng": -123.117097,
+    "address": "510 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6B 0M3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383134",
+    "name": "GSPLP TGR RETAIL 03",
+    "lat": 49.280667,
+    "lng": -123.117468,
+    "address": "777 Richards St",
+    "city": "Vancouver",
+    "zip": "V6B 0M6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383153",
+    "name": "GSPLP TGO 05",
+    "lat": 49.281018,
+    "lng": -123.116999,
+    "address": "510 West Georgia Street",
+    "city": "Vancouver",
+    "zip": "V6B 0M3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM283643",
+    "name": "Burrard Building",
+    "lat": 49.2846048,
+    "lng": -123.1241481,
+    "address": "1030 West Georgia",
+    "city": "Vancouver",
+    "zip": "V6R 2Y3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383149",
+    "name": "TGO TGO 02",
+    "lat": 49.28099,
+    "lng": -123.117,
+    "address": "510 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6B 0M3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250253",
+    "name": "Indigo Park Canada Inc",
+    "lat": 49.2797917,
+    "lng": -123.1198325,
+    "address": "898 Seymour Street",
+    "city": "Vancouver",
+    "zip": "V6B 3L5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM278417",
+    "name": "TGO TGO 01",
+    "lat": 49.281161,
+    "lng": -123.116626,
+    "address": "510 W Georgia St",
+    "city": "Vancouver",
+    "zip": "V6B 0M3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250272",
+    "name": "St. Regis Hotel",
+    "lat": 49.28297,
+    "lng": -123.115965,
+    "address": "602 Dunsmuir St",
+    "city": "Vancouver",
+    "zip": "V6B 1Y6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383130",
+    "name": "L'Hermitage Hotel Vancouver - Tesla Destination",
+    "lat": 49.280564,
+    "lng": -123.117098,
+    "address": "788 Richards Street",
+    "city": "Vancouver",
+    "zip": "V6B 3A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM116819",
+    "name": "L辿ermitage Hotel Vancouver",
+    "lat": 49.280564,
+    "lng": -123.117098,
+    "address": "788 Richards Street",
+    "city": "Vancouver",
+    "zip": "V6B 3A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250255",
+    "name": "City of Vancouver",
+    "lat": 49.28010786174939,
+    "lng": -123.1178581724887,
+    "address": "800 Richards St",
+    "city": "Vancouver",
+    "zip": "V6B 2B5",
+    "connectorTypes": [
+      "J1772",
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 3
+  },
+  {
+    "id": "OCM383111",
+    "name": "COB PUBLIC BCSC ARENA",
+    "lat": 49.279335,
+    "lng": -123.11901,
+    "address": "3676 Kensington Avenue",
+    "city": "Burnaby",
+    "zip": "V5B 4Z6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383227",
+    "name": "Amgen British Columbia - Tesla Destination",
+    "lat": 49.286823,
+    "lng": -123.122118,
+    "address": "7990 Enterprise St",
+    "city": "Burnaby",
+    "zip": "V5A 1V7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM160680",
+    "name": "Cariboo Hill Secondary - Public",
+    "lat": 49.232685,
+    "lng": -122.914714,
+    "address": "8580 16th Avenue",
+    "city": "Burnaby",
+    "zip": "V3N 1S6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250178",
+    "name": "SPMC LOUGHEED MALL 2",
+    "lat": 49.251408,
+    "lng": -122.894325,
+    "address": "9855 Austin Avenue",
+    "city": "Burnaby",
+    "zip": "V3J 0B4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382695",
+    "name": "COB RBCC 13",
+    "lat": 49.207589,
+    "lng": -122.949245,
+    "address": "7789 18th Street",
+    "city": "Burnaby",
+    "zip": "V3N 1Z2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382697",
+    "name": "COB RBCC 8",
+    "lat": 49.207733,
+    "lng": -122.949574,
+    "address": "7789 18th Street",
+    "city": "Burnaby",
+    "zip": "V3N 1Z2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382699",
+    "name": "COB RBCC 6",
+    "lat": 49.207805,
+    "lng": -122.949662,
+    "address": "7789 18th Street",
+    "city": "Burnaby",
+    "zip": "V3N 1Z2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250180",
+    "name": "BC SUBURBAN NORTHGATE VLG",
+    "lat": 49.252697,
+    "lng": -122.893746,
+    "address": "3433 North Rd",
+    "city": "Burnaby",
+    "zip": "V3J 0A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234294",
+    "name": "COB PUBLIC BELL PARK 2",
+    "lat": 49.251867,
+    "lng": -122.905171,
+    "address": "2131 Hunter St",
+    "city": "Burnaby",
+    "zip": "V3J 1M5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382748",
+    "name": "COB PUBLIC ECC 1",
+    "lat": 49.220691,
+    "lng": -122.947924,
+    "address": "7433 Edmonds St",
+    "city": "Burnaby",
+    "zip": "V3N 1B1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234267",
+    "name": "COB PUBLIC ECC STREET 1",
+    "lat": 49.221765,
+    "lng": -122.947803,
+    "address": "7138 Humphries Ave",
+    "city": "Burnaby",
+    "zip": "V5E 2C9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234262",
+    "name": "CRESSEY KC RETAIL 1",
+    "lat": 49.219097,
+    "lng": -122.95,
+    "address": "7360 Edmonds St",
+    "city": "Burnaby",
+    "zip": "V3N 1A8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250159",
+    "name": "BC Hydro and Power Authority",
+    "lat": 49.2221870720308,
+    "lng": -122.950516849688,
+    "address": "7100 Bk Humphries Ave",
+    "city": "Burnaby",
+    "zip": "V3N 1B1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73594",
+    "name": "BC Hydro-Edmonds Smart Charging",
+    "lat": 49.210793,
+    "lng": -122.957519,
+    "address": "6911 Southpoint Drive",
+    "city": "Burnaby",
+    "zip": "V3N 4X8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234261",
+    "name": "HighGate Village",
+    "lat": 49.219071,
+    "lng": -122.956725,
+    "address": "7155 Kingsway",
+    "city": "Burnaby",
+    "zip": "V5E 2V1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM145707",
+    "name": "Mayfair Place-7368 Sandborne Avenue",
+    "lat": 49.210411,
+    "lng": -122.9612,
+    "address": "7368 Sandborne Avenue",
+    "city": "Burnaby",
+    "zip": "V3N 5C5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73483",
+    "name": "Computrol Fuel Systems",
+    "lat": 49.253943,
+    "lng": -122.915125,
+    "address": "8537 Commerce Court",
+    "city": "Burnaby",
+    "zip": "V5A 4N4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM234258",
+    "name": "STRATFORD STRATFORD 1",
+    "lat": 49.215,
+    "lng": -122.95992,
+    "address": "6969 21st Ave",
+    "city": "Burnaby",
+    "zip": "V5E 2Y8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234254",
+    "name": "LEDGESTONE MIDDLE CHARGER",
+    "lat": 49.207293,
+    "lng": -122.964033,
+    "address": "7488 Southwynde Ave",
+    "city": "Burnaby",
+    "zip": "V3N 5C6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111974",
+    "name": "Lake City Centre",
+    "lat": 49.253827,
+    "lng": -122.918052,
+    "address": "3292 Production Way",
+    "city": "Burnaby",
+    "zip": "V5A 4R4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234301",
+    "name": "TDR Electric - 2432 Welcher",
+    "lat": 49.258138496419,
+    "lng": -122.786063495172,
+    "address": "c/o Sutton Select Property Management & Realty",
+    "city": "Burnaby",
+    "zip": "V5B 1R3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM270573",
+    "name": "PROPERTY MGR GLENWOOD G3&G8",
+    "lat": 49.189985,
+    "lng": -122.970572,
+    "address": "5566 Trapp Ave",
+    "city": "Burnaby",
+    "zip": "V3N 5G4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM270574",
+    "name": "PROPERTY MGR GLENWOOD 4 (B)",
+    "lat": 49.190964,
+    "lng": -122.971382,
+    "address": "5589 Trapp Ave",
+    "city": "Burnaby",
+    "zip": "V3N 0B2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM270575",
+    "name": "PROPERTY MGR GLENWOOD 7",
+    "lat": 49.19122,
+    "lng": -122.972557,
+    "address": "5555 Trapp Ave",
+    "city": "Burnaby",
+    "zip": "V3N 0B2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111949",
+    "name": "Tim Hortons - Burnaby",
+    "lat": 49.2186949,
+    "lng": -122.9660387,
+    "address": "6641  Kingsway",
+    "city": "Burnaby",
+    "zip": "V5E 1E2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM145699",
+    "name": "JJ Bean Big Bend",
+    "lat": 49.193284,
+    "lng": -122.97474,
+    "address": "#101 8288 North Fraser Way",
+    "city": "Burnaby",
+    "zip": "V3N 5G4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111953",
+    "name": "Ecole Brantford Elementary School",
+    "lat": 49.224607,
+    "lng": -122.967066,
+    "address": "6512 Brantford Ave",
+    "city": "Burnaby",
+    "zip": "V5E 2S1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM145720",
+    "name": "SFU",
+    "lat": 49.2488091,
+    "lng": -122.9805104,
+    "address": "8999 Nelson Way",
+    "city": "Burnaby",
+    "zip": "V5G 4N2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250174",
+    "name": "COB PUBLIC DL2 STAFF 2",
+    "lat": 49.245332,
+    "lng": -122.973656,
+    "address": "4928 Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G 1M1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM160682",
+    "name": "Deer Lake Centre - Burnaby",
+    "lat": 49.245662,
+    "lng": -122.972877,
+    "address": "4940, Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G 4K6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382850",
+    "name": "Burnaby",
+    "lat": 49.245662,
+    "lng": -122.972877,
+    "address": "4940, Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G 4K6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111967",
+    "name": "Burnaby Central Secondary School",
+    "lat": 49.243317,
+    "lng": -122.976108,
+    "address": "6011 Deer Lake Pkwy",
+    "city": "Burnaby",
+    "zip": "V5G 0A9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250173",
+    "name": "Deer Lake Centre",
+    "lat": 49.2449287,
+    "lng": -122.9723898,
+    "address": "4946 Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G4H7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382843",
+    "name": "COB PUBLIC CH PUBLIC 2",
+    "lat": 49.243858,
+    "lng": -122.973658,
+    "address": "4949 Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G 4A3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM283634",
+    "name": "SWTCH Energy",
+    "lat": 49.2549672217568,
+    "lng": -122.97631686094,
+    "address": "3215 Norland Ave",
+    "city": "Burnaby",
+    "zip": "V5B 3A9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382841",
+    "name": "COB FLEET CITY HALL 77",
+    "lat": 49.243249,
+    "lng": -122.972639,
+    "address": "4949 Canada Way",
+    "city": "Burnaby",
+    "zip": "V5G 1M2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234297",
+    "name": "COB PUBLIC BLSC W",
+    "lat": 49.253026,
+    "lng": -122.969612,
+    "address": "3677 Kensington Ave",
+    "city": "Burnaby",
+    "zip": "V5B 0A7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234290",
+    "name": "COB PUBLIC SHADBOLT 1",
+    "lat": 49.242145,
+    "lng": -122.970088,
+    "address": "Century Park Way",
+    "city": "Burnaby",
+    "zip": "V5G",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469064",
+    "name": "COB BAG STATION 1",
+    "lat": 49.240999,
+    "lng": -122.971804,
+    "address": "6344 Deer Lake Ave",
+    "city": "Burnaby",
+    "zip": "V5G 2J3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469063",
+    "name": "COB BAG STATION 2",
+    "lat": 49.240971,
+    "lng": -122.971844,
+    "address": "6344 Deer Lake Avenue",
+    "city": "Burnaby",
+    "zip": "V5G 2J3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382586",
+    "name": "TransLink - Hamilton Transit Centre",
+    "lat": 49.184671,
+    "lng": -122.957451,
+    "address": "4111 Boundary Rd",
+    "city": "Richmond",
+    "zip": "V6V 1T8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234221",
+    "name": "CITY RICHMOND HAMILTON CC 1",
+    "lat": 49.176731,
+    "lng": -122.964582,
+    "address": "5140 Smith Drive",
+    "city": "Richmond",
+    "zip": "V6V 2W5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM18673",
+    "name": "6911 No 3 Road",
+    "lat": 49.1639,
+    "lng": -123.13756,
+    "address": "6911 No 3 Road",
+    "city": "Richmond",
+    "zip": "V6Y",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73323",
+    "name": "TD Canada Trust",
+    "lat": 49.162311,
+    "lng": -123.135847,
+    "address": "7008 NO 3 RD",
+    "city": "Richmond",
+    "zip": "V6Y2C6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250092",
+    "name": "CF Richmond Centre - Tesla Supercharger",
+    "lat": 49.169953,
+    "lng": -123.138639,
+    "address": "6551 No 3 Road",
+    "city": "Richmond",
+    "zip": "V6Y 2B6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM74139",
+    "name": "Richmond City Hall Annex",
+    "lat": 49.163735,
+    "lng": -123.13931,
+    "address": "6900 Minoru",
+    "city": "Richmond",
+    "zip": "—",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM283623",
+    "name": "E.V. STATION LONDON PLAZA5",
+    "lat": 49.170986,
+    "lng": -123.138016,
+    "address": "5951 No. 3 Road",
+    "city": "Richmond",
+    "zip": "V6X 3Y6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250084",
+    "name": "Swtch Energy",
+    "lat": 49.163051,
+    "lng": -123.139613,
+    "address": "7811 Granville Ave",
+    "city": "Richmond",
+    "zip": "V6Y 3E3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM160670",
+    "name": "City of Richmond",
+    "lat": 49.1710501,
+    "lng": -123.1272887,
+    "address": "4100 No 5 Rd",
+    "city": "Richmond",
+    "zip": "V6X 2V1",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250086",
+    "name": "CITY RICHMOND MINORU ARENAS 2",
+    "lat": 49.163942,
+    "lng": -123.142739,
+    "address": "7551 Minoru Gate",
+    "city": "Richmond",
+    "zip": "V6Y 1R8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234211",
+    "name": "CITY RICHMOND GARDN CITY PRK1",
+    "lat": 49.165603,
+    "lng": -123.122988,
+    "address": "6620 Garden City Rd",
+    "city": "Richmond",
+    "zip": "V6Y 1T6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73343",
+    "name": "Sheraton Vancouver Airport Hotel",
+    "lat": 49.17057,
+    "lng": -123.14319,
+    "address": "7551 Westminster Highway",
+    "city": "Richmond",
+    "zip": "V6X 1A3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 3
+  },
+  {
+    "id": "OCM145691",
+    "name": "CITY RICHMOND",
+    "lat": 49.162921,
+    "lng": -123.144013,
+    "address": "7191 Granville Avenue",
+    "city": "Richmond",
+    "zip": "V6Y 4G2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM278393",
+    "name": "SWTCH Energy",
+    "lat": 49.172832545933,
+    "lng": -123.141797462631,
+    "address": "5840 Cedarbridge Way",
+    "city": "Richmond",
+    "zip": "V6X 2A7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234213",
+    "name": "Richmond Hospital",
+    "lat": 49.168823,
+    "lng": -123.146802,
+    "address": "7000 Westminster Hwy",
+    "city": "Richmond",
+    "zip": "V6X 1A2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250085",
+    "name": "CITY RICHMOND MCAL 2",
+    "lat": 49.16308,
+    "lng": -123.146545,
+    "address": "7191 Granville Avenue",
+    "city": "Richmond",
+    "zip": "V6Y 4G2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250083",
+    "name": "CITY RICHMOND MCAL 1",
+    "lat": 49.163036,
+    "lng": -123.146545,
+    "address": "7191 Granville Avenue",
+    "city": "Richmond",
+    "zip": "V6Y 4G2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469044",
+    "name": "SWTCH Energy",
+    "lat": 49.1750667,
+    "lng": -123.1393002,
+    "address": "5520 Minoru Blvd",
+    "city": "Richmond",
+    "zip": "V6X 2A9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM145693",
+    "name": "CITY RICHMOND",
+    "lat": 49.1633906,
+    "lng": -123.1472528,
+    "address": "6960 Gilbert Rd",
+    "city": "Richmond",
+    "zip": "V7C 3V4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382554",
+    "name": "Kwantlen Polytechnic University - 5600 Kwantlen Street",
+    "lat": 49.175378,
+    "lng": -123.128088,
+    "address": "5600 Kwantlen St.",
+    "city": "Richmond",
+    "zip": "V6X 2X9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382522",
+    "name": "VCH - Richmond - DCFC",
+    "lat": 49.169942,
+    "lng": -123.1472892,
+    "address": "7000 Westminster Hwy",
+    "city": "Richmond",
+    "zip": "V6X 1A2",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250082",
+    "name": "CITY RICHMOND RCMP CPO 1",
+    "lat": 49.162975,
+    "lng": -123.148494,
+    "address": "6931 Granville Ave",
+    "city": "Richmond",
+    "zip": "V7C 4M9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382480",
+    "name": "On the Run EV Fast Charge",
+    "lat": 49.1559,
+    "lng": -123.137,
+    "address": "7951 No. 3 Rd",
+    "city": "Richmond",
+    "zip": "V6Y 2C9",
+    "connectorTypes": [
+      "CCS"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM283626",
+    "name": "SWTCH Energy",
+    "lat": 49.1761822065494,
+    "lng": -123.142807003319,
+    "address": "7771 Alderbridge Way",
+    "city": "Richmond",
+    "zip": "V6X 2A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM278394",
+    "name": "Swtch Energy",
+    "lat": 49.1759813,
+    "lng": -123.1435784,
+    "address": "5840 Cedarbridge Way",
+    "city": "Richmond",
+    "zip": "V6X2A7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382546",
+    "name": "SWTCH Energy Inc.",
+    "lat": 49.1733017,
+    "lng": -123.1490021,
+    "address": "6951 Elmbridge Way",
+    "city": "Richmond",
+    "zip": "V7C 0A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234219",
+    "name": "RIVERGREEN-12 RIVERGREEN-12-1",
+    "lat": 49.175365,
+    "lng": -123.14808,
+    "address": "6622 Pearson Way",
+    "city": "Richmond",
+    "zip": "V7C 4N3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111921",
+    "name": "Leslie Road",
+    "lat": 49.1797237474279,
+    "lng": -123.139881549953,
+    "address": "Leslie Road",
+    "city": "Richmond",
+    "zip": "V7A 4R6",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250109",
+    "name": "2 RIVER GREEN EV2",
+    "lat": 49.175779,
+    "lng": -123.149696,
+    "address": "6611 Pearson Way",
+    "city": "Richmond",
+    "zip": "V6X 4G5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73366",
+    "name": "Central Garden Station 2",
+    "lat": 49.1787,
+    "lng": -123.122816,
+    "address": "9200 Alexandra Rd",
+    "city": "Richmond",
+    "zip": "—",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM290171",
+    "name": "Central at Garden City Shopping Centre - Tesla Supercharger",
+    "lat": 49.17872665115264,
+    "lng": -123.12282521950846,
+    "address": "4660 Garden City Rd",
+    "city": "Richmond",
+    "zip": "V6X 1C5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234220",
+    "name": "2 RIVER GREEN EV3",
+    "lat": 49.17641,
+    "lng": -123.14922,
+    "address": "6611 Pearson Wy",
+    "city": "Richmond",
+    "zip": "V7C 0C3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM73367",
+    "name": "Walmart Supercentre",
+    "lat": 49.17841,
+    "lng": -123.121,
+    "address": "9251 Alderbridge Way",
+    "city": "Richmond",
+    "zip": "V6X 0N1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM47509",
+    "name": "Richmond Olympic Oval",
+    "lat": 49.175,
+    "lng": -123.152,
+    "address": "6111 River Road",
+    "city": "Richmond",
+    "zip": "V7C",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250108",
+    "name": "CITY RICHMOND RICHMOND OVAL 3",
+    "lat": 49.17482,
+    "lng": -123.15339,
+    "address": "6111 River Rd",
+    "city": "Richmond",
+    "zip": "V7C 0A2",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM111915",
+    "name": "RIVER GREEN",
+    "lat": 49.1728837,
+    "lng": -123.1558812,
+    "address": "Brighouse Way",
+    "city": "Richmond",
+    "zip": "V7C",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM94968",
+    "name": "Aberdeen Centre",
+    "lat": 49.18379,
+    "lng": -123.133567,
+    "address": "4151 Hazelbridge Wy",
+    "city": "Richmond",
+    "zip": "V6X 4J7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 3
+  },
+  {
+    "id": "OCM234199",
+    "name": "CITY RICHMOND BLUNDELL PARK 1",
+    "lat": 49.154766,
+    "lng": -123.152772,
+    "address": "6440 Blundell Rd",
+    "city": "Richmond",
+    "zip": "V7C 1H8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250075",
+    "name": "City of Richmond",
+    "lat": 49.1549985,
+    "lng": -123.1550807,
+    "address": "6440 Blundell Road",
+    "city": "Richmond",
+    "zip": "V7C 1H8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234231",
+    "name": "EPS3982 AVANTI STALLS 251/252",
+    "lat": 49.186729,
+    "lng": -123.131602,
+    "address": "617-8333 Sweet Ave",
+    "city": "Richmond",
+    "zip": "V6X 4B5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383328",
+    "name": "City Library P1 - Public",
+    "lat": 49.3212794,
+    "lng": -123.0735988,
+    "address": "120 14th Street West",
+    "city": "North Vancouver",
+    "zip": "V7M 1N9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383323",
+    "name": "CNV CITY HALL",
+    "lat": 49.320863,
+    "lng": -123.074707,
+    "address": "1301-1309 Civic Place Mews",
+    "city": "North Vancouver",
+    "zip": "V7M 1P2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250330",
+    "name": "City of North Vancouver City Hall",
+    "lat": 49.320829,
+    "lng": -123.074754,
+    "address": "141 West 14th Street",
+    "city": "North Vancouver",
+    "zip": "V7M 1H9",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM383309",
+    "name": "Wesgroup Properties LP",
+    "lat": 49.31821,
+    "lng": -123.07214,
+    "address": "1100-1112 Lonsdale Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 2H2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234358",
+    "name": "Corporation of the City of North Vancouver",
+    "lat": 49.319679,
+    "lng": -123.069656,
+    "address": "165 E 13th (Fire Hall)",
+    "city": "North Vancouver",
+    "zip": "V7L 2L3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250329",
+    "name": "City of North Vancouver Gerry Brewer Building",
+    "lat": 49.320572,
+    "lng": -123.069544,
+    "address": "147 E 14th St",
+    "city": "North Vancouver",
+    "zip": "V7L 2N4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383307",
+    "name": "Swtch Energy",
+    "lat": 49.3180465,
+    "lng": -123.0721508,
+    "address": "1100 Lonsdale Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 2H3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250333",
+    "name": "Lions Gate Hospital - Robert Hope Center",
+    "lat": 49.320983,
+    "lng": -123.068366,
+    "address": "1337 St Andrews Ave",
+    "city": "North Vancouver",
+    "zip": "V7L 2L7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383320",
+    "name": "VCH - Lions Gate Hospital - Level 2",
+    "lat": 49.320714,
+    "lng": -123.067672,
+    "address": "231 15th St E",
+    "city": "North Vancouver",
+    "zip": "V7L 2L7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383329",
+    "name": "VCH - Lions Gate Hospital - DCFC",
+    "lat": 49.321452,
+    "lng": -123.068079,
+    "address": "231 15th St E",
+    "city": "North Vancouver",
+    "zip": "V7L 2L7",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250332",
+    "name": "Lions Gate Hospital",
+    "lat": 49.320944,
+    "lng": -123.0671,
+    "address": "1361 St. Andrews Ave",
+    "city": "North Vancouver",
+    "zip": "V7L 3L4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383346",
+    "name": "TERRA CREST PM MOUNTAINVIEW",
+    "lat": 49.326904,
+    "lng": -123.07314,
+    "address": "121 20th St W",
+    "city": "North Vancouver",
+    "zip": "V7M 1Y2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383288",
+    "name": "HoneyBadger Charging Station",
+    "lat": 49.31317,
+    "lng": -123.07456,
+    "address": "153 4th St E",
+    "city": "North Vancouver",
+    "zip": "V7L 1H7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234362",
+    "name": "North Vancouver, BC - Tesla Supercharger",
+    "lat": 49.327849,
+    "lng": -123.070914,
+    "address": "2032 Lonsdale Avenue",
+    "city": "North Vancouver",
+    "zip": "V7M 2K5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234360",
+    "name": "CNV KINSMEN (MAHON)",
+    "lat": 49.326546,
+    "lng": -123.08109,
+    "address": "1905 Jones Avenue",
+    "city": "North Vancouver",
+    "zip": "V7M 1X8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383284",
+    "name": "BC Hydro - North Vancouver - Lower Lonsdale",
+    "lat": 49.3116,
+    "lng": -123.077,
+    "address": "140 1st St. E",
+    "city": "North Vancouver",
+    "zip": "V7L 1B1",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM112024",
+    "name": "Greenlots - 53016",
+    "lat": 49.3112411499023,
+    "lng": -123.077056884766,
+    "address": "140 1st St E",
+    "city": "North Vancouver",
+    "zip": "V7L 1B3",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM383327",
+    "name": "CNV WEST GRAND BLVD",
+    "lat": 49.321187,
+    "lng": -123.057671,
+    "address": "Ray Perrault Park",
+    "city": "North Vancouver",
+    "zip": "V7L 4J2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234359",
+    "name": "CNV WEST GRAND BLVD",
+    "lat": 49.32114,
+    "lng": -123.05755,
+    "address": "West Grand Boulevard @ Ray Perrault Park",
+    "city": "North Vancouver",
+    "zip": "V7L",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250315",
+    "name": "Wesgroup Properties LP",
+    "lat": 49.3116539,
+    "lng": -123.080344,
+    "address": "132 W Esplanade",
+    "city": "North Vancouver",
+    "zip": "V7M 1A1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM295638",
+    "name": "SWTCH Energy Inc.",
+    "lat": 49.3121,
+    "lng": -123.082,
+    "address": "150 Esplanade W",
+    "city": "North Vancouver",
+    "zip": "J4Y 0K7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM113258",
+    "name": "ICBC",
+    "lat": 49.311678,
+    "lng": -123.081372,
+    "address": "151 Esplanade W",
+    "city": "North Vancouver",
+    "zip": "V7M 3H9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM263790",
+    "name": "On the Run EV Fast Charge",
+    "lat": 49.3305218643923,
+    "lng": -123.072841322559,
+    "address": "2305 Lonsdale Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 2K9",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM145736",
+    "name": "Shipyards North Vanc",
+    "lat": 49.309972,
+    "lng": -123.078972,
+    "address": "125 Victory Ship Way",
+    "city": "North Vancouver",
+    "zip": "V7L 0B2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250338",
+    "name": "BC Hydro and Power Authority",
+    "lat": 49.3292036666713,
+    "lng": -123.081419522002,
+    "address": "2145 Jones Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 2W7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250314",
+    "name": "ICOBC HO-2",
+    "lat": 49.311036,
+    "lng": -123.082225,
+    "address": "151 Esplanade W",
+    "city": "North Vancouver",
+    "zip": "V7M 3H9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM278422",
+    "name": "CNV LAWN BOWLING",
+    "lat": 49.331036,
+    "lng": -123.066956,
+    "address": "249 24th St E",
+    "city": "North Vancouver",
+    "zip": "V7L 3E7",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383322",
+    "name": "Gulf Pacific Pacific Management Ltd",
+    "lat": 49.32083,
+    "lng": -123.09134,
+    "address": "351 Bewicke Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 3E9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250322",
+    "name": "City of North Vancouver - Operations Centre",
+    "lat": 49.317254,
+    "lng": -123.09164,
+    "address": "61 Bewicke Ave",
+    "city": "North Vancouver",
+    "zip": "V7L 2N4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469091",
+    "name": "Swtch Energy",
+    "lat": 49.308095,
+    "lng": -123.0635011,
+    "address": "237 Ridgeway Ave",
+    "city": "North Vancouver",
+    "zip": "V7L 1G6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250323",
+    "name": "CNV CITY OPS CENTER",
+    "lat": 49.317604,
+    "lng": -123.09242,
+    "address": "61 Bewicke Ave",
+    "city": "North Vancouver",
+    "zip": "V7M 1E6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250334",
+    "name": "NOMA NOMA 1",
+    "lat": 49.321739,
+    "lng": -123.092786,
+    "address": "728 14th Street W",
+    "city": "North Vancouver",
+    "zip": "V7M 1R4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM278421",
+    "name": "Swtch Energy",
+    "lat": 49.320904,
+    "lng": -123.0940706,
+    "address": "1262 Marine Dr",
+    "city": "North Vancouver",
+    "zip": "L5H1J4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383326",
+    "name": "Choices Markets - Tesla Supercharger",
+    "lat": 49.321061,
+    "lng": -123.095087,
+    "address": "801 Marine Dr",
+    "city": "North Vancouver",
+    "zip": "V7P 3K6",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383315",
+    "name": "Gescan North Vancouver",
+    "lat": 49.319411,
+    "lng": -123.095562,
+    "address": "#100 - 275 Fell Avenue",
+    "city": "North Vancouver",
+    "zip": "V7P 3R5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM270614",
+    "name": "CRAFTSMAN-NVW NVW 1",
+    "lat": 49.318364,
+    "lng": -123.0955,
+    "address": "810 W 1st St",
+    "city": "North Vancouver",
+    "zip": "V7P 1A1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM383295",
+    "name": "Jim Pattison Developments Ltd.",
+    "lat": 49.3155075,
+    "lng": -123.0952705,
+    "address": "855 Auto Mall Dr",
+    "city": "North Vancouver",
+    "zip": "V7P 3R8",
+    "connectorTypes": [
+      "CCS"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250321",
+    "name": "Carter Chevrolet",
+    "lat": 49.316582,
+    "lng": -123.095784,
+    "address": "800 Automall Dr",
+    "city": "North Vancouver",
+    "zip": "V7P 3R8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234356",
+    "name": "North Shore Kia",
+    "lat": 49.31766018796375,
+    "lng": -123.0967029312134,
+    "address": "855 W 1st St",
+    "city": "North Vancouver",
+    "zip": "V7P 1A4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM145744",
+    "name": "Municipal Hall East Lot",
+    "lat": 49.335888,
+    "lng": -123.077518,
+    "address": "355 West Queen Road",
+    "city": "North Vancouver",
+    "zip": "V7N 4N5",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382619",
+    "name": "CITY OF SURREY CITYHALL-DC1",
+    "lat": 49.191332,
+    "lng": -122.848879,
+    "address": "13450 104 Ave",
+    "city": "Surrey",
+    "zip": "V3T 1V8",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM382612",
+    "name": "CITY OF SURREY CITYHALL-L2-2",
+    "lat": 49.19116,
+    "lng": -122.848951,
+    "address": "13450 104 Ave",
+    "city": "Surrey",
+    "zip": "V3T 1V8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM263776",
+    "name": "CITY OF SURREY CITYHALL-DC2",
+    "lat": 49.191463,
+    "lng": -122.848995,
+    "address": "13464 104 Ave",
+    "city": "Surrey",
+    "zip": "V3T 1V8",
+    "connectorTypes": [
+      "CHAdeMO",
+      "CCS"
+    ],
+    "numPorts": 2
+  },
+  {
+    "id": "OCM250115",
+    "name": "SFU STATION 2",
+    "lat": 49.189098,
+    "lng": -122.850664,
+    "address": "13409 102a Ave",
+    "city": "Surrey",
+    "zip": "V3T 1P8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234232",
+    "name": "STATION 1 STATION 1-2",
+    "lat": 49.18704,
+    "lng": -122.85069,
+    "address": "10168 University Dr",
+    "city": "Surrey",
+    "zip": "V3T 5X3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234230",
+    "name": "STATION 1 CENTRAL CITY 2",
+    "lat": 49.186331,
+    "lng": -122.850428,
+    "address": "13428-13474 Old Yale Rd",
+    "city": "Surrey",
+    "zip": "V3T",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382651",
+    "name": "Lucky Supermarket - Tesla Supercharger",
+    "lat": 49.19557694,
+    "lng": -122.8447362,
+    "address": "10650 King George Blvd",
+    "city": "Surrey",
+    "zip": "V3T 2X3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382638",
+    "name": "SWTCH Energy Inc.",
+    "lat": 49.1931081,
+    "lng": -122.8401516,
+    "address": "10475 138 St",
+    "city": "Surrey",
+    "zip": "V3T 4K4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382616",
+    "name": "SURREY MITS STATION 1",
+    "lat": 49.191299,
+    "lng": -122.839696,
+    "address": "13820 104 Ave",
+    "city": "Surrey",
+    "zip": "V3T1W9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111931",
+    "name": "SURREY MITS",
+    "lat": 49.1912994,
+    "lng": -122.8396958,
+    "address": "13820 104 Ave",
+    "city": "Surrey",
+    "zip": "V3T1W9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111926",
+    "name": "STATION 1",
+    "lat": 49.1852992,
+    "lng": -122.8466923,
+    "address": "10153 King George Hwy",
+    "city": "Surrey",
+    "zip": "V3T 5H9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382587",
+    "name": "STATION 1 CENTRAL CITY",
+    "lat": 49.185299,
+    "lng": -122.846692,
+    "address": "10153 King George Hwy",
+    "city": "Surrey",
+    "zip": "V3T 5H9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM469051",
+    "name": "FLAMINGO TOWER CO16",
+    "lat": 49.198161,
+    "lng": -122.842981,
+    "address": "13675 107A Avenue",
+    "city": "Surrey",
+    "zip": "V3T 2H2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382579",
+    "name": "SWTCH Energy Inc.",
+    "lat": 49.18220139,
+    "lng": -122.8440018,
+    "address": "9900 King George Blvd",
+    "city": "Surrey",
+    "zip": "V3T4Y3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382578",
+    "name": "Locale at Century City - Commercial",
+    "lat": 49.181825,
+    "lng": -122.84584,
+    "address": "9873 King George Blvd",
+    "city": "Surrey",
+    "zip": "V3T 0T2",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234227",
+    "name": "KGH PHASE B STN4",
+    "lat": 49.181762,
+    "lng": -122.844581,
+    "address": "9900 King George Blvd",
+    "city": "Surrey",
+    "zip": "V3T 4Y3",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM382660",
+    "name": "AURATOWNBCS3231 VISITOR STALL 1",
+    "lat": 49.198548,
+    "lng": -122.835618,
+    "address": "13958 108 Avenue",
+    "city": "Surrey",
+    "zip": "V3T 0B4",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM234223",
+    "name": "Strata Corporation",
+    "lat": 49.178024,
+    "lng": -122.842931,
+    "address": "9639 137A Street",
+    "city": "Surrey",
+    "zip": "V3T 0M1",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM250110",
+    "name": "Surrey City Center",
+    "lat": 49.177175,
+    "lng": -122.841969,
+    "address": "13761 96th Ave",
+    "city": "Surrey",
+    "zip": "V3V 0E8",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  },
+  {
+    "id": "OCM111922",
+    "name": "Jim Pattison Outpatient Care and Surgery Centre",
+    "lat": 49.179726,
+    "lng": -122.833825,
+    "address": "9750 140 St",
+    "city": "Surrey",
+    "zip": "V3T 0G9",
+    "connectorTypes": [
+      "J1772"
+    ],
+    "numPorts": 1
+  }
+]

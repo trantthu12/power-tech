@@ -1,6 +1,7 @@
 // Seeded mock data generator. Deterministic so charts stay stable across
-// reloads and demos. Sites are placed around real Boulder / Palo Alto / Denver
-// coordinates to match the datasets named in the requirements doc.
+// reloads and demos. Sites are REAL Metro Vancouver (BC) charging stations
+// pulled from Open Charge Map (src/data/ocm-sites.json); sessions/faults are
+// synthetic demo data generated on top of those real sites.
 
 import type {
   ChargingSession,
@@ -12,6 +13,19 @@ import type {
   PortType,
   Site,
 } from "@/types";
+import ocmSites from "@/data/ocm-sites.json";
+
+interface OcmSite {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+  city: string;
+  zip: string;
+  connectorTypes: string[];
+  numPorts: number;
+}
 
 /** Mulberry32 — tiny deterministic PRNG. */
 function makeRng(seed: number) {
@@ -33,36 +47,7 @@ function randBetween(rng: () => number, min: number, max: number): number {
   return min + rng() * (max - min);
 }
 
-interface CityAnchor {
-  city: string;
-  lat: number;
-  lng: number;
-  zipPrefix: string;
-  weight: number; // relative number of sites
-}
-
-const CITY_ANCHORS: CityAnchor[] = [
-  { city: "Boulder", lat: 40.015, lng: -105.2705, zipPrefix: "803", weight: 5 },
-  { city: "Denver", lat: 39.7392, lng: -104.9903, zipPrefix: "802", weight: 4 },
-  { city: "Palo Alto", lat: 37.4419, lng: -122.143, zipPrefix: "943", weight: 4 },
-  { city: "Fort Collins", lat: 40.5853, lng: -105.0844, zipPrefix: "805", weight: 2 },
-  { city: "San Jose", lat: 37.3382, lng: -121.8863, zipPrefix: "951", weight: 2 },
-];
-
-const CONNECTORS: ConnectorType[] = ["J1772", "CCS", "CHAdeMO"];
 const PLUGS: PlugType[] = ["Type1", "Type2", "Tesla"];
-const STREETS = [
-  "Pearl St",
-  "Broadway",
-  "Canyon Blvd",
-  "University Ave",
-  "Colorado Ave",
-  "Main St",
-  "Walnut St",
-  "Arapahoe Ave",
-  "Hamilton Ave",
-  "El Camino Real",
-];
 
 const FAULT_CODES = [
   "E-101 Overcurrent",
@@ -90,34 +75,23 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export function generateDataset(nowMs: number, seed = 42): MockDataset {
   const rng = makeRng(seed);
 
-  // --- Sites ---
-  const sites: Site[] = [];
-  let siteIdx = 0;
-  for (const anchor of CITY_ANCHORS) {
-    for (let i = 0; i < anchor.weight; i++) {
-      siteIdx++;
-      const connectorCount = 1 + Math.floor(rng() * 3);
-      const connectorTypes = [...CONNECTORS]
-        .sort(() => rng() - 0.5)
-        .slice(0, connectorCount);
-      const commissioned = new Date(
-        nowMs - randBetween(rng, 180, 1500) * DAY_MS
-      );
-      sites.push({
-        id: `S${String(siteIdx).padStart(3, "0")}`,
-        name: `${anchor.city} ${pick(rng, STREETS)}`,
-        lat: anchor.lat + randBetween(rng, -0.04, 0.04),
-        lng: anchor.lng + randBetween(rng, -0.04, 0.04),
-        address: `${100 + Math.floor(rng() * 900)} ${pick(rng, STREETS)}`,
-        city: anchor.city,
-        zip: `${anchor.zipPrefix}${String(Math.floor(rng() * 100)).padStart(2, "0")}`,
-        connectorTypes,
-        numPorts: 2 + Math.floor(rng() * 8),
-        online: rng() > 0.06,
-        commissionedDate: commissioned.toISOString(),
-      });
-    }
-  }
+  // --- Sites: real OCM stations + deterministic operational status/date ---
+  const sites: Site[] = (ocmSites as OcmSite[]).map((s) => {
+    const commissioned = new Date(nowMs - randBetween(rng, 180, 1500) * DAY_MS);
+    return {
+      id: s.id,
+      name: s.name,
+      lat: s.lat,
+      lng: s.lng,
+      address: s.address,
+      city: s.city,
+      zip: s.zip,
+      connectorTypes: s.connectorTypes as ConnectorType[],
+      numPorts: s.numPorts,
+      online: rng() > 0.06, // ~6% shown offline for the demo
+      commissionedDate: commissioned.toISOString(),
+    };
+  });
 
   // --- Sessions (last 90 days) ---
   const sessions: ChargingSession[] = [];
