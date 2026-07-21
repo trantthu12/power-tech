@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
 import { NetworkOverview } from "@/pages/NetworkOverview";
+import { LoadUtilization } from "@/pages/LoadUtilization";
 import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
@@ -9,23 +10,7 @@ export default function App() {
     <Routes>
       <Route element={<DashboardLayout />}>
         <Route index element={<NetworkOverview />} />
-        <Route
-          path="load-utilization"
-          element={
-            <PlaceholderPage
-              title="Load Utilization"
-              audience="Load Manager"
-              sprint={2}
-              widgets={[
-                "24×7 heat map of hourly demand / site",
-                "48-hr demand forecast chart",
-                "Load optimization panel",
-                "Port occupancy rates",
-                "Peak hourly usage",
-              ]}
-            />
-          }
-        />
+        <Route path="load-utilization" element={<LoadUtilization />} />
         <Route path="performance" element={<PerformanceAnalytics />} />
         <Route
           path="infrastructure"
