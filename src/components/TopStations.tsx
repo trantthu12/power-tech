@@ -27,6 +27,9 @@ export function TopStations() {
               <span className="text-xs font-semibold uppercase tracking-wide text-navy-700">
                 {area.zip}
               </span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                {area.stationCount} {area.stationCount === 1 ? "station" : "stations"}
+              </span>
             </div>
             <ul className="space-y-2.5 pl-4">
               {area.stations.map((s) => (

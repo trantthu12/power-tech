@@ -94,10 +94,17 @@ export function getNetworkKpis(range: { from: string; to: string }): Promise<Net
   });
 }
 
-/** Top N stations by real energy, grouped by ZIP "area". */
+/** Top N stations by real energy, grouped by ZIP "area" (with area totals). */
 export function getTopStationsByArea(
   perArea = 3
-): Promise<{ zip: string; energyKwh: number; stations: { name: string; energyKwh: number }[] }[]> {
+): Promise<
+  {
+    zip: string;
+    stationCount: number;
+    energyKwh: number;
+    stations: { name: string; energyKwh: number }[];
+  }[]
+> {
   const byZip = new Map<string, { name: string; energyKwh: number }[]>();
   for (const s of data().sites) {
     const list = byZip.get(s.zip) ?? [];
@@ -106,7 +113,12 @@ export function getTopStationsByArea(
   }
   const areas = [...byZip.entries()].map(([zip, list]) => {
     const stations = list.sort((a, b) => b.energyKwh - a.energyKwh).slice(0, perArea);
-    return { zip, energyKwh: stations.reduce((sum, x) => sum + x.energyKwh, 0), stations };
+    return {
+      zip,
+      stationCount: list.length,
+      energyKwh: list.reduce((sum, x) => sum + x.energyKwh, 0),
+      stations,
+    };
   });
   return delay(areas.sort((a, b) => b.energyKwh - a.energyKwh));
 }
