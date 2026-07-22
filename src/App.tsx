@@ -4,6 +4,7 @@ import { NetworkOverview } from "@/pages/NetworkOverview";
 import { Stations } from "@/pages/Stations";
 import { LoadUtilization } from "@/pages/LoadUtilization";
 import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
+import { InfrastructurePlanning } from "@/pages/InfrastructurePlanning";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
 export default function App() {
@@ -14,23 +15,7 @@ export default function App() {
         <Route path="stations" element={<Stations />} />
         <Route path="load-utilization" element={<LoadUtilization />} />
         <Route path="performance" element={<PerformanceAnalytics />} />
-        <Route
-          path="infrastructure"
-          element={
-            <PlaceholderPage
-              title="Infrastructure Planning"
-              audience="Network Planner"
-              sprint={3}
-              widgets={[
-                "MCDA ranking",
-                "Priority score table",
-                "Coverage gap analysis",
-                "Short-term demand forecast",
-                "Expansion recommendations",
-              ]}
-            />
-          }
-        />
+        <Route path="infrastructure" element={<InfrastructurePlanning />} />
         <Route
           path="sustainability"
           element={

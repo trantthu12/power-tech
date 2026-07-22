@@ -4,19 +4,25 @@
 // reimplementing these against fetch().
 
 import type {
+  ConnectorCount,
   ForecastPoint,
   Granularity,
+  GrowthPoint,
   HeatmapCell,
+  InfraStats,
   LoadOptimization,
   LoadStats,
+  NetworkCount,
   NetworkKpis,
   PerformanceStats,
+  PublicStation,
   Site,
   SiteComparison,
   TimeSeriesPoint,
 } from "@/types";
 import { buildDataset } from "./mock-data";
 import type { Dataset } from "./mock-data";
+import stationsData from "@/data/boulder-stations.json";
 import { DEMO_NOW_MS } from "@/lib/demo-time";
 
 let cache: Dataset | null = null;
@@ -221,4 +227,53 @@ export function getLoadOptimization(siteId?: string): Promise<LoadOptimization> 
     .sort((a, b) => a.hour - b.hour);
   const shiftableKwh = +peakHours.reduce((s, h) => s + Math.max(0, h.kwh - avg), 0).toFixed(1);
   return delay({ peakHours, offPeakHours, peakKwh: peakHours[0]?.kwh ?? 0, shiftableKwh });
+}
+
+// --- Infrastructure Planning (real public-station inventory, Colorado AFDC) ----
+// This is a second real, independent dataset: the full public EV-charging
+// landscape of Boulder (204 stations across 11 networks), separate from the
+// City's own sessions data used elsewhere.
+
+const infra = stationsData as unknown as {
+  meta: {
+    source: string;
+    total: number;
+    l2Ports: number;
+    dcFastPorts: number;
+    networks: number;
+    newestYear: number;
+    newestYearCount: number;
+  };
+  byNetwork: NetworkCount[];
+  byConnector: ConnectorCount[];
+  growth: GrowthPoint[];
+  stations: PublicStation[];
+};
+
+export function getInfraStats(): Promise<InfraStats> {
+  const m = infra.meta;
+  return delay({
+    totalStations: m.total,
+    l2Ports: m.l2Ports,
+    dcFastPorts: m.dcFastPorts,
+    networks: m.networks,
+    newestYear: m.newestYear,
+    newestYearCount: m.newestYearCount,
+  });
+}
+
+export function getStationsByNetwork(): Promise<NetworkCount[]> {
+  return delay(infra.byNetwork);
+}
+
+export function getConnectorMix(): Promise<ConnectorCount[]> {
+  return delay(infra.byConnector);
+}
+
+export function getInfraGrowth(): Promise<GrowthPoint[]> {
+  return delay(infra.growth);
+}
+
+export function getPublicStations(): Promise<PublicStation[]> {
+  return delay(infra.stations);
 }

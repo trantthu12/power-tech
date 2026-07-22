@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "refresh-data": "node scripts/fetch-boulder.mjs"
+    "refresh-data": "node scripts/fetch-boulder.mjs && node scripts/fetch-stations.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",

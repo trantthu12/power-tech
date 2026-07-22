@@ -146,3 +146,48 @@ export interface PerformanceStats {
   sessionsPerDay: number;
   totalCo2Kg: number;
 }
+
+// --- Infrastructure Planning (real public-station inventory, Colorado AFDC) ---
+
+/** Headline inventory stats for the Infrastructure Planning page. */
+export interface InfraStats {
+  totalStations: number;
+  l2Ports: number;
+  dcFastPorts: number;
+  networks: number;
+  newestYear: number;
+  newestYearCount: number;
+}
+
+export interface NetworkCount {
+  network: string;
+  stations: number;
+  ports: number;
+}
+
+export interface ConnectorCount {
+  connector: string;
+  stations: number;
+}
+
+/** One year of public-charging infrastructure growth. */
+export interface GrowthPoint {
+  year: number;
+  opened: number;
+  cumulative: number;
+}
+
+/** A public charging station from the AFDC inventory. */
+export interface PublicStation {
+  id: string;
+  name: string;
+  network: string;
+  address: string;
+  zip: string;
+  lat: number;
+  lng: number;
+  l2: number;
+  dcfc: number;
+  connectors: string[];
+  openYear: number | null;
+}

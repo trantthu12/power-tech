@@ -88,3 +88,25 @@ export function usePerformanceStats() {
     queryFn: api.getPerformanceStats,
   });
 }
+
+// --- Infrastructure Planning (real public-station inventory) ------------------
+
+export function useInfraStats() {
+  return useQuery({ queryKey: ["infra-stats"], queryFn: api.getInfraStats });
+}
+
+export function useStationsByNetwork() {
+  return useQuery({ queryKey: ["stations-by-network"], queryFn: api.getStationsByNetwork });
+}
+
+export function useConnectorMix() {
+  return useQuery({ queryKey: ["connector-mix"], queryFn: api.getConnectorMix });
+}
+
+export function useInfraGrowth() {
+  return useQuery({ queryKey: ["infra-growth"], queryFn: api.getInfraGrowth });
+}
+
+export function usePublicStations() {
+  return useQuery({ queryKey: ["public-stations"], queryFn: api.getPublicStations });
+}
