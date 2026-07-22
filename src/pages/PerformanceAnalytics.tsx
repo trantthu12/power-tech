@@ -122,11 +122,11 @@ export function PerformanceAnalytics() {
       {/* Site comparison */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Site Comparison — Energy" subtitle="Top sites by kWh · all-time" />
+          <CardHeader title="Site Comparison, Energy" subtitle="Top sites by kWh · all-time" />
           {sites.data && <SiteComparisonChart data={sites.data} metric="energyKwh" />}
         </Card>
         <Card>
-          <CardHeader title="Site Comparison — Sessions" subtitle="Top sites by session count · all-time" />
+          <CardHeader title="Site Comparison, Sessions" subtitle="Top sites by session count · all-time" />
           {sites.data && <SiteComparisonChart data={sites.data} metric="sessions" />}
         </Card>
       </div>

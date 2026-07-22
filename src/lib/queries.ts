@@ -121,6 +121,10 @@ export function useInfraStats() {
   return useQuery({ queryKey: ["infra-stats"], queryFn: api.getInfraStats });
 }
 
+export function useChargerPowerMix() {
+  return useQuery({ queryKey: ["charger-power-mix"], queryFn: api.getChargerPowerMix });
+}
+
 export function useStationsByNetwork() {
   return useQuery({ queryKey: ["stations-by-network"], queryFn: api.getStationsByNetwork });
 }

@@ -56,7 +56,7 @@ export const NAV_ITEMS: NavItem[] = [
     path: "/infrastructure",
     icon: Map,
     audience: "Network Planner",
-    sprint: 2,
+    sprint: 3,
   },
   {
     label: "Sustainability",

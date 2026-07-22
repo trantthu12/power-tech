@@ -31,7 +31,7 @@ export function PublicStationMap() {
       <div className="p-5 pb-3">
         <CardHeader
           title="Public Charging Map"
-          subtitle={`${rows.length} public stations across Boulder — coloured by network`}
+          subtitle={`${rows.length} public stations across Boulder, coloured by network`}
         />
       </div>
       <div className="relative h-[380px] w-full">

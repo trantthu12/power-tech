@@ -85,7 +85,7 @@ export function LoadUtilization() {
       <Card>
         <CardHeader
           title="Hourly Demand Heatmap"
-          subtitle={`24×7 energy demand — ${selectedName}`}
+          subtitle={`24×7 energy demand, ${selectedName}`}
           action={
             <select
               value={siteId}
@@ -108,7 +108,7 @@ export function LoadUtilization() {
         )}
         <p className="mt-3 text-xs text-slate-400">
           Each cell is total energy (kWh) for that hour &amp; weekday. Darker =
-          higher demand — helps the Load Manager spot peak hours and avoid grid
+          higher demand, helps the Load Manager spot peak hours and avoid grid
           overload.
         </p>
       </Card>
@@ -117,7 +117,7 @@ export function LoadUtilization() {
       <Card>
         <CardHeader
           title="Hourly Energy by Station"
-          subtitle="Average energy (kWh) per hour of day — choose up to 5 stations"
+          subtitle="Average energy (kWh) per hour of day, choose up to 5 stations"
           action={
             <MultiStationSelect
               options={stationOptions.data ?? []}
@@ -146,7 +146,7 @@ export function LoadUtilization() {
         <Card>
           <CardHeader
             title="48-Hour Demand Forecast"
-            subtitle={`Projected from the real demand pattern — ${selectedName}`}
+            subtitle={`Projected from the real demand pattern, ${selectedName}`}
           />
           {forecast.data ? (
             <ForecastChart data={forecast.data} />
@@ -155,7 +155,7 @@ export function LoadUtilization() {
           )}
           <p className="mt-3 text-xs text-slate-400">
             Dashed line = projected next-48h demand from the historical hourly
-            pattern — lets the Load Manager pre-plan capacity.
+            pattern, lets the Load Manager pre-plan capacity.
           </p>
         </Card>
 
@@ -217,7 +217,7 @@ export function LoadUtilization() {
             </div>
             <p className="mt-3 text-xs text-slate-400">
               Ranked by real demand intensity + charger utilization. (True port
-              occupancy needs station capacity data, planned for Sprint 3 — this
+              occupancy needs station capacity data, planned for Sprint 3. This
               uses demand-per-station as the available proxy.)
             </p>
           </>

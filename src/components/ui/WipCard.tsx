@@ -6,14 +6,16 @@ interface WipCardProps {
   subtitle?: string;
   /** Bullet list of what this widget will show in Sprint 3. */
   planned: string[];
+  /** Footer note; defaults to the fault/maintenance/uptime message. */
+  note?: string;
 }
 
 /**
- * Placeholder for a widget whose data source arrives in Sprint 3 (e.g. uptime,
- * fault records). Shows a clear "Sprint 3" badge and what will appear — so it
- * reads as intentional work-in-progress, never a fabricated number.
+ * Placeholder for a widget whose data source arrives in Sprint 3. Shows a clear
+ * "Sprint 3" badge and what will appear — so it reads as intentional
+ * work-in-progress, never a fabricated number.
  */
-export function WipCard({ title, subtitle, planned }: WipCardProps) {
+export function WipCard({ title, subtitle, planned, note }: WipCardProps) {
   return (
     <Card className="relative">
       <CardHeader
@@ -36,8 +38,8 @@ export function WipCard({ title, subtitle, planned }: WipCardProps) {
         ))}
       </ul>
       <p className="mt-4 text-xs italic text-slate-400">
-        Awaiting Sprint&nbsp;3 data (fault / maintenance / uptime) — layout is in
-        place and will populate once the source is available.
+        {note ??
+          "Awaiting Sprint 3 data (fault, maintenance, uptime). Layout is in place and will populate once the source is available."}
       </p>
     </Card>
   );

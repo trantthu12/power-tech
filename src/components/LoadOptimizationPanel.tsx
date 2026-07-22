@@ -21,7 +21,7 @@ export function LoadOptimizationPanel({ data }: { data: LoadOptimization }) {
         <div>
           <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-rose-600">
             <ArrowUpRight className="h-3.5 w-3.5" />
-            Peak hours — cap / shift
+            Peak hours, cap / shift
           </div>
           <ul className="space-y-1.5">
             {data.peakHours.map((h) => (
@@ -40,7 +40,7 @@ export function LoadOptimizationPanel({ data }: { data: LoadOptimization }) {
         <div>
           <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-brand-600">
             <ArrowDownRight className="h-3.5 w-3.5" />
-            Off-peak — shift into
+            Off-peak, shift into
           </div>
           <ul className="space-y-1.5">
             {data.offPeakHours.map((h) => (

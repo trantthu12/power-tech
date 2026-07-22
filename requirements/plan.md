@@ -19,7 +19,6 @@ support today, plus the shared application shell.
 | **Load Utilization** | Load Manager | ✅ Done |
 | **Performance Analytics** | All stakeholders | ✅ Done |
 | **Stations** (searchable/sortable station table) | All stakeholders | ✅ Done |
-| **Infrastructure Planning** | Network Planner | ✅ Done (moved up — real public-station data was available) |
 
 **Application shell:** dark sidebar with all pages, header with a Day / Week /
 Month time filter, and a fully responsive layout (sidebar collapses to a hamburger
@@ -43,11 +42,9 @@ menu on mobile).
 - **Stations** — full station table with search, sorting (energy, sessions, CO₂,
   duration, utilization), charger Type (AC/DC), a utilization tooltip,
   pagination, and CSV export.
-- **Infrastructure Planning** — the real public-charging landscape of Boulder from
-  the Colorado AFDC inventory: KPIs (public stations, ports, DC-fast ports,
-  networks, newest-year openings), stations-by-network and connector-type
-  breakdowns, an infrastructure-growth chart (2014→present), and a map of all
-  public stations coloured by network.
+
+The Colorado AFDC public-station inventory is also used to power the AC/DC
+charger-type breakdown on Network Overview (204 public stations; 9 DC-fast).
 
 ---
 
@@ -59,6 +56,7 @@ these, then build the pages against the same service layer.
 
 | Page | Stakeholder | Needs (Sprint 3 input) |
 |------|-------------|------------------------|
+| **Infrastructure Planning** | Network Planner | MCDA ranking, priority score table, coverage-gap analysis, short-term demand forecast, expansion recommendations — all require the Python Site-Scoring & Optimization (MCDA) model. Page is stubbed with labelled placeholder cards. |
 | **Sustainability Scoring** | Executive / ESG Officer | Energy & avoided-emissions rollups, ageing-asset flags, CO₂ offset estimate, ESG summary. Partly derivable from real data; asset age/ESG panels need synthetic asset metadata. |
 | **Fault Diagnostics** | Operations Manager | Risk-ranked alert table, fault-history timeline, MTBF/MTTR trends, fault probability — all require fault & maintenance records (synthetic). |
 

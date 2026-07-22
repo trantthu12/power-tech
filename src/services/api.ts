@@ -349,6 +349,19 @@ const infra = stationsData as unknown as {
   stations: PublicStation[];
 };
 
+/**
+ * AC vs DC split of the Boulder public charging network (AFDC connectors).
+ * DC = stations offering a true DC-fast standard (CCS or CHAdeMO). J1772 is AC;
+ * Tesla is counted as AC because Boulder's Tesla entries are Level-2 "Destination"
+ * chargers, not DC Superchargers.
+ */
+export function getChargerPowerMix(): Promise<{ ac: number; dc: number; total: number }> {
+  const DC = new Set(["CCS", "CHAdeMO"]);
+  const total = infra.stations.length;
+  const dc = infra.stations.filter((s) => s.connectors.some((c) => DC.has(c))).length;
+  return delay({ ac: total - dc, dc, total });
+}
+
 export function getInfraStats(): Promise<InfraStats> {
   const m = infra.meta;
   return delay({

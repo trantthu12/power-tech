@@ -14,7 +14,7 @@ export function TopStations() {
     <Card>
       <CardHeader
         title="Top Stations by Area"
-        subtitle="Top 3 stations per ZIP area — by energy delivered"
+        subtitle="Top 3 stations per ZIP area, by energy delivered"
       />
       <div className="space-y-5">
         {areas.map((area, ai) => (

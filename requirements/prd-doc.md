@@ -87,10 +87,11 @@ The dashboard is built on the **real City of Boulder EV-charging open dataset**:
   with station name, address, ZIP, start/end time, duration, **energy (kWh)**,
   **avoided emissions (GHG kg)**, **gasoline displaced (gallons)**, and charging
   time (Level 2).
-- A second real dataset powers Infrastructure Planning: the **Colorado
-  Alternative Fuels & EV Charging Stations** inventory (U.S. DOE AFDC feed) —
-  **204 public stations, 11 networks** across Boulder, with real coordinates,
-  port counts, connector types, network operators, and open dates.
+- A second real dataset — the **Colorado Alternative Fuels & EV Charging
+  Stations** inventory (U.S. DOE AFDC feed): **204 public stations, 11 networks**
+  across Boulder with connector types (192 J1772/AC, 9 CCS/DC, 6 CHAdeMO/DC, 7
+  Tesla) — powers the AC vs DC charger-type breakdown on Network Overview. (The
+  city's own 50 operated stations are all Level 2/AC.)
 
 > **Data honesty.** Every headline metric is real. **Revenue** is shown as an
 > **explicit estimate** — the real published City of Boulder Level 2 tariff
@@ -123,8 +124,8 @@ The dashboard is built on the **real City of Boulder EV-charging open dataset**:
 | | **Sprint 2** (this semester) | **Sprint 3** (next semester) |
 |---|---|---|
 | Data | Real open data available now (Boulder sessions; Colorado AFDC inventory) | Synthetic data for fault / maintenance / capacity (no source yet) |
-| Pages | Network Overview, Load Utilization, Performance Analytics | Sustainability Scoring, Fault Diagnostics |
-| Note | Infrastructure Planning was delivered **early** because a real public-station dataset (AFDC) was available | Remaining pages need the deferred Sprint-3 inputs |
+| Pages | Network Overview, Load Utilization, Performance Analytics, Stations | Infrastructure Planning, Sustainability Scoring, Fault Diagnostics |
+| Note | Operational pages built on real open data | Depend on the ML engine (MCDA) and synthetic fault/maintenance data; stubbed with labelled placeholder cards |
 
 > **Sprint 2 focuses on the operational pages** that real data can support today.
 > Pages that depend on fault/maintenance/capacity data are scheduled for Sprint 3.

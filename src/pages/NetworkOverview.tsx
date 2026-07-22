@@ -4,39 +4,47 @@ import { WipCard } from "@/components/ui/WipCard";
 import { TopStations } from "@/components/TopStations";
 import { EnergyByZip } from "@/components/EnergyByZip";
 import { StationMap } from "@/components/StationMap";
-import { useNetworkKpis } from "@/lib/queries";
+import { useNetworkKpis, useChargerPowerMix } from "@/lib/queries";
 import { formatCompact, formatNumber } from "@/lib/format";
 
-/** AC (Level 2) vs DC fast share of the operated network. */
-function ChargerMix({ acPct, loading }: { acPct?: number; loading: boolean }) {
-  const dcPct = acPct != null ? 100 - acPct : undefined;
+/** AC vs DC split of the Boulder public charging network (real AFDC connectors). */
+function ChargerMix() {
+  const { data, isLoading } = useChargerPowerMix();
+  const total = data?.total ?? 0;
+  const pct = (n: number) => (total ? Math.round((100 * n) / total) : 0);
   return (
     <Card>
-      <CardHeader title="Charger Types" subtitle="Share of stations by power type" />
-      {loading || acPct == null ? (
+      <CardHeader
+        title="Charger Types (AC / DC)"
+        subtitle="Boulder public charging network, stations by power type"
+      />
+      {isLoading || !data ? (
         <div className="h-24" />
       ) : (
         <div className="space-y-4">
           {[
-            { label: "AC — Level 2 (J1772)", pct: acPct, color: "#2a78d6" },
-            { label: "DC Fast (CCS · CHAdeMO)", pct: dcPct ?? 0, color: "#008300" },
+            { label: "AC, Level 2 (J1772, Tesla Destination)", n: data.ac, color: "#2a78d6" },
+            { label: "DC Fast (CCS, CHAdeMO)", n: data.dc, color: "#008300" },
           ].map((r) => (
             <div key={r.label}>
               <div className="mb-1 flex items-center justify-between text-sm">
                 <span className="text-slate-600">{r.label}</span>
-                <span className="font-semibold text-navy-800">{r.pct}%</span>
+                <span className="font-semibold text-navy-800">
+                  {formatNumber(r.n)}{" "}
+                  <span className="text-xs font-normal text-slate-400">({pct(r.n)}%)</span>
+                </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
                 <div
                   className="h-full rounded-full"
-                  style={{ width: `${r.pct}%`, backgroundColor: r.color }}
+                  style={{ width: `${pct(r.n)}%`, backgroundColor: r.color }}
                 />
               </div>
             </div>
           ))}
           <p className="text-xs text-slate-400">
-            The city-operated fleet is entirely Level 2 (AC) — no DC fast charging,
-            a clear expansion gap.
+            DC fast charging is still a small share ({pct(data.dc)}%) of Boulder's
+            public network, an expansion opportunity for the Network Planner.
           </p>
         </div>
       )}
@@ -96,7 +104,7 @@ export function NetworkOverview() {
 
       {/* Charger mix (real) + Sprint 3 holding cards */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <ChargerMix acPct={kpis?.acSharePct} loading={isLoading} />
+        <ChargerMix />
         <WipCard
           title="Uptime / Downtime"
           subtitle="Station availability over time"

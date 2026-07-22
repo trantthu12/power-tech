@@ -27,7 +27,7 @@ export function StationMap() {
       <div className="p-5 pb-3">
         <CardHeader
           title="Locations"
-          subtitle={`PowerTech network — ${rows.length} real stations in Boulder, CO`}
+          subtitle={`PowerTech network, ${rows.length} real stations in Boulder, CO`}
         />
       </div>
       <div className="relative h-[360px] w-full">
