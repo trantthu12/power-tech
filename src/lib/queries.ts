@@ -33,10 +33,15 @@ export function useTopStationsByArea(perArea = 3) {
   });
 }
 
-export function useStationHourly(topN = 5) {
+export function useStationOptions() {
+  return useQuery({ queryKey: ["station-options"], queryFn: api.getStationOptions });
+}
+
+export function useStationHourly(ids: string[]) {
   return useQuery({
-    queryKey: ["station-hourly", topN],
-    queryFn: () => api.getStationHourly(topN),
+    queryKey: ["station-hourly", ids],
+    queryFn: () => api.getStationHourly(ids),
+    enabled: ids.length > 0,
   });
 }
 

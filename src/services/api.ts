@@ -226,20 +226,34 @@ export function getLoadStats(siteId?: string): Promise<LoadStats> {
   });
 }
 
-/** Average hourly energy (kWh) profile for the top N stations by total energy. */
-export function getStationHourly(
-  topN = 5
-): Promise<{ hour: number; [station: string]: number }[]> {
+/** Station picker options, sorted by total energy (busiest first). */
+export function getStationOptions(): Promise<{ id: string; name: string; zip: string }[]> {
+  return delay(
+    [...data().sites]
+      .sort((a, b) => b.energyKwh - a.energyKwh)
+      .map((s) => ({ id: s.id, name: s.name, zip: s.zip }))
+  );
+}
+
+/**
+ * Average hourly energy (kWh) profile for the given stations (keyed by site id).
+ * Returns the plot rows plus the series metadata (name + ZIP area) for legends.
+ */
+export function getStationHourly(ids: string[]): Promise<{
+  rows: { hour: number; [id: string]: number }[];
+  series: { id: string; name: string; zip: string }[];
+}> {
   const d = data();
-  const top = [...d.sites].sort((a, b) => b.energyKwh - a.energyKwh).slice(0, topN);
-  const profiles = top.map((s) => ({ name: s.name, profile: hourlyProfile(s.heat) }));
-  const rows: { hour: number; [station: string]: number }[] = [];
+  const chosen = d.sites.filter((s) => ids.includes(s.id));
+  const series = chosen.map((s) => ({ id: s.id, name: s.name, zip: s.zip }));
+  const profiles = chosen.map((s) => ({ id: s.id, profile: hourlyProfile(s.heat) }));
+  const rows: { hour: number; [id: string]: number }[] = [];
   for (let h = 0; h < 24; h++) {
-    const row: { hour: number; [station: string]: number } = { hour: h };
-    for (const p of profiles) row[p.name] = p.profile[h];
+    const row: { hour: number; [id: string]: number } = { hour: h };
+    for (const p of profiles) row[p.id] = p.profile[h];
     rows.push(row);
   }
-  return delay(rows);
+  return delay({ rows, series });
 }
 
 /**

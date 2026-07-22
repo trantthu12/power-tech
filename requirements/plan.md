@@ -33,8 +33,9 @@ menu on mobile).
   the time filter. Includes Sprint-3 holding cards for Uptime/Downtime and
   Faults & Alerts.
 - **Load Utilization** — 24×7 hourly-demand heatmap with a per-station selector,
-  charger-utilization KPI, peak hour and peak load, per-station hourly energy
-  line chart, 48-hour demand forecast, a load-optimization panel, and an
+  charger-utilization KPI, peak hour and peak load, a per-station hourly energy
+  line chart (multi-select up to 5 stations; legend labelled with ZIP area),
+  48-hour demand forecast, a load-optimization panel, and an
   expansion-recommendation table (areas ranked by demand intensity).
 - **Performance Analytics** — KPI trend charts (energy and CO₂ over time), site
   comparison (energy / sessions), a 24×7 utilization heatmap, and estimated

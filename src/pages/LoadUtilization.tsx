@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Heatmap } from "@/components/charts/Heatmap";
 import { ForecastChart } from "@/components/charts/ForecastChart";
 import { StationHourlyChart } from "@/components/charts/StationHourlyChart";
+import { MultiStationSelect } from "@/components/ui/MultiStationSelect";
 import { LoadOptimizationPanel } from "@/components/LoadOptimizationPanel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
@@ -13,6 +14,7 @@ import {
   useLoadStats,
   useDemandForecast,
   useLoadOptimization,
+  useStationOptions,
   useStationHourly,
   useExpansionSignals,
 } from "@/lib/queries";
@@ -29,7 +31,15 @@ export function LoadUtilization() {
   const stats = useLoadStats(siteId || undefined);
   const forecast = useDemandForecast(siteId || undefined);
   const optimization = useLoadOptimization(siteId || undefined);
-  const stationHourly = useStationHourly(5);
+  const stationOptions = useStationOptions();
+  // Default to the 5 busiest stations once the options load.
+  const [selectedStations, setSelectedStations] = useState<string[]>([]);
+  useEffect(() => {
+    if (stationOptions.data && selectedStations.length === 0) {
+      setSelectedStations(stationOptions.data.slice(0, 5).map((o) => o.id));
+    }
+  }, [stationOptions.data, selectedStations.length]);
+  const stationHourly = useStationHourly(selectedStations);
   const expansion = useExpansionSignals();
 
   const sortedSites = [...(sites ?? [])].sort((a, b) => a.name.localeCompare(b.name));
@@ -103,14 +113,29 @@ export function LoadUtilization() {
         </p>
       </Card>
 
-      {/* Per-station hourly energy — one line per top station */}
+      {/* Per-station hourly energy — pick up to 5 stations */}
       <Card>
         <CardHeader
           title="Hourly Energy by Station"
-          subtitle="Average energy (kWh) per hour of day — top 5 stations by volume"
+          subtitle="Average energy (kWh) per hour of day — choose up to 5 stations"
+          action={
+            <MultiStationSelect
+              options={stationOptions.data ?? []}
+              selected={selectedStations}
+              onChange={setSelectedStations}
+              max={5}
+            />
+          }
         />
-        {stationHourly.data ? (
-          <StationHourlyChart data={stationHourly.data} />
+        {stationHourly.data && stationHourly.data.series.length ? (
+          <StationHourlyChart
+            rows={stationHourly.data.rows}
+            series={stationHourly.data.series}
+          />
+        ) : selectedStations.length === 0 ? (
+          <div className="flex h-72 items-center justify-center text-sm text-slate-400">
+            Select at least one station to plot.
+          </div>
         ) : (
           <Skeleton className="h-72 w-full rounded-lg" />
         )}
