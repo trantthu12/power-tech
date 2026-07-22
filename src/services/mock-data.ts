@@ -13,6 +13,8 @@ export interface SiteAgg extends Site {
   co2Kg: number;
   /** Gasoline displaced (US gallons) */
   gasolineGal: number;
+  /** Estimated revenue (USD) from the real City of Boulder L2 time tariff */
+  revenue: number;
   avgDurationMin: number;
   /** Charger utilization: active charging time ÷ total plugged-in time (%) */
   utilizationPct: number;
@@ -39,6 +41,7 @@ export interface Dataset {
   totalEnergyKwh: number;
   totalCo2Kg: number;
   totalGasolineGal: number;
+  totalRevenue: number;
   avgDurationMin: number;
   /** Network-wide charger utilization (%) */
   avgUtilizationPct: number;
@@ -59,6 +62,7 @@ interface RawSite {
   energyKwh: number;
   co2Kg: number;
   gasolineGal: number;
+  revenue: number;
   avgDurationMin: number;
   utilizationPct: number;
   heat: number[];
@@ -73,6 +77,7 @@ export function buildDataset(): Dataset {
       energyKwh: number;
       co2Kg: number;
       gasolineGal: number;
+      revenue: number;
       avgDurationMin: number;
       utilizationPct: number;
       dateEnd: string;
@@ -95,6 +100,7 @@ export function buildDataset(): Dataset {
     energyKwh: s.energyKwh,
     co2Kg: s.co2Kg,
     gasolineGal: s.gasolineGal,
+    revenue: s.revenue,
     avgDurationMin: s.avgDurationMin,
     utilizationPct: s.utilizationPct,
     heat: s.heat,
@@ -115,6 +121,7 @@ export function buildDataset(): Dataset {
     totalEnergyKwh: raw.meta.energyKwh,
     totalCo2Kg: raw.meta.co2Kg,
     totalGasolineGal: raw.meta.gasolineGal,
+    totalRevenue: raw.meta.revenue,
     avgDurationMin: raw.meta.avgDurationMin,
     avgUtilizationPct: raw.meta.utilizationPct,
     dateEnd: raw.meta.dateEnd,

@@ -26,6 +26,27 @@ export function useTopStations(limit = 5) {
   });
 }
 
+export function useTopStationsByArea(perArea = 3) {
+  return useQuery({
+    queryKey: ["top-stations-by-area", perArea],
+    queryFn: () => api.getTopStationsByArea(perArea),
+  });
+}
+
+export function useStationHourly(topN = 5) {
+  return useQuery({
+    queryKey: ["station-hourly", topN],
+    queryFn: () => api.getStationHourly(topN),
+  });
+}
+
+export function useExpansionSignals() {
+  return useQuery({
+    queryKey: ["expansion-signals"],
+    queryFn: api.getExpansionSignals,
+  });
+}
+
 export function useEnergyTrend(granularity: Granularity) {
   return useQuery({
     queryKey: ["energy-trend", granularity],

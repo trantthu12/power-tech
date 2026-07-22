@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Info,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -74,9 +75,9 @@ export function Stations() {
   };
 
   const exportCsv = () => {
-    const header = ["Station", "ZIP", "Sessions", "Energy_kWh", "CO2_kg", "Avg_Duration_min", "Utilization_pct"];
+    const header = ["Station", "ZIP", "Type", "Sessions", "Energy_kWh", "CO2_kg", "Avg_Duration_min", "Utilization_pct"];
     const lines = filtered.map((r) =>
-      [r.name, r.zip, r.sessions, r.energyKwh, r.co2Kg, r.avgDurationMin, r.utilizationPct]
+      [r.name, r.zip, chargerType(r), r.sessions, r.energyKwh, r.co2Kg, r.avgDurationMin, r.utilizationPct]
         .map((v) => `"${String(v).replace(/"/g, '""')}"`)
         .join(",")
     );
@@ -91,21 +92,27 @@ export function Stations() {
     URL.revokeObjectURL(url);
   };
 
-  const th = (label: string, key: SortKey, right = false) => {
+  const th = (label: string, key: SortKey, right = false, hint?: string) => {
     const active = sortKey === key;
     const Icon = active ? (asc ? ChevronUp : ChevronDown) : ChevronsUpDown;
     return (
       <th className={`px-4 py-3 ${right ? "text-right" : ""}`}>
         <button
           onClick={() => toggleSort(key)}
+          title={hint}
           className="inline-flex items-center gap-1 font-semibold text-navy-700 hover:text-navy-900"
         >
           {label}
+          {hint && <Info className="h-3 w-3 text-slate-300" />}
           <Icon className={`h-3.5 w-3.5 ${active ? "text-brand-500" : "text-slate-400"}`} />
         </button>
       </th>
     );
   };
+
+  // All city-operated stations are Level 2 (AC / J1772); DC fast has CCS/CHAdeMO.
+  const chargerType = (r: SiteAgg) =>
+    r.connectorTypes.some((c) => c === "CCS" || c === "CHAdeMO") ? "DC" : "AC";
 
   const pagination = (
     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
@@ -197,25 +204,31 @@ export function Stations() {
               <tr>
                 {th("Station", "name")}
                 {th("ZIP", "zip")}
+                <th className="px-4 py-3 font-semibold text-navy-700">Type</th>
                 {th("Sessions", "sessions", true)}
                 {th("Energy (kWh)", "energyKwh", true)}
                 {th("CO₂ (kg)", "co2Kg", true)}
                 {th("Avg Duration", "avgDurationMin", true)}
-                {th("Utilization", "utilizationPct", true)}
+                {th(
+                  "Utilization",
+                  "utilizationPct",
+                  true,
+                  "Charger utilization = active charging time ÷ total plugged-in time. Low % = vehicles idle-blocking the port after charging finishes."
+                )}
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50">
-                    <td className="px-4 py-3" colSpan={7}>
+                    <td className="px-4 py-3" colSpan={8}>
                       <Skeleton className="h-5 w-full" />
                     </td>
                   </tr>
                 ))
               ) : pageRows.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-10 text-center text-slate-400" colSpan={7}>
+                  <td className="px-4 py-10 text-center text-slate-400" colSpan={8}>
                     No stations match “{query}”.
                   </td>
                 </tr>
@@ -224,6 +237,17 @@ export function Stations() {
                   <tr key={r.id} className="border-b border-slate-50 hover:bg-slate-50/50">
                     <td className="px-4 py-3 font-medium text-navy-800">{r.name}</td>
                     <td className="px-4 py-3 text-slate-600">{r.zip}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+                          chargerType(r) === "DC"
+                            ? "bg-brand-50 text-brand-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {chargerType(r)}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-right text-slate-600">
                       {formatNumber(r.sessions)}
                     </td>

@@ -92,10 +92,14 @@ The dashboard is built on the **real City of Boulder EV-charging open dataset**:
   **204 public stations, 11 networks** across Boulder, with real coordinates,
   port counts, connector types, network operators, and open dates.
 
-> **No fabricated data.** Fields the open datasets do not contain (revenue,
-> online/offline status, customer ID, fault records) are **not shown** in the UI.
-> They belong to the Sprint 3 inputs and will be added when a data source or
-> backend provides them, without changing the interface.
+> **Data honesty.** Every headline metric is real. **Revenue** is shown as an
+> **explicit estimate** — the real published City of Boulder Level 2 tariff
+> ($1/hr for the first 2 hours, $2.50/hr for hours 3–4, 4-hour cap) applied to the
+> dataset's real session durations (electricity cost assumes ~$0.11/kWh, the Xcel
+> Energy Colorado commercial rate). Fields with **no data source** (uptime /
+> online status, fault & maintenance records) are **not fabricated**: they appear
+> as clearly-labelled "Sprint 3" placeholder cards showing what will populate once
+> the source is available.
 
 ---
 

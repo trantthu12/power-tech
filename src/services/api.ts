@@ -80,13 +80,35 @@ export function getNetworkKpis(range: { from: string; to: string }): Promise<Net
   const win = d.dailyTotals.filter((r) => r.date >= from && r.date <= to);
   const sessions = win.reduce((s, r) => s + r.sessions, 0);
   const energy = win.reduce((s, r) => s + r.energyKwh, 0);
+  // Every city-operated station in the dataset is Level 2 (AC / J1772) — the raw
+  // Port_Type field is "Level 2" for all sessions — so DC-fast share is 0.
+  const acStations = d.sites.filter((s) => !s.connectorTypes.some((c) => c === "CCS" || c === "CHAdeMO")).length;
   return delay({
     totalStations: d.sites.length,
     totalSessions: sessions,
     totalEnergyKwh: Math.round(energy),
     totalCo2Kg: Math.round(energy * d.co2PerKwh),
     totalGasolineGal: Math.round(energy * d.galPerKwh),
+    avgUtilizationPct: d.avgUtilizationPct,
+    acSharePct: Math.round((100 * acStations) / d.sites.length),
   });
+}
+
+/** Top N stations by real energy, grouped by ZIP "area". */
+export function getTopStationsByArea(
+  perArea = 3
+): Promise<{ zip: string; energyKwh: number; stations: { name: string; energyKwh: number }[] }[]> {
+  const byZip = new Map<string, { name: string; energyKwh: number }[]>();
+  for (const s of data().sites) {
+    const list = byZip.get(s.zip) ?? [];
+    list.push({ name: s.name, energyKwh: s.energyKwh });
+    byZip.set(s.zip, list);
+  }
+  const areas = [...byZip.entries()].map(([zip, list]) => {
+    const stations = list.sort((a, b) => b.energyKwh - a.energyKwh).slice(0, perArea);
+    return { zip, energyKwh: stations.reduce((sum, x) => sum + x.energyKwh, 0), stations };
+  });
+  return delay(areas.sort((a, b) => b.energyKwh - a.energyKwh));
 }
 
 /** Energy delivered grouped by ZIP (Boulder is a single city). */
@@ -166,6 +188,10 @@ export function getSiteComparison(): Promise<SiteComparison[]> {
 
 // --- performance stats (all real) --------------------------------------------
 
+// Assumed wholesale electricity cost (USD/kWh) — Xcel Energy Colorado commercial
+// secondary rate, ~$0.11/kWh. Used only to estimate the cost side of revenue.
+const ELECTRICITY_COST_PER_KWH = 0.11;
+
 export function getPerformanceStats(): Promise<PerformanceStats> {
   const d = data();
   return delay({
@@ -173,6 +199,9 @@ export function getPerformanceStats(): Promise<PerformanceStats> {
     avgEnergyPerSession: +(d.totalEnergyKwh / d.totalSessions).toFixed(1),
     sessionsPerDay: Math.round(d.totalSessions / d.numDays),
     totalCo2Kg: d.totalCo2Kg,
+    totalRevenue: d.totalRevenue,
+    avgRevenuePerSession: +(d.totalRevenue / d.totalSessions).toFixed(2),
+    electricityCost: Math.round(d.totalEnergyKwh * ELECTRICITY_COST_PER_KWH),
   });
 }
 
@@ -195,6 +224,50 @@ export function getLoadStats(siteId?: string): Promise<LoadStats> {
     totalCo2Kg: Math.round(totalEnergyKwh * d.co2PerKwh),
     avgUtilizationPct: utilization,
   });
+}
+
+/** Average hourly energy (kWh) profile for the top N stations by total energy. */
+export function getStationHourly(
+  topN = 5
+): Promise<{ hour: number; [station: string]: number }[]> {
+  const d = data();
+  const top = [...d.sites].sort((a, b) => b.energyKwh - a.energyKwh).slice(0, topN);
+  const profiles = top.map((s) => ({ name: s.name, profile: hourlyProfile(s.heat) }));
+  const rows: { hour: number; [station: string]: number }[] = [];
+  for (let h = 0; h < 24; h++) {
+    const row: { hour: number; [station: string]: number } = { hour: h };
+    for (const p of profiles) row[p.name] = p.profile[h];
+    rows.push(row);
+  }
+  return delay(rows);
+}
+
+/**
+ * Expansion signals: rank ZIP areas by demand intensity (energy per station) so
+ * the planner can see where to add capacity. NOTE: the open dataset has no port
+ * capacity, so this uses real demand intensity + charger utilization as a proxy
+ * for the reviewer's ">95% occupancy" idea rather than true occupancy.
+ */
+export function getExpansionSignals(): Promise<
+  { zip: string; stations: number; energyKwh: number; energyPerStation: number; utilizationPct: number }[]
+> {
+  const d = data();
+  const byZip = new Map<string, { stations: number; energyKwh: number; util: number }>();
+  for (const s of d.sites) {
+    const cur = byZip.get(s.zip) ?? { stations: 0, energyKwh: 0, util: 0 };
+    cur.stations++;
+    cur.energyKwh += s.energyKwh;
+    cur.util += s.utilizationPct;
+    byZip.set(s.zip, cur);
+  }
+  const rows = [...byZip.entries()].map(([zip, v]) => ({
+    zip,
+    stations: v.stations,
+    energyKwh: Math.round(v.energyKwh),
+    energyPerStation: Math.round(v.energyKwh / v.stations),
+    utilizationPct: Math.round(v.util / v.stations),
+  }));
+  return delay(rows.sort((a, b) => b.energyPerStation - a.energyPerStation));
 }
 
 export function getDemandForecast(siteId?: string): Promise<ForecastPoint[]> {

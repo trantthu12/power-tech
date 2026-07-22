@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { TrendingUp } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Heatmap } from "@/components/charts/Heatmap";
 import { ForecastChart } from "@/components/charts/ForecastChart";
+import { StationHourlyChart } from "@/components/charts/StationHourlyChart";
 import { LoadOptimizationPanel } from "@/components/LoadOptimizationPanel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
@@ -11,6 +13,8 @@ import {
   useLoadStats,
   useDemandForecast,
   useLoadOptimization,
+  useStationHourly,
+  useExpansionSignals,
 } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 
@@ -25,6 +29,8 @@ export function LoadUtilization() {
   const stats = useLoadStats(siteId || undefined);
   const forecast = useDemandForecast(siteId || undefined);
   const optimization = useLoadOptimization(siteId || undefined);
+  const stationHourly = useStationHourly(5);
+  const expansion = useExpansionSignals();
 
   const sortedSites = [...(sites ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   const selectedName = siteId
@@ -97,6 +103,19 @@ export function LoadUtilization() {
         </p>
       </Card>
 
+      {/* Per-station hourly energy — one line per top station */}
+      <Card>
+        <CardHeader
+          title="Hourly Energy by Station"
+          subtitle="Average energy (kWh) per hour of day — top 5 stations by volume"
+        />
+        {stationHourly.data ? (
+          <StationHourlyChart data={stationHourly.data} />
+        ) : (
+          <Skeleton className="h-72 w-full rounded-lg" />
+        )}
+      </Card>
+
       {/* Forecast + optimization (analysis of the real demand pattern) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
@@ -127,6 +146,60 @@ export function LoadUtilization() {
           )}
         </Card>
       </div>
+
+      {/* Expansion recommendation — highest-demand areas first */}
+      <Card>
+        <CardHeader
+          title="Expansion Recommendation"
+          subtitle="Areas ranked by demand intensity (energy per station) over the full dataset"
+        />
+        {expansion.data ? (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-left text-sm">
+                <thead className="border-b border-slate-100 text-xs text-navy-700">
+                  <tr>
+                    <th className="py-2 pr-4 font-semibold">Area (ZIP)</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Stations</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Energy / Station</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Utilization</th>
+                    <th className="py-2 font-semibold">Signal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expansion.data.map((a, i) => (
+                    <tr key={a.zip} className="border-b border-slate-50">
+                      <td className="py-2.5 pr-4 font-medium text-navy-800">{a.zip}</td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">{a.stations}</td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">
+                        {formatNumber(a.energyPerStation)} kWh
+                      </td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">{a.utilizationPct}%</td>
+                      <td className="py-2.5">
+                        {i < 2 ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">
+                            <TrendingUp className="h-3 w-3" />
+                            Expand
+                          </span>
+                        ) : (
+                          <span className="text-xs text-slate-400">Monitor</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              Ranked by real demand intensity + charger utilization. (True port
+              occupancy needs station capacity data, planned for Sprint 3 — this
+              uses demand-per-station as the available proxy.)
+            </p>
+          </>
+        ) : (
+          <Skeleton className="h-40 w-full rounded-lg" />
+        )}
+      </Card>
     </div>
   );
 }

@@ -14,7 +14,7 @@ import {
   useUtilizationHeatmap,
   useCo2Heatmap,
 } from "@/lib/queries";
-import { formatNumber } from "@/lib/format";
+import { formatNumber, formatCurrency } from "@/lib/format";
 
 export function PerformanceAnalytics() {
   const [granularity, setGranularity] = useState<Granularity>("month");
@@ -53,6 +53,40 @@ export function PerformanceAnalytics() {
           accent
           loading={statsLoading}
         />
+      </div>
+
+      {/* Financials (estimated) */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-navy-800">
+          Financials{" "}
+          <span className="font-normal text-slate-400">· estimated</span>
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <KpiCard
+            label="Total Revenue"
+            value={stats ? formatCurrency(stats.totalRevenue) : "—"}
+            badge="est."
+            loading={statsLoading}
+          />
+          <KpiCard
+            label="Avg Revenue / Session"
+            value={stats ? formatCurrency(stats.avgRevenuePerSession) : "—"}
+            badge="est."
+            loading={statsLoading}
+          />
+          <KpiCard
+            label="Electricity Cost"
+            value={stats ? formatCurrency(stats.electricityCost) : "—"}
+            badge="est."
+            loading={statsLoading}
+          />
+        </div>
+        <p className="mt-2 text-xs text-slate-400">
+          Revenue estimated from the real City of Boulder Level 2 tariff ($1/hr for
+          the first 2 hours, $2.50/hr for hours 3–4, 4-hour cap) applied to real
+          session durations. Electricity cost assumes ~$0.11/kWh (Xcel Energy
+          Colorado commercial rate). The open dataset does not include revenue.
+        </p>
       </div>
 
       {/* Trends */}

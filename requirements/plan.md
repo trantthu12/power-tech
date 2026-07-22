@@ -27,16 +27,21 @@ menu on mobile).
 
 ### What each Sprint 2 page contains (built on real data)
 
-- **Network Overview** — KPI cards (total stations, charging sessions, total
-  energy, CO₂ avoided, gasoline saved), Top Stations by energy, Energy by ZIP,
-  a station map, and the time filter.
+- **Network Overview** — KPI cards (total stations, sessions, energy, CO₂
+  avoided, gasoline saved, charger utilization), Top 3 Stations per area (ZIP),
+  Energy by Area (ZIP), a Charger Types (AC vs DC) breakdown, a station map, and
+  the time filter. Includes Sprint-3 holding cards for Uptime/Downtime and
+  Faults & Alerts.
 - **Load Utilization** — 24×7 hourly-demand heatmap with a per-station selector,
-  charger-utilization KPI, peak hour and peak load, 48-hour demand forecast
-  (projected from the real demand pattern), and a load-optimization panel.
+  charger-utilization KPI, peak hour and peak load, per-station hourly energy
+  line chart, 48-hour demand forecast, a load-optimization panel, and an
+  expansion-recommendation table (areas ranked by demand intensity).
 - **Performance Analytics** — KPI trend charts (energy and CO₂ over time), site
-  comparison (energy / sessions), and a 24×7 utilization heatmap.
+  comparison (energy / sessions), a 24×7 utilization heatmap, and estimated
+  financials (revenue, revenue/session, electricity cost — see revenue note).
 - **Stations** — full station table with search, sorting (energy, sessions, CO₂,
-  duration, utilization), pagination, and CSV export.
+  duration, utilization), charger Type (AC/DC), a utilization tooltip,
+  pagination, and CSV export.
 - **Infrastructure Planning** — the real public-charging landscape of Boulder from
   the Colorado AFDC inventory: KPIs (public stations, ports, DC-fast ports,
   networks, newest-year openings), stations-by-network and connector-type
@@ -85,6 +90,7 @@ pointing the service layer at the live API. No UI rewrite is required.
 | Map | React-Leaflet + OpenStreetMap | Free, no API key |
 | Data fetching | TanStack Query + `services/api.ts` | Single swap point for the real backend |
 | Data delivery | Static baked JSON aggregates (`src/data/`) | Built offline by ETL scripts; refresh manual or scheduled weekly |
+| Revenue | Estimated from the real City of Boulder L2 time tariff on real durations | $1/hr (0–2h), $2.50/hr (2–4h), 4h cap; labelled "estimated" in the UI |
 
 ---
 

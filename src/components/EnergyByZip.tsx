@@ -10,7 +10,10 @@ export function EnergyByZip() {
 
   return (
     <Card>
-      <CardHeader title="Energy by ZIP" subtitle="Total kWh delivered per area — Boulder, CO" />
+      <CardHeader
+        title="Energy by Area (ZIP)"
+        subtitle="Total kWh delivered per area — areas defined by ZIP code"
+      />
       <ul className="space-y-3">
         {rows.map((r, i) => (
           <li key={r.zip}>

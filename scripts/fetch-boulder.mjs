@@ -16,7 +16,16 @@ const SRC =
   "https://opendata.arcgis.com/datasets/95992b3938be4622b07f0b05eba95d4c_0.geojson";
 const DEMO_NOW_MS = new Date("2026-07-20T12:00:00Z").getTime();
 const DAY = 86400000;
-const RATE_PER_KWH = 0.3; // simulated tariff (dataset has no revenue)
+const RATE_PER_KWH = 0.3; // legacy field (kept in meta; revenue now uses the real tariff)
+
+// Real published City of Boulder Level 2 pricing (effective 2025-06-01):
+// $1/hr for the first 2 hours, $2.50/hr for hours 3-4, capped at 4 hours/session.
+// Source: bouldercolorado.gov/electric-vehicle-charging-recreation-centers
+const TARIFF_CAP_H = 4;
+function sessionRevenue(durationMin) {
+  const h = Math.min(TARIFF_CAP_H, (durationMin || 0) / 60);
+  return Math.min(h, 2) * 1.0 + Math.max(0, h - 2) * 2.5;
+}
 
 // --- load raw (cache to avoid re-downloading 80MB) ---
 let rawText;
@@ -70,6 +79,7 @@ let netEnergy = 0,
   netDur = 0,
   netCharge = 0,
   netGasoline = 0,
+  netRevenue = 0,
   netSessions = 0;
 
 const usedIds = new Set();
@@ -106,16 +116,19 @@ for (const f of feats) {
       energyKwh: 0,
       co2Kg: 0,
       gasolineGal: 0,
+      revenue: 0,
       durMin: 0,
       chargeMin: 0,
       heat: new Array(168).fill(0),
     };
     sitesMap.set(name, site);
   }
+  const revenue = sessionRevenue(duration);
   site.sessions++;
   site.energyKwh += energy;
   site.co2Kg += co2;
   site.gasolineGal += gasoline;
+  site.revenue += revenue;
   site.durMin += duration;
   site.chargeMin += charging;
   site.heat[dow * 24 + hour] += energy;
@@ -131,6 +144,7 @@ for (const f of feats) {
   netDur += duration;
   netCharge += charging;
   netGasoline += gasoline;
+  netRevenue += revenue;
   netSessions++;
 }
 
@@ -196,6 +210,7 @@ const outSites = sites.map((s) => ({
   energyKwh: Math.round(s.energyKwh),
   co2Kg: Math.round(s.co2Kg),
   gasolineGal: Math.round(s.gasolineGal),
+  revenue: Math.round(s.revenue),
   avgDurationMin: Math.round(s.durMin / s.sessions),
   // Charger utilization = active charging time ÷ total plugged-in time.
   // Low % = cars idle-blocking ports after charging completes.
@@ -211,10 +226,12 @@ const out = {
   meta: {
     source: "City of Boulder open data — EV charging sessions",
     ratePerKwh: RATE_PER_KWH,
+    revenueModel: "City of Boulder L2 tariff: $1/hr (0-2h), $2.50/hr (2-4h), 4h cap",
     sessions: netSessions,
     energyKwh: Math.round(netEnergy),
     co2Kg: Math.round(netCo2),
     gasolineGal: Math.round(netGasoline),
+    revenue: Math.round(netRevenue),
     avgDurationMin: Math.round(netDur / netSessions),
     utilizationPct: netDur ? Math.round((100 * netCharge) / netDur) : 0,
     dateStart: dailyTotals[0]?.date,
