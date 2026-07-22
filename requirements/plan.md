@@ -1,98 +1,100 @@
-# Plan FE — PowerTech Dashboard (Sprint 2)
+# Front-End Plan — PowerTech Dashboard
 
-> Nguồn requirements: `requirements/SEE 799 - Team Powertech_Sprint 2 Block diagram.docx`
-> Giải thích dự án (tiếng Việt): `requirements/prd-doc.md`
-> Inspire UI: dashboard PowerPump (sidebar tối + KPI cards + donut charts + map)
-> **Cách làm:** đi từng bước nhỏ — làm 1 phần → review → làm tiếp.
+> Requirements: `SEE 799 - Team Powertech_Sprint 2 Block diagram.docx`
+> Project overview: `requirements/prd-doc.md`
 
----
-
-## Trạng thái tổng quan (cập nhật mới nhất)
-
-| Phase | Nội dung | Trạng thái |
-|---|---|---|
-| 0 | Scaffold + layout shell | ✅ Xong |
-| 1 | Mock data + service layer | ✅ Xong |
-| 2 | Network Overview (landing) | ✅ Xong — live |
-| 3 | Performance Analytics | ✅ Xong — live |
-| 4 | **Load Utilization** | ⏭️ **Đang làm tiếp** |
-| 5 | Stubs Sprint 3 (3 trang) | ✅ Khung tạm xong |
-
-- **Repo:** https://github.com/trantthu12/power-tech (branch `main` + `develop`)
-- **Live:** https://power-tech-dashboard.vercel.app (tự deploy mỗi lần push `main`)
-- **Responsive + mobile-friendly:** ✅
+This plan covers what the front end delivers **this semester (Sprint 2)** and what
+is scheduled for **next semester (Sprint 3)**.
 
 ---
 
-## Tóm tắt requirements (phần FE)
+## This Semester — Sprint 2 (delivered)
 
-- **6 trang dashboard**, mỗi trang gắn với một stakeholder:
-  1. **Network Overview** (landing) — KPI cards, station map, system status banner, filter — *All stakeholders*
-  2. **Load Utilization** — heatmap 24×7, dự báo 48h, load optimization, port occupancy, peak hourly — *Load Manager*
-  3. **Performance Analytics** — trend charts, site comparison, utilization/revenue heatmap — *All stakeholders*
-  4. **Infrastructure Planning** — MCDA ranking, priority table, coverage gap, expansion — *Network Planner*
-  5. **Sustainability Scoring** — energy & avoided emissions, ageing asset flags, CO₂ offset, ESG — *Executive / ESG Officer*
-  6. **Fault Diagnostics** — risk-ranked alerts, fault timeline, MTBF/MTTR trends, fault probability — *Operations Manager*
-- **Data model:** Session Logs (start/end, kWh, port/plug type, CO₂, revenue, customer ID) + Site Registry (GPS, address, zip, date, duration). Nguồn: Palo Alto & Boulder open data (Mỹ) — vì Canada không có open data (xem prd-doc.md).
-- Data fault/maintenance/capacity **chưa có** → synthetic ở Sprint 3 → Fault Diagnostics & forecast thật dồn Sprint 3.
+Sprint 2 delivers the operational pages that the available **real open data** can
+support today, plus the shared application shell.
 
-## Ánh xạ 3 mục tiêu dự án → 6 trang
-- **Vận hành & tối ưu** → Network Overview, Load Utilization, Performance Analytics (Sprint 2)
-- **Chẩn đoán lỗi** → Fault Diagnostics (Sprint 3)
-- **Quy hoạch mở rộng** → Infrastructure Planning, Sustainability (Sprint 3)
+| Page | Stakeholder | Status |
+|------|-------------|--------|
+| **Network Overview** (landing) | All stakeholders | ✅ Done |
+| **Load Utilization** | Load Manager | ✅ Done |
+| **Performance Analytics** | All stakeholders | ✅ Done |
+| **Stations** (searchable/sortable station table) | All stakeholders | ✅ Done |
+| **Infrastructure Planning** | Network Planner | ✅ Done (moved up — real public-station data was available) |
 
----
+**Application shell:** dark sidebar with all pages, header with a Day / Week /
+Month time filter, and a fully responsive layout (sidebar collapses to a hamburger
+menu on mobile).
 
-## Quyết định kỹ thuật (thực tế đã dùng)
+### What each Sprint 2 page contains (built on real data)
 
-| Hạng mục | Chọn | Ghi chú |
-|---|---|---|
-| Framework | React 19 + Vite + TypeScript (SPA) | Dashboard nội bộ, không cần SSR |
-| UI | Tailwind CSS v4 + component tự viết | Không dùng shadcn CLI (tự build để kiểm soát) |
-| Charts | Recharts (line/bar/donut) + ECharts (heatmap) | Tắt animation Recharts cho render ổn định |
-| Map | react-leaflet + OpenStreetMap | Free, không cần key |
-| Data trạm | **Open Charge Map** (trạm thật Metro Vancouver) | Lấy 1 lần → `src/data/ocm-sites.json`; key trong `.env`, không vào bundle |
-| Data fetching | TanStack Query + `services/api.ts` | Mock ↔ API thật swap chỉ sửa 1 file |
-| Deploy | Vercel (Git integration, branch `main`) | `vercel.json` rewrite cho SPA routing |
-
-**Quyết định về map (đã chốt):** map hiển thị **toàn bộ mạng lưới PowerTech** (180 trạm thật
-Vancouver), nhất quán với KPI/donut/city. Đã cân nhắc và **bỏ** chế độ "near-me / live theo vị
-trí" vì đây là ops-dashboard nội bộ (xem toàn mạng lưới), không phải app cho tài xế. Trạm =
-thật (OCM); session/kWh/doanh thu = giả lập gắn lên trạm thật.
-
----
-
-## Các phase
-
-### Phase 0 — Skeleton ✅
-Scaffold Vite+React+TS+Tailwind+Router; layout shell (sidebar tối 6 trang, header filter day/week/month); theme green brand + navy.
-
-### Phase 1 — Mock data layer ✅
-Types theo doc (`ChargingSession`, `Site`, `FaultRecord`); **sites = 180 trạm thật OCM Metro
-Vancouver** (`src/data/ocm-sites.json`); generator có seed sinh ~90 ngày sessions + faults
-synthetic gắn lên các trạm thật; `services/api.ts` + `services/mock-data.ts`.
-
-### Phase 2 — Network Overview ✅ (live)
-KPI cards (energy/sessions/revenue/users/stations/faults); system status banner (có nút đóng,
-"+N more"); donut connector types (màu tách biệt, kiểm định CVD); locations by city; **map
-Leaflet hiển thị toàn mạng lưới 180 trạm thật Vancouver, auto-fit**; filter 24h/7d/30d + hiện
-khoảng ngày.
-
-### Phase 3 — Performance Analytics ✅ (live)
-4 stat tiles (avg duration, avg energy/session, sessions/day, utilization); 2 trend area chart (energy & revenue theo filter); 2 site comparison bar chart (energy & revenue); 2 heatmap 24×7 (utilization & revenue, ECharts).
-
-### Phase 4 — Load Utilization ⏭️ (ĐANG LÀM — chia 4 bước nhỏ)
-- **Bước 1:** Heatmap 24×7 + **site selector** (chọn 1 trạm → heatmap đổi theo trạm).
-- **Bước 2:** 4 thẻ chỉ số (port occupancy %, peak hour, peak load, tổng điện hôm nay).
-- **Bước 3:** Biểu đồ **dự báo tải 48h** (mock = moving average + noise; Sprint 3 thay model Python).
-- **Bước 4:** Bảng **tối ưu tải** (gợi ý giờ nên giãn sạc).
-
-### Phase 5 — Stubs Sprint 3 ✅
-Infrastructure Planning, Sustainability, Fault Diagnostics: route + khung "coming in Sprint 3".
+- **Network Overview** — KPI cards (total stations, charging sessions, total
+  energy, CO₂ avoided, gasoline saved), Top Stations by energy, Energy by ZIP,
+  a station map, and the time filter.
+- **Load Utilization** — 24×7 hourly-demand heatmap with a per-station selector,
+  charger-utilization KPI, peak hour and peak load, 48-hour demand forecast
+  (projected from the real demand pattern), and a load-optimization panel.
+- **Performance Analytics** — KPI trend charts (energy and CO₂ over time), site
+  comparison (energy / sessions), and a 24×7 utilization heatmap.
+- **Stations** — full station table with search, sorting (energy, sessions, CO₂,
+  duration, utilization), pagination, and CSV export.
+- **Infrastructure Planning** — the real public-charging landscape of Boulder from
+  the Colorado AFDC inventory: KPIs (public stations, ports, DC-fast ports,
+  networks, newest-year openings), stations-by-network and connector-type
+  breakdowns, an infrastructure-growth chart (2014→present), and a map of all
+  public stations coloured by network.
 
 ---
 
-## Việc có thể làm thêm (backlog, chưa ưu tiên)
-- Lazy-load ECharts để giảm bundle (~1.9MB) — landing nhẹ lại, heatmap chỉ tải khi cần.
-- Fix nhẹ: KPI dùng `new Date()` cho range nên số liệu hơi trôi giữa các lần load (mock).
-- (Đã xong) Tích hợp Open Charge Map cho map — dùng trạm thật Vancouver.
+## Next Semester — Sprint 3 (planned)
+
+Sprint 3 pages depend on the **inputs that have no data source yet** (fault,
+maintenance, capacity, uptime). The plan is to generate **synthetic data** for
+these, then build the pages against the same service layer.
+
+| Page | Stakeholder | Needs (Sprint 3 input) |
+|------|-------------|------------------------|
+| **Sustainability Scoring** | Executive / ESG Officer | Energy & avoided-emissions rollups, ageing-asset flags, CO₂ offset estimate, ESG summary. Partly derivable from real data; asset age/ESG panels need synthetic asset metadata. |
+| **Fault Diagnostics** | Operations Manager | Risk-ranked alert table, fault-history timeline, MTBF/MTTR trends, fault probability — all require fault & maintenance records (synthetic). |
+
+**Backend integration (Sprint 3):** connect the Python ML engine (demand
+forecasting, MCDA site scoring, fault-detection model) to the dashboard by
+pointing the service layer at the live API. No UI rewrite is required.
+
+> Sprint 3 pages currently exist as placeholder stubs ("coming in Sprint 3") so
+> navigation is complete and no fabricated numbers are shown.
+
+---
+
+## Goal-to-Page Mapping
+
+- **Operate & optimize** → Network Overview, Load Utilization, Performance
+  Analytics, Stations (Sprint 2).
+- **Plan expansion** → Infrastructure Planning (Sprint 2), Sustainability Scoring
+  (Sprint 3).
+- **Diagnose faults** → Fault Diagnostics (Sprint 3).
+
+---
+
+## Technical Decisions
+
+| Area | Choice | Note |
+|------|--------|------|
+| Framework | React + Vite + TypeScript (SPA) | Internal dashboard; no SSR needed |
+| UI | Tailwind CSS + hand-built components | Full control over the design system |
+| Charts | Recharts (line/bar/area) + ECharts (heatmap) | Recharts animation disabled for stable rendering |
+| Map | React-Leaflet + OpenStreetMap | Free, no API key |
+| Data fetching | TanStack Query + `services/api.ts` | Single swap point for the real backend |
+| Data delivery | Static baked JSON aggregates (`src/data/`) | Built offline by ETL scripts; refresh manual or scheduled weekly |
+
+---
+
+## Data Pipeline
+
+- `scripts/fetch-boulder.mjs` — aggregates the ~140k real Boulder charging
+  sessions into `src/data/boulder-data.json` (50 stations, daily totals, 24×7
+  heatmap per station).
+- `scripts/fetch-stations.mjs` — fetches the Colorado AFDC public-station
+  inventory into `src/data/boulder-stations.json` (204 stations, networks,
+  connectors, growth).
+- `npm run refresh-data` runs both; a weekly scheduled job can refresh them
+  automatically. The sidebar shows the current "Data as of" date.

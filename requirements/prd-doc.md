@@ -1,217 +1,171 @@
-# PowerTech — Tài liệu giải thích dự án (PRD)
+# PowerTech Dashboard — Product Requirements Document (PRD)
 
-> Viết bằng tiếng Việt để cả team dễ hiểu. Dựa trên file
-> `SEE 799 - Team Powertech_Sprint 2 Block diagram.docx`.
-> Mục tiêu: đọc xong hiểu **dự án làm gì** và **phần Front-end (FE) đang làm gì**.
-
----
-
-## 1. Dự án này là gì? (giải thích đơn giản)
-
-### Bối cảnh
-**PowerTech** là **công ty con của BC Hydro** (tập đoàn điện lực bang British Columbia,
-Canada). Công việc của PowerTech là **đánh giá kỹ thuật và vận hành các trạm sạc xe điện
-(EV charging stations) ở Canada**.
-
-Hình dung: PowerTech vận hành **nhiều trạm sạc xe điện** rải rác ở nhiều nơi.
-Mỗi trạm có nhiều "cổng sạc" (port). Mỗi lần có xe tới sạc thì sinh ra một **phiên sạc
-(charging session)** — ghi lại: sạc lúc mấy giờ, bao nhiêu điện (kWh), thu bao nhiêu tiền,
-loại đầu sạc gì...
-
-### Vấn đề cần giải quyết
-PowerTech cần một **dashboard (bảng điều khiển)** để:
-
-1. **Quản lý & tối ưu việc vận hành** — theo dõi trạm nào chạy tốt/ế, giờ nào cao điểm,
-   phân bổ tải điện hợp lý.
-2. **Đánh giá các lỗi thường gặp khi vận hành** trạm sạc — phát hiện sớm, giảm thời gian
-   chết, biết trạm nào hay hỏng và vì sao.
-3. **(Tương lai) Quy hoạch mở rộng** — dùng chính dữ liệu vận hành thu được để quyết định
-   **nên xây thêm trạm sạc ở đâu** cho hiệu quả.
-
-→ **PowerTech Dashboard = công cụ giúp đội vận hành ra quyết định dựa trên dữ liệu**, cộng
-thêm **AI/Machine Learning** để **dự báo** (nhu cầu điện, nguy cơ hỏng hóc) và **gợi ý**
-(vùng nên mở rộng).
-
-> **Tóm gọn 3 mục tiêu:** (1) Vận hành & tối ưu → (2) Chẩn đoán lỗi → (3) Quy hoạch mở rộng.
-> Ba mục tiêu này khớp đúng với 6 trang dashboard ở mục 4.
+> Front-End requirements and overview for the PowerTech EV-charging analytics
+> dashboard. Based on `SEE 799 - Team Powertech_Sprint 2 Block diagram.docx`.
 
 ---
 
-## 2. Kiến trúc tổng thể (đọc từ Block Diagram)
+## 1. Project Context
 
-Block diagram trong doc mô tả luồng dữ liệu chạy từ trái sang phải, qua 4 khối:
+**PowerTech** is a subsidiary of **BC Hydro** (the electric utility of British
+Columbia, Canada). PowerTech assesses and operates **electric-vehicle (EV)
+charging stations**.
+
+A PowerTech network is made of many **charging stations** spread across a region.
+Each station has one or more **charging ports**. Every time a vehicle plugs in, a
+**charging session** is recorded — start/end time, energy delivered (kWh),
+avoided emissions, plug type, duration, and so on.
+
+PowerTech needs a **dashboard** to:
+
+1. **Operate and optimize the network** — see which stations are busy or
+   under-used, when demand peaks, and how to balance electrical load.
+2. **Diagnose operational faults** — detect problems early, cut downtime, and
+   understand which stations fail and why.
+3. **Plan network expansion** — use real operating data to decide where new
+   stations should be built.
+
+The dashboard turns raw charging data into visual insight so each stakeholder can
+make data-driven decisions. A Python **backend/ML engine** (separate work stream)
+adds forecasting and recommendations on top of the same data.
+
+> **Three goals:** (1) Operate & optimize → (2) Diagnose faults → (3) Plan
+> expansion. These map directly onto the six dashboard pages in Section 4.
+
+---
+
+## 2. System Architecture (from the Block Diagram)
+
+Data flows left-to-right through four blocks:
 
 ```
 [1. INPUT]  →  [2. PRE-PROCESSING]  →  [3. BACKEND: Data Viz & ML Engine]  →  [4. FRONTEND: Dashboard]
-  Dữ liệu thô      Làm sạch (ETL)          Phân tích + Mô hình ML                 Hiển thị cho người dùng
+  Raw data        ETL (clean)              Analysis + ML models                  Visualization for users
 ```
 
-### Khối 1 — INPUT (Dữ liệu đầu vào)
-Dữ liệu thô lấy từ 2 nhóm:
+### Block 1 — Input (Raw Data)
+- **Session Logs:** start & end time, energy (kWh per charge), port type, plug
+  type, CO₂, revenue, customer ID.
+- **Site Registry:** GPS coordinates, address, ZIP/postal code, date, total
+  duration, charging time.
+- **Datasets deferred to Sprint 3** (no data source available yet): max power
+  capacity (breaker current/voltage), capacity buffer, fault & error records,
+  maintenance records, and uptime/visit statistics.
 
-- **Session Logs (nhật ký phiên sạc):** giờ bắt đầu & kết thúc, điện năng (kWh mỗi lần sạc),
-  loại cổng (port type), loại phích cắm (plug type), CO₂, doanh thu (revenue), mã khách hàng.
-- **Site Registry (danh bạ trạm):** toạ độ GPS, địa chỉ, mã bưu chính (zip), ngày lắp đặt,
-  tổng thời gian hoạt động, thời gian sạc.
+### Block 2 — Pre-Processing (ETL)
+Extract → Clean → Transform → Load (Python). Produces a **Clean Unified
+Dataset** ready for analysis. Owned by the data/backend team.
 
-**Nguồn dữ liệu hiện tại — DÙNG DỮ LIỆU THẬT của City of Boulder:**
+### Block 3 — Backend: Data Visualization & ML Engine (Python)
+- **Data Analysis:** temporal trends (day/week/month), utilization statistics,
+  geographic visualization, seasonal analysis, sessions per day/charger, average
+  session duration, charger utilization, utilization heatmap.
+- **Demand Forecasting:** hourly charging demand (kWh) for a 24–72 hour horizon,
+  site-level forecasts.
+- **Site Scoring & Optimization:** MCDA (multi-criteria decision analysis) model,
+  load optimizer, sustainability score, coverage-gap map, priority ranking,
+  pattern recognition.
+- **Fault Detection Model:** 7-day risk horizon, anomaly detection, risk-ranked
+  alerts.
 
-Dùng **dataset mở của thành phố Boulder, Colorado** (`open-data.bouldercolorado.gov`) —
-**148,136 phiên sạc thật, 50 trạm**. Mỗi phiên có: tên trạm, địa chỉ, ZIP, giờ bắt đầu/kết
-thúc, thời lượng, **điện năng (kWh)**, **CO₂ tránh được (GHG kg)**, loại cổng (Level 2).
-
-→ Toàn bộ dashboard chạy trên **số liệu thật**: số trạm, phiên sạc, điện năng, CO₂, thời
-lượng TB, heatmap nhu cầu 24×7, trend theo tháng, thống kê từng trạm. Toạ độ trạm không có
-sẵn trong dataset nên được **geocode** (Nominatim) một lần.
-
-> 📌 **Không còn số liệu bịa.** Những thứ dataset **không có** (doanh thu, trạng thái
-> online/offline, lỗi, mã khách hàng) đã được **bỏ khỏi UI** — vì team chưa có backend cung
-> cấp. Khi có backend Python thật, thêm lại bằng cách sửa tầng service (`src/services/api.ts`),
-> giao diện giữ nguyên.
-
-> ⚠️ Fault/maintenance vẫn để dành cho **Sprint 3** (trang Fault Diagnostics hiện là stub
-> trống, không hiển thị số bịa).
-
-### Khối 2 — PRE-PROCESSING (Tiền xử lý / ETL)
-Bằng **Python**. ETL = Extract (trích xuất) → Clean (làm sạch) → Transform (biến đổi) →
-Load (nạp). Kết quả là **"Clean Unified Dataset"** — một bộ dữ liệu sạch, thống nhất để
-phân tích. (Đây là việc của team Data/Backend, không phải FE.)
-
-### Khối 3 — BACKEND (Data Visualization & ML Engine)
-Cũng bằng **Python**. Đây là "bộ não" — chạy phân tích và các mô hình AI:
-
-- **Data Analysis:** xu hướng theo thời gian (ngày/tuần/tháng), thống kê sử dụng, phân tích
-  theo mùa, heatmap sử dụng & doanh thu...
-- **Demand Forecasting:** dự báo nhu cầu điện theo giờ cho 24–72 giờ tới.
-- **Site Scoring & Optimization:** mô hình MCDA (đa tiêu chí) để chấm điểm/xếp hạng trạm,
-  tối ưu tải, điểm bền vững, bản đồ vùng thiếu phủ sóng.
-- **Fault Detection Model:** phát hiện bất thường, cảnh báo nguy cơ hỏng trong 7 ngày.
-
-### Khối 4 — FRONTEND (Dashboard) ← **ĐÂY LÀ PHẦN CHÚNG TA LÀM**
-Trang web hiển thị mọi thứ cho người dùng cuối. Gồm **6 trang**, mỗi trang phục vụ một
-**nhóm người dùng (stakeholder)** khác nhau (xem mục 4).
+### Block 4 — Frontend: Dashboard (this team's scope)
+A web application that presents the data to end users. Six pages, each serving a
+different stakeholder (Section 4).
 
 ---
 
-## 3. Sprint 2 vs Sprint 3 (làm gì trước, gì sau)
+## 3. Data Sources
 
-Block diagram chia rõ 2 giai đoạn:
+The block diagram names **Palo Alto** and **Boulder** as candidate datasets
+(open data is used because comparable Canadian open data is not available).
 
-| | **Sprint 2** (làm bây giờ) | **Sprint 3** (làm sau) |
+The dashboard is built on the **real City of Boulder EV-charging open dataset**:
+
+- Source: `open-data.bouldercolorado.gov` — dataset
+  `95992b3938be4622b07f0b05eba95d4c_0`.
+- Content: **~140,000 real charging sessions across 50 city-owned stations**, each
+  with station name, address, ZIP, start/end time, duration, **energy (kWh)**,
+  **avoided emissions (GHG kg)**, **gasoline displaced (gallons)**, and charging
+  time (Level 2).
+- A second real dataset powers Infrastructure Planning: the **Colorado
+  Alternative Fuels & EV Charging Stations** inventory (U.S. DOE AFDC feed) —
+  **204 public stations, 11 networks** across Boulder, with real coordinates,
+  port counts, connector types, network operators, and open dates.
+
+> **No fabricated data.** Fields the open datasets do not contain (revenue,
+> online/offline status, customer ID, fault records) are **not shown** in the UI.
+> They belong to the Sprint 3 inputs and will be added when a data source or
+> backend provides them, without changing the interface.
+
+---
+
+## 4. Dashboard Pages, Stakeholders & Widgets
+
+| # | Page | Stakeholder | Widgets (from the block diagram) | Sprint |
+|---|------|-------------|----------------------------------|--------|
+| 1 | **Network Overview** (landing) | All stakeholders | High-level KPI cards, geographic/station map, system status banner, filter | 2 |
+| 2 | **Load Utilization** | Load Manager | 24×7 heatmap of hourly demand per site, 48-hour demand-forecast chart, load-optimization panel, port occupancy rates, peak hourly usage | 2 |
+| 3 | **Performance Analytics** | All stakeholders | KPI trend charts (session efficiency, utilization trend), site comparison (energy & financial), peak demand, distribution/capacity profiles, underutilization tracking, occupancy per region | 2 |
+| 4 | **Infrastructure Planning** | Network Planner | MCDA ranking, priority score table, coverage-gap analysis, short-term demand forecast, expansion recommendations | 3 |
+| 5 | **Sustainability Scoring** | Executive / ESG Officer | Energy delivered & avoided emissions, ageing-asset flags, CO₂ offset estimate, ESG summary panel | 3 |
+| 6 | **Fault Diagnostics** | Operations Manager | Risk-ranked alert table, fault-history timeline, MTBF trend, MTTR trends, fault probability | 3 |
+
+*(MTBF = Mean Time Between Failures; MTTR = Mean Time To Repair.)*
+
+---
+
+## 5. Sprint 2 vs Sprint 3 Deliverables
+
+| | **Sprint 2** (this semester) | **Sprint 3** (next semester) |
 |---|---|---|
-| Dữ liệu | Đã có (Palo Alto, Boulder) | Dữ liệu giả lập (synthetic) |
-| Trang dashboard | Network Overview, Load Utilization, Performance Analytics | Infrastructure Planning, Sustainability, Fault Diagnostics |
-| Lý do | Có sẵn session logs + site registry | Thiếu dữ liệu lỗi/bảo trì/công suất → chờ synthetic |
+| Data | Real open data available now (Boulder sessions; Colorado AFDC inventory) | Synthetic data for fault / maintenance / capacity (no source yet) |
+| Pages | Network Overview, Load Utilization, Performance Analytics | Sustainability Scoring, Fault Diagnostics |
+| Note | Infrastructure Planning was delivered **early** because a real public-station dataset (AFDC) was available | Remaining pages need the deferred Sprint-3 inputs |
 
-→ **FE Sprint 2 tập trung 3 trang đầu.** 3 trang sau chỉ dựng khung tạm (stub) chờ Sprint 3.
-
----
-
-## 4. 6 trang Dashboard & ai dùng (theo doc)
-
-| # | Trang | Dành cho (stakeholder) | Nội dung chính (widget) | Sprint |
-|---|-------|------------------------|-------------------------|--------|
-| 1 | **Network Overview** (trang chủ) | Tất cả | Thẻ KPI tổng quan, bản đồ trạm, thanh trạng thái hệ thống, bộ lọc thời gian | 2 |
-| 2 | **Load Utilization** | Load Manager | Heatmap nhu cầu theo giờ 24×7, dự báo tải 48h, tỉ lệ chiếm cổng, giờ cao điểm | 2 |
-| 3 | **Performance Analytics** | Tất cả | Biểu đồ xu hướng KPI, so sánh trạm (điện & tiền), heatmap sử dụng & doanh thu | 2 |
-| 4 | **Infrastructure Planning** | Network Planner | Xếp hạng MCDA, bảng điểm ưu tiên, phân tích vùng thiếu phủ, gợi ý mở rộng | 3 |
-| 5 | **Sustainability Scoring** | Executive / ESG Officer | Điện đã cấp & khí thải tránh được, cờ tài sản cũ, ước tính bù CO₂, bảng ESG | 3 |
-| 6 | **Fault Diagnostics** | Operations Manager | Bảng cảnh báo theo rủi ro, dòng thời gian lỗi, xu hướng MTBF/MTTR, xác suất lỗi | 3 |
-
-*(MTBF = thời gian trung bình giữa 2 lần hỏng; MTTR = thời gian trung bình để sửa xong.)*
+> **Sprint 2 focuses on the operational pages** that real data can support today.
+> Pages that depend on fault/maintenance/capacity data are scheduled for Sprint 3.
 
 ---
 
-## 5. FE (Front-end) đang làm gì — hiện trạng
+## 6. Front-End Scope & Technology
 
-### 5.1. Công nghệ dùng
-- **React + Vite + TypeScript** — khung ứng dụng web.
-- **Tailwind CSS** — tạo giao diện (màu xanh lá thương hiệu PowerTech, sidebar tối).
-- **Recharts** — vẽ biểu đồ đường/cột/donut.
-- **ECharts** — vẽ heatmap 24×7.
-- **React-Leaflet + OpenStreetMap** — bản đồ trạm sạc.
-- **City of Boulder open data** — 148k phiên sạc thật, tổng hợp 1 lần rồi lưu file.
-- **TanStack Query** — quản lý việc lấy dữ liệu.
+The front end does **not** perform ML or heavy computation — that is the Python
+backend's role (Blocks 2 & 3). The front end **turns data into clear visuals**
+(Block 4): cards, charts, maps, and heatmaps so each stakeholder can act on them.
 
-### 5.2. Cách tổ chức dữ liệu (quan trọng)
-- **Toàn bộ là dữ liệu THẬT của Boulder**, đã tổng hợp offline vào
-  `src/data/boulder-data.json` (script `scripts/fetch-boulder.mjs`). 50 trạm (toạ độ geocode
-  1 lần), aggregate theo ngày + heatmap 24×7/trạm.
-- Những gì dataset **không có** (doanh thu, online/offline, lỗi) đã **bỏ khỏi UI** — không bịa.
+**Technology stack**
+- **React + Vite + TypeScript** — single-page application.
+- **Tailwind CSS** — styling (PowerTech green brand, dark sidebar).
+- **Recharts** — line / bar / area charts.
+- **ECharts** — 24×7 heatmaps.
+- **React-Leaflet + OpenStreetMap** — station maps (no API key required).
+- **TanStack Query** — data fetching and caching.
 
-👉 Điểm hay: mọi trang lấy dữ liệu qua **một lớp trung gian** `src/services/api.ts`.
-Khi team backend Python làm xong API thật, **chỉ cần sửa 1 file này** để trỏ sang API thật —
-**không phải sửa lại giao diện.** (Chi tiết ở mục 7 — Data & Architecture.)
-
-### 5.3. Đã làm xong (đang chạy live)
-Deploy tại: **https://power-tech-dashboard.vercel.app** (tự động cập nhật mỗi khi push code).
-
-- ✅ **Bộ khung dashboard**: sidebar 6 trang, header có bộ lọc **Day / Week / Month**,
-  responsive (chạy tốt cả điện thoại — sidebar thu thành menu hamburger).
-- ✅ **Trang 1 — Network Overview**:
-  - 6 thẻ KPI: số trạm mới, phiên đang sạc, tổng phiên, tổng điện (kWh), doanh thu, lỗi.
-  - Thanh trạng thái hệ thống (liệt kê trạm offline, có nút đóng).
-  - Biểu đồ donut loại đầu sạc (J1772 / CCS / CHAdeMO) — màu tách biệt rõ.
-  - Danh sách trạm theo thành phố (Vancouver / Burnaby / Richmond / North Vancouver / Surrey).
-  - **Bản đồ toàn mạng lưới**: 180 trạm thật Metro Vancouver (Leaflet + OpenStreetMap), tự
-    fit khung để zoom ra thấy hết; chấm xanh = online, đỏ = offline, bấm xem chi tiết.
-  - Bộ lọc thời gian **24h / 7 days / 30 days** kèm khoảng ngày cụ thể.
-- ✅ **Trang 3 — Performance Analytics**:
-  - 4 thẻ chỉ số: thời lượng phiên TB, điện TB/phiên, phiên/ngày, tỉ lệ sử dụng.
-  - 2 biểu đồ xu hướng: Điện năng & Doanh thu (đổi theo bộ lọc thời gian).
-  - 2 biểu đồ so sánh trạm: theo điện & theo doanh thu.
-  - 2 heatmap 24×7: mức sử dụng & doanh thu theo giờ trong tuần.
-
-### 5.4. Đang làm tiếp / còn lại
-- ⏳ **Trang 2 — Load Utilization** (Sprint 2, làm tiếp theo): heatmap theo từng trạm +
-  bộ chọn trạm, dự báo tải 48h, tỉ lệ chiếm cổng, giờ cao điểm.
-- 🔲 **Trang 4, 5, 6** (Sprint 3): hiện là khung tạm ("coming in Sprint 3") vì chờ dữ liệu
-  giả lập của Sprint 3.
-
-### 5.5. Tóm tắt vai trò FE trong bức tranh lớn
-FE **không** tính toán/AI — việc đó là của backend Python (Khối 2 & 3).
-FE chịu trách nhiệm **biến số liệu thành hình ảnh dễ hiểu** (Khối 4): bảng, biểu đồ, bản đồ,
-heatmap — để mỗi nhóm người dùng nhìn vào là ra quyết định được.
+**Data & architecture approach**
+- The real datasets are aggregated **offline** into compact JSON files
+  (`src/data/`) by ETL scripts (`scripts/fetch-boulder.mjs`,
+  `scripts/fetch-stations.mjs`) — this is the Pre-Processing block. The browser
+  loads small pre-aggregated files instead of hundreds of thousands of raw rows.
+- Every page reads data through a **single service layer** (`src/services/api.ts`).
+  When the Python backend exposes a live API, only this one file changes — the UI
+  stays the same.
+- Data can be refreshed **manually** (`npm run refresh-data`) or **automatically**
+  via a weekly scheduled job; the sidebar shows the "Data as of" date.
 
 ---
 
-## 6. Bản đồ file trong repo (để dễ tìm)
+## 7. Repository Map
 
 ```
 src/
-├─ pages/              ← mỗi file = 1 trang dashboard
-│  ├─ NetworkOverview.tsx        (trang 1 — xong)
-│  ├─ PerformanceAnalytics.tsx   (trang 3 — xong)
-│  └─ PlaceholderPage.tsx        (khung tạm cho trang chưa làm)
-├─ components/         ← các mảnh giao diện tái dùng (thẻ KPI, donut, bản đồ, charts...)
+├─ pages/              one file per dashboard page
+├─ components/         reusable UI (KPI cards, charts, maps, tables)
 ├─ services/
-│  ├─ api.ts           ← LỚP TRUNG GIAN lấy dữ liệu (sau này trỏ sang backend thật)
-│  └─ mock-data.ts     ← bộ tạo dữ liệu giả
-├─ types/index.ts      ← định nghĩa kiểu dữ liệu (khớp với dữ liệu backend sẽ trả về)
-├─ lib/                ← tiện ích (bộ lọc thời gian, format số, query hooks, nav)
-└─ layout/             ← khung chung (sidebar, header)
+│  ├─ api.ts           data service layer (swap point for the real backend)
+│  └─ mock-data.ts     builds the in-app dataset from the baked aggregates
+├─ types/index.ts      data-model types (mirror the backend contract)
+├─ lib/                utilities (time filter, formatting, query hooks, nav)
+├─ layout/             app shell (sidebar, header)
+└─ data/               baked real-data aggregates (Boulder sessions, AFDC stations)
+scripts/               ETL scripts that build src/data/*.json
 ```
-
----
-
-## 7. Data & Architecture (để trình bày khi chấm)
-
-**Dữ liệu là THẬT, phục vụ ở dạng tĩnh (static) — đây là lựa chọn kiến trúc, không phải đi tắt.**
-
-- **Nguồn thật:** 148,136 phiên sạc thật của City of Boulder (energy, CO₂, thời lượng, thời gian).
-- **ETL đúng block diagram:** script `scripts/fetch-boulder.mjs` làm bước **Pre-processing
-  (Extract–Clean–Transform–Load)** — tải data thô 80MB, tổng hợp thành file nhỏ
-  `src/data/boulder-data.json` (~148KB). FE chỉ **trực quan hoá** (đúng vai trò khối Frontend).
-- **Best practice hiệu năng:** không dashboard nào bắt trình duyệt tải 148k dòng rồi tự tính;
-  luôn tổng hợp trước. "Static baked aggregate" chính là nguyên tắc đó.
-- **Ranh giới data rõ ràng:** mọi trang lấy data qua **một tầng service** (`src/services/api.ts`).
-  Đổi sang backend Python thật ⇒ sửa 1 file, không đụng giao diện.
-- **Cập nhật data:** thủ công `npm run refresh-data`, hoặc **tự động** bằng GitHub Action chạy
-  hằng tuần (`.github/workflows/refresh-data.yml`) → data mới tự commit + Vercel tự deploy.
-  Chân sidebar hiển thị **"Data as of <ngày>"**.
-- **Không có số liệu bịa:** những gì dataset không có (doanh thu, online/offline, lỗi) đã bỏ
-  khỏi UI. Fault Diagnostics + backend live là phạm vi **Sprint 3**.
-
-**Câu nói gọn:** "Dữ liệu là 148k phiên sạc thật của Boulder. Em làm ETL offline để tổng hợp
-(đúng khối Pre-processing trong block diagram), FE chỉ trực quan hoá qua một tầng service — khi
-có backend Python thật chỉ đổi 1 file. Data có thể refresh thủ công hoặc tự động hằng tuần."
