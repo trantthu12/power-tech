@@ -18,14 +18,17 @@ import { formatNumber } from "@/lib/format";
 
 type SortKey = "name" | "zip" | "sessions" | "energyKwh" | "co2Kg" | "avgDurationMin";
 const PAGE_SIZES = [10, 25, 50];
+// When no column is actively sorted, fall back to this natural order.
+const DEFAULT_KEY: SortKey = "energyKwh";
 
 export function Stations() {
   const { data: sites, isLoading } = useSites();
   const rows = (sites ?? []) as SiteAgg[];
 
   const [query, setQuery] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("energyKwh");
-  const [asc, setAsc] = useState(false);
+  // sortKey === null → unsorted (natural DEFAULT_KEY desc order)
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [asc, setAsc] = useState(true);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
 
@@ -36,11 +39,12 @@ export function Stations() {
           (r) => r.name.toLowerCase().includes(q) || r.zip.toLowerCase().includes(q)
         )
       : rows;
-    const dir = asc ? 1 : -1;
+    const key = sortKey ?? DEFAULT_KEY;
+    const dir = (sortKey ? asc : false) ? 1 : -1; // unsorted → default desc
     return [...list].sort((a, b) => {
-      if (sortKey === "name" || sortKey === "zip")
-        return a[sortKey].localeCompare(b[sortKey]) * dir;
-      return (a[sortKey] - b[sortKey]) * dir;
+      if (key === "name" || key === "zip")
+        return a[key].localeCompare(b[key]) * dir;
+      return (a[key] - b[key]) * dir;
     });
   }, [rows, query, sortKey, asc]);
 
@@ -49,11 +53,15 @@ export function Stations() {
   const startIdx = (current - 1) * pageSize;
   const pageRows = filtered.slice(startIdx, startIdx + pageSize);
 
+  // Tri-state per column: ASC → DESC → unsorted (back to default order).
   const toggleSort = (key: SortKey) => {
-    if (key === sortKey) setAsc((v) => !v);
-    else {
+    if (sortKey !== key) {
       setSortKey(key);
-      setAsc(key === "name" || key === "zip");
+      setAsc(true); // first click → ascending
+    } else if (asc) {
+      setAsc(false); // second click → descending
+    } else {
+      setSortKey(null); // third click → clear sort
     }
     setPage(1);
   };
