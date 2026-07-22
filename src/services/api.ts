@@ -350,15 +350,15 @@ const infra = stationsData as unknown as {
 };
 
 /**
- * AC vs DC split of the Boulder public charging network (AFDC connectors).
- * DC = stations offering a true DC-fast standard (CCS or CHAdeMO). J1772 is AC;
- * Tesla is counted as AC because Boulder's Tesla entries are Level-2 "Destination"
- * chargers, not DC Superchargers.
+ * AC vs DC split of the CITY-OPERATED fleet (the 50 stations in the session
+ * dataset). Every one is Level 2 (AC / J1772) per the real Port_Type field, so
+ * DC = 0. DC fast charging is a Sprint 3 / Infrastructure expansion item.
  */
 export function getChargerPowerMix(): Promise<{ ac: number; dc: number; total: number }> {
-  const DC = new Set(["CCS", "CHAdeMO"]);
-  const total = infra.stations.length;
-  const dc = infra.stations.filter((s) => s.connectors.some((c) => DC.has(c))).length;
+  const DC = new Set<string>(["CCS", "CHAdeMO"]);
+  const sites = data().sites;
+  const total = sites.length;
+  const dc = sites.filter((s) => s.connectorTypes.some((c) => DC.has(c))).length;
   return delay({ ac: total - dc, dc, total });
 }
 

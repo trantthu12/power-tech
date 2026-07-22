@@ -16,14 +16,14 @@ function ChargerMix() {
     <Card>
       <CardHeader
         title="Charger Types (AC / DC)"
-        subtitle="Boulder public charging network, stations by power type"
+        subtitle="City-operated fleet, stations by power type"
       />
       {isLoading || !data ? (
         <div className="h-24" />
       ) : (
         <div className="space-y-4">
           {[
-            { label: "AC, Level 2 (J1772, Tesla Destination)", n: data.ac, color: "#2a78d6" },
+            { label: "AC, Level 2 (J1772)", n: data.ac, color: "#2a78d6" },
             { label: "DC Fast (CCS, CHAdeMO)", n: data.dc, color: "#008300" },
           ].map((r) => (
             <div key={r.label}>
@@ -43,8 +43,9 @@ function ChargerMix() {
             </div>
           ))}
           <p className="text-xs text-slate-400">
-            DC fast charging is still a small share ({pct(data.dc)}%) of Boulder's
-            public network, an expansion opportunity for the Network Planner.
+            All {formatNumber(data.total)} city-operated stations are Level 2 (AC).
+            DC fast charging is a planned expansion (Infrastructure Planning,
+            Sprint 3).
           </p>
         </div>
       )}

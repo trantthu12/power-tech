@@ -43,8 +43,10 @@ menu on mobile).
   duration, utilization), charger Type (AC/DC), a utilization tooltip,
   pagination, and CSV export.
 
-The Colorado AFDC public-station inventory is also used to power the AC/DC
-charger-type breakdown on Network Overview (204 public stations; 9 DC-fast).
+The Charger Types (AC/DC) card on Network Overview reflects the operated fleet:
+all 50 stations are Level 2 (AC); DC fast is a Sprint 3 expansion item. (The
+Colorado AFDC public-station inventory is kept for the Sprint 3 Infrastructure
+Planning page.)
 
 ---
 

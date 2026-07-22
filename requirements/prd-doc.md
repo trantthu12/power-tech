@@ -87,11 +87,11 @@ The dashboard is built on the **real City of Boulder EV-charging open dataset**:
   with station name, address, ZIP, start/end time, duration, **energy (kWh)**,
   **avoided emissions (GHG kg)**, **gasoline displaced (gallons)**, and charging
   time (Level 2).
-- A second real dataset — the **Colorado Alternative Fuels & EV Charging
-  Stations** inventory (U.S. DOE AFDC feed): **204 public stations, 11 networks**
-  across Boulder with connector types (192 J1772/AC, 9 CCS/DC, 6 CHAdeMO/DC, 7
-  Tesla) — powers the AC vs DC charger-type breakdown on Network Overview. (The
-  city's own 50 operated stations are all Level 2/AC.)
+- The **50 city-operated stations are all Level 2 (AC / J1772)** per the
+  dataset's real Port_Type field, so the Charger Types (AC/DC) card reports 100%
+  AC; DC fast charging is a Sprint 3 expansion item. A second real dataset (the
+  **Colorado AFDC** public-station inventory, 204 stations) is kept for the
+  Sprint 3 Infrastructure Planning page.
 
 > **Data honesty.** Every headline metric is real. **Revenue** is shown as an
 > **explicit estimate** — the real published City of Boulder Level 2 tariff
