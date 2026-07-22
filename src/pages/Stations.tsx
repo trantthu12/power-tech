@@ -25,7 +25,7 @@ export function Stations() {
   const [sortKey, setSortKey] = useState<SortKey>("energyKwh");
   const [asc, setAsc] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(25);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
