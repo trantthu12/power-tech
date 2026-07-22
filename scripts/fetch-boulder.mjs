@@ -70,8 +70,14 @@ let netEnergy = 0,
   netDur = 0,
   netSessions = 0;
 
+const usedIds = new Set();
 function siteId(name) {
-  return "BLDR-" + name.replace(/[^A-Za-z0-9]+/g, "").slice(0, 16).toUpperCase();
+  const base = "BLDR-" + name.replace(/[^A-Za-z0-9]+/g, "").toUpperCase();
+  let id = base;
+  let n = 2;
+  while (usedIds.has(id)) id = `${base}-${n++}`; // guarantee uniqueness
+  usedIds.add(id);
+  return id;
 }
 
 for (const f of feats) {

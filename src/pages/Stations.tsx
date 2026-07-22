@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import {
   Search,
   ArrowUpDown,
+  ChevronUp,
+  ChevronDown,
   Download,
   ChevronLeft,
   ChevronRight,
@@ -74,21 +76,21 @@ export function Stations() {
     URL.revokeObjectURL(url);
   };
 
-  const th = (label: string, key: SortKey, right = false) => (
-    <th className={`px-4 py-3 ${right ? "text-right" : ""}`}>
-      <button
-        onClick={() => toggleSort(key)}
-        className={`inline-flex items-center gap-1 font-semibold text-navy-700 hover:text-navy-900 ${
-          right ? "flex-row-reverse" : ""
-        }`}
-      >
-        {label}
-        <ArrowUpDown
-          className={`h-3 w-3 ${sortKey === key ? "text-brand-500" : "text-slate-300"}`}
-        />
-      </button>
-    </th>
-  );
+  const th = (label: string, key: SortKey, right = false) => {
+    const active = sortKey === key;
+    const Icon = active ? (asc ? ChevronUp : ChevronDown) : ArrowUpDown;
+    return (
+      <th className={`px-4 py-3 ${right ? "text-right" : ""}`}>
+        <button
+          onClick={() => toggleSort(key)}
+          className="inline-flex items-center gap-1 font-semibold text-navy-700 hover:text-navy-900"
+        >
+          {label}
+          <Icon className={`h-3 w-3 ${active ? "text-brand-500" : "text-slate-300"}`} />
+        </button>
+      </th>
+    );
+  };
 
   const pagination = (
     <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
