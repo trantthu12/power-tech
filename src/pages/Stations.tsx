@@ -86,7 +86,7 @@ export function Stations() {
           className="inline-flex items-center gap-1 font-semibold text-navy-700 hover:text-navy-900"
         >
           {label}
-          <Icon className={`h-3 w-3 ${active ? "text-brand-500" : "text-slate-300"}`} />
+          <Icon className={`h-3.5 w-3.5 ${active ? "text-brand-500" : "text-slate-400"}`} />
         </button>
       </th>
     );
