@@ -143,8 +143,8 @@ export function Stations() {
   );
 
   return (
-    <div>
-      <Card className="flex flex-col overflow-hidden p-0">
+    <div className="flex h-full flex-col">
+      <Card className="flex min-h-0 flex-1 flex-col overflow-hidden p-0">
         {/* Full-width search */}
         <div className="border-b border-slate-100 p-4">
           <div className="relative w-full">
