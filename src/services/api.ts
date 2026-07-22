@@ -79,6 +79,7 @@ export function getNetworkKpis(range: { from: string; to: string }): Promise<Net
     totalSessions: sessions,
     totalEnergyKwh: Math.round(energy),
     totalCo2Kg: Math.round(energy * d.co2PerKwh),
+    totalGasolineGal: Math.round(energy * d.galPerKwh),
   });
 }
 
@@ -178,11 +179,15 @@ export function getLoadStats(siteId?: string): Promise<LoadStats> {
   const totalEnergyKwh = heat.reduce((s, v) => s + v, 0);
   let peakHour = 0;
   for (let h = 1; h < 24; h++) if (profile[h] > profile[peakHour]) peakHour = h;
+  const utilization = siteId
+    ? d.sites.find((s) => s.id === siteId)?.utilizationPct ?? d.avgUtilizationPct
+    : d.avgUtilizationPct;
   return delay({
     peakHour,
     peakLoadKwh: +profile[peakHour].toFixed(1),
     totalEnergyKwh: Math.round(totalEnergyKwh),
     totalCo2Kg: Math.round(totalEnergyKwh * d.co2PerKwh),
+    avgUtilizationPct: utilization,
   });
 }
 

@@ -16,7 +16,14 @@ import { useSites } from "@/lib/queries";
 import type { SiteAgg } from "@/services/mock-data";
 import { formatNumber } from "@/lib/format";
 
-type SortKey = "name" | "zip" | "sessions" | "energyKwh" | "co2Kg" | "avgDurationMin";
+type SortKey =
+  | "name"
+  | "zip"
+  | "sessions"
+  | "energyKwh"
+  | "co2Kg"
+  | "avgDurationMin"
+  | "utilizationPct";
 const PAGE_SIZES = [10, 25, 50];
 // When no column is actively sorted, fall back to this natural order.
 const DEFAULT_KEY: SortKey = "energyKwh";
@@ -67,9 +74,9 @@ export function Stations() {
   };
 
   const exportCsv = () => {
-    const header = ["Station", "ZIP", "Sessions", "Energy_kWh", "CO2_kg", "Avg_Duration_min"];
+    const header = ["Station", "ZIP", "Sessions", "Energy_kWh", "CO2_kg", "Avg_Duration_min", "Utilization_pct"];
     const lines = filtered.map((r) =>
-      [r.name, r.zip, r.sessions, r.energyKwh, r.co2Kg, r.avgDurationMin]
+      [r.name, r.zip, r.sessions, r.energyKwh, r.co2Kg, r.avgDurationMin, r.utilizationPct]
         .map((v) => `"${String(v).replace(/"/g, '""')}"`)
         .join(",")
     );
@@ -194,20 +201,21 @@ export function Stations() {
                 {th("Energy (kWh)", "energyKwh", true)}
                 {th("CO₂ (kg)", "co2Kg", true)}
                 {th("Avg Duration", "avgDurationMin", true)}
+                {th("Utilization", "utilizationPct", true)}
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-slate-50">
-                    <td className="px-4 py-3" colSpan={6}>
+                    <td className="px-4 py-3" colSpan={7}>
                       <Skeleton className="h-5 w-full" />
                     </td>
                   </tr>
                 ))
               ) : pageRows.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-10 text-center text-slate-400" colSpan={6}>
+                  <td className="px-4 py-10 text-center text-slate-400" colSpan={7}>
                     No stations match “{query}”.
                   </td>
                 </tr>
@@ -227,6 +235,9 @@ export function Stations() {
                     </td>
                     <td className="px-4 py-3 text-right text-slate-600">
                       {r.avgDurationMin} min
+                    </td>
+                    <td className="px-4 py-3 text-right text-slate-600 tabular-nums">
+                      {r.utilizationPct}%
                     </td>
                   </tr>
                 ))

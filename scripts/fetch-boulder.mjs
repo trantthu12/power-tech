@@ -68,6 +68,8 @@ const daily = new Map(); // date -> {sessions, energy}
 let netEnergy = 0,
   netCo2 = 0,
   netDur = 0,
+  netCharge = 0,
+  netGasoline = 0,
   netSessions = 0;
 
 const usedIds = new Set();
@@ -86,7 +88,9 @@ for (const f of feats) {
   if (!t) continue;
   const energy = parseFloat(p.Energy__kWh_) || 0;
   const co2 = parseFloat(p.GHG_Savings__kg_) || 0;
+  const gasoline = parseFloat(p.Gasoline_Savings__gallons_) || 0;
   const duration = durMin(p.Total_Duration__hh_mm_ss_);
+  const charging = durMin(p.Charging_Time__hh_mm_ss_);
   const dow = new Date(t.ms).getUTCDay();
   const hour = t.hour;
 
@@ -101,7 +105,9 @@ for (const f of feats) {
       sessions: 0,
       energyKwh: 0,
       co2Kg: 0,
+      gasolineGal: 0,
       durMin: 0,
+      chargeMin: 0,
       heat: new Array(168).fill(0),
     };
     sitesMap.set(name, site);
@@ -109,7 +115,9 @@ for (const f of feats) {
   site.sessions++;
   site.energyKwh += energy;
   site.co2Kg += co2;
+  site.gasolineGal += gasoline;
   site.durMin += duration;
+  site.chargeMin += charging;
   site.heat[dow * 24 + hour] += energy;
 
   const dateKey = new Date(t.ms + offset).toISOString().slice(0, 10);
@@ -121,6 +129,8 @@ for (const f of feats) {
   netEnergy += energy;
   netCo2 += co2;
   netDur += duration;
+  netCharge += charging;
+  netGasoline += gasoline;
   netSessions++;
 }
 
@@ -185,7 +195,11 @@ const outSites = sites.map((s) => ({
   sessions: s.sessions,
   energyKwh: Math.round(s.energyKwh),
   co2Kg: Math.round(s.co2Kg),
+  gasolineGal: Math.round(s.gasolineGal),
   avgDurationMin: Math.round(s.durMin / s.sessions),
+  // Charger utilization = active charging time ÷ total plugged-in time.
+  // Low % = cars idle-blocking ports after charging completes.
+  utilizationPct: s.durMin ? Math.round((100 * s.chargeMin) / s.durMin) : 0,
   heat: s.heat.map((v) => Math.round(v)),
 }));
 
@@ -200,7 +214,9 @@ const out = {
     sessions: netSessions,
     energyKwh: Math.round(netEnergy),
     co2Kg: Math.round(netCo2),
+    gasolineGal: Math.round(netGasoline),
     avgDurationMin: Math.round(netDur / netSessions),
+    utilizationPct: netDur ? Math.round((100 * netCharge) / netDur) : 0,
     dateStart: dailyTotals[0]?.date,
     dateEnd: dailyTotals[dailyTotals.length - 1]?.date,
   },

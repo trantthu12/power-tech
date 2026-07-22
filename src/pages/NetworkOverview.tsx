@@ -11,7 +11,7 @@ export function NetworkOverview() {
   return (
     <div className="space-y-5">
       {/* KPI grid — all real City of Boulder data */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <KpiCard
           label="Total Charging Stations"
           value={kpis ? formatNumber(kpis.totalStations) : "—"}
@@ -32,6 +32,13 @@ export function NetworkOverview() {
           label="CO₂ Avoided"
           value={kpis ? formatNumber(kpis.totalCo2Kg) : "—"}
           unit="kg"
+          accent
+          loading={isLoading}
+        />
+        <KpiCard
+          label="Gasoline Saved"
+          value={kpis ? formatNumber(kpis.totalGasolineGal) : "—"}
+          unit="gal"
           accent
           loading={isLoading}
         />

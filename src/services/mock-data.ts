@@ -11,7 +11,11 @@ export interface SiteAgg extends Site {
   sessions: number;
   energyKwh: number;
   co2Kg: number;
+  /** Gasoline displaced (US gallons) */
+  gasolineGal: number;
   avgDurationMin: number;
+  /** Charger utilization: active charging time ÷ total plugged-in time (%) */
+  utilizationPct: number;
   /** 168 cells: energy (kWh) per dayOfWeek*24 + hour, over the whole dataset */
   heat: number[];
 }
@@ -28,11 +32,16 @@ export interface Dataset {
   dailyTotals: DailyTotal[];
   ratePerKwh: number;
   co2PerKwh: number;
+  /** US gallons of gasoline displaced per kWh delivered (real ratio) */
+  galPerKwh: number;
   numDays: number;
   totalSessions: number;
   totalEnergyKwh: number;
   totalCo2Kg: number;
+  totalGasolineGal: number;
   avgDurationMin: number;
+  /** Network-wide charger utilization (%) */
+  avgUtilizationPct: number;
   dateEnd: string;
 }
 
@@ -49,7 +58,9 @@ interface RawSite {
   sessions: number;
   energyKwh: number;
   co2Kg: number;
+  gasolineGal: number;
   avgDurationMin: number;
+  utilizationPct: number;
   heat: number[];
 }
 
@@ -61,7 +72,9 @@ export function buildDataset(): Dataset {
       sessions: number;
       energyKwh: number;
       co2Kg: number;
+      gasolineGal: number;
       avgDurationMin: number;
+      utilizationPct: number;
       dateEnd: string;
     };
     sites: RawSite[];
@@ -81,7 +94,9 @@ export function buildDataset(): Dataset {
     sessions: s.sessions,
     energyKwh: s.energyKwh,
     co2Kg: s.co2Kg,
+    gasolineGal: s.gasolineGal,
     avgDurationMin: s.avgDurationMin,
+    utilizationPct: s.utilizationPct,
     heat: s.heat,
   }));
 
@@ -94,11 +109,14 @@ export function buildDataset(): Dataset {
     dailyTotals: raw.dailyTotals,
     ratePerKwh: raw.meta.ratePerKwh,
     co2PerKwh: raw.meta.energyKwh ? raw.meta.co2Kg / raw.meta.energyKwh : 0.62,
+    galPerKwh: raw.meta.energyKwh ? raw.meta.gasolineGal / raw.meta.energyKwh : 0.125,
     numDays: raw.dailyTotals.length,
     totalSessions: raw.meta.sessions,
     totalEnergyKwh: raw.meta.energyKwh,
     totalCo2Kg: raw.meta.co2Kg,
+    totalGasolineGal: raw.meta.gasolineGal,
     avgDurationMin: raw.meta.avgDurationMin,
+    avgUtilizationPct: raw.meta.utilizationPct,
     dateEnd: raw.meta.dateEnd,
   };
 }

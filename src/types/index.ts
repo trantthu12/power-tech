@@ -59,6 +59,8 @@ export interface NetworkKpis {
   totalSessions: number;
   totalEnergyKwh: number;
   totalCo2Kg: number;
+  /** Gasoline displaced (US gallons) — real GHG co-benefit from the dataset */
+  totalGasolineGal: number;
 }
 
 export interface ConnectorBreakdown {
@@ -133,6 +135,8 @@ export interface LoadStats {
   totalEnergyKwh: number;
   /** Total CO2 avoided (kg) */
   totalCo2Kg: number;
+  /** Charger utilization: active charging time ÷ total plugged-in time (%) */
+  avgUtilizationPct: number;
 }
 
 /** Headline performance stats for the analytics page. */
