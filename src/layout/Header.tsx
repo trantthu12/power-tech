@@ -45,7 +45,6 @@ export function Header({ onOpenNav }: HeaderProps) {
           <h1 className="truncate text-base font-semibold text-navy-800 sm:text-lg">
             {current.label}
           </h1>
-          <p className="truncate text-xs text-slate-400">{current.audience}</p>
         </div>
       </div>
 
