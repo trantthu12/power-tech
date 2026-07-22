@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   Search,
-  ArrowUpDown,
+  ChevronsUpDown,
   ChevronUp,
   ChevronDown,
   Download,
@@ -78,7 +78,7 @@ export function Stations() {
 
   const th = (label: string, key: SortKey, right = false) => {
     const active = sortKey === key;
-    const Icon = active ? (asc ? ChevronUp : ChevronDown) : ArrowUpDown;
+    const Icon = active ? (asc ? ChevronUp : ChevronDown) : ChevronsUpDown;
     return (
       <th className={`px-4 py-3 ${right ? "text-right" : ""}`}>
         <button
