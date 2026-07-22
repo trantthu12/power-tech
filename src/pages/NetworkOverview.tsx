@@ -1,83 +1,49 @@
 import { KpiCard } from "@/components/ui/KpiCard";
-import { StatusBanner } from "@/components/StatusBanner";
-import { ConnectorDonut } from "@/components/ConnectorDonut";
-import { CityBreakdown } from "@/components/CityBreakdown";
-import { FaultsCard } from "@/components/FaultsCard";
+import { TopStations } from "@/components/TopStations";
+import { EnergyByZip } from "@/components/EnergyByZip";
 import { StationMap } from "@/components/StationMap";
-import { SimulatedNote } from "@/components/ui/SimulatedNote";
 import { useNetworkKpis } from "@/lib/queries";
-import { formatCompact, formatCurrency, formatNumber } from "@/lib/format";
+import { formatCompact, formatNumber } from "@/lib/format";
 
 export function NetworkOverview() {
   const { data: kpis, isLoading } = useNetworkKpis();
 
   return (
     <div className="space-y-5">
-      <StatusBanner />
-
-      {/* KPI grid (8 cards) */}
+      {/* KPI grid — all real City of Boulder data */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Total Charging Stations"
-          value={kpis ? formatNumber(kpis.newChargingStations) : "—"}
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Network Uptime"
-          value={kpis ? `${kpis.uptimePct}%` : "—"}
-          accent
-          simulated
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Session Success Rate"
-          value={kpis ? `${kpis.successRatePct}%` : "—"}
-          simulated
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Active Charging Sessions"
-          value={kpis ? formatNumber(kpis.activeSessions) : "—"}
-          simulated
+          value={kpis ? formatNumber(kpis.totalStations) : "—"}
           loading={isLoading}
         />
         <KpiCard
           label="Charging Sessions"
           value={kpis ? formatCompact(kpis.totalSessions) : "—"}
-          simulated
           loading={isLoading}
         />
         <KpiCard
           label="Total Energy"
           value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
           unit="kWh"
-          simulated
           loading={isLoading}
         />
         <KpiCard
-          label="Total Revenue"
-          value={kpis ? formatCurrency(kpis.totalRevenue) : "—"}
-          simulated
-          loading={isLoading}
-        />
-        <KpiCard
-          label="New Users"
-          value={kpis ? formatNumber(kpis.newUsers) : "—"}
-          simulated
+          label="CO₂ Avoided"
+          value={kpis ? formatNumber(kpis.totalCo2Kg) : "—"}
+          unit="kg"
+          accent
           loading={isLoading}
         />
       </div>
 
-      {/* KPI row 3 + donuts */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <FaultsCard />
-        <ConnectorDonut />
-        <CityBreakdown />
+      {/* Top stations + ZIP coverage */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <TopStations />
+        <EnergyByZip />
       </div>
 
       <StationMap />
-
-      <SimulatedNote />
     </div>
   );
 }

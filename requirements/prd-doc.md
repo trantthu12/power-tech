@@ -54,23 +54,23 @@ Dữ liệu thô lấy từ 2 nhóm:
 - **Site Registry (danh bạ trạm):** toạ độ GPS, địa chỉ, mã bưu chính (zip), ngày lắp đặt,
   tổng thời gian hoạt động, thời gian sạc.
 
-**Nguồn dữ liệu hiện tại (2 loại, phải tách bạch):**
+**Nguồn dữ liệu hiện tại — DÙNG DỮ LIỆU THẬT của City of Boulder:**
 
-1. **Danh bạ trạm (Site Registry) — DÙNG DỮ LIỆU THẬT:** lấy **trạm sạc thật ở Metro
-   Vancouver, BC** từ **Open Charge Map (OCM)** — toạ độ, tên, thành phố, loại đầu sạc đều
-   thật. Đây chính là "mạng lưới PowerTech" hiển thị trên bản đồ và các thẻ.
-2. **Session Logs (kWh, doanh thu, CO₂, khách hàng…) — DÙNG DỮ LIỆU GIẢ:** **không nơi nào
-   công khai dữ liệu phiên sạc thật của Canada**. OCM chỉ cho *vị trí* trạm, không cho phiên
-   sạc. Nên phần này là **synthetic (giả lập)**, tạo có kiểm soát và gắn lên chính các trạm
-   thật ở trên. Requirement doc gợi ý tham chiếu dataset **Palo Alto / Boulder** (Mỹ) cho
-   *hình dạng* của session logs.
+Dùng **dataset mở của thành phố Boulder, Colorado** (`open-data.bouldercolorado.gov`) —
+**148,136 phiên sạc thật, 50 trạm**. Mỗi phiên có: tên trạm, địa chỉ, ZIP, giờ bắt đầu/kết
+thúc, thời lượng, **điện năng (kWh)**, **CO₂ tránh được (GHG kg)**, loại cổng (Level 2).
 
-> 📌 **Tóm tắt:** vị trí trạm = thật (OCM Vancouver); số liệu vận hành (điện/tiền/phiên) =
-> giả lập. Khi PowerTech có dữ liệu vận hành thật, chỉ cần thay nguồn ở tầng service
-> (`src/services/api.ts`), giao diện giữ nguyên.
+→ Toàn bộ dashboard chạy trên **số liệu thật**: số trạm, phiên sạc, điện năng, CO₂, thời
+lượng TB, heatmap nhu cầu 24×7, trend theo tháng, thống kê từng trạm. Toạ độ trạm không có
+sẵn trong dataset nên được **geocode** (Nominatim) một lần.
 
-> ⚠️ Một số nhóm dữ liệu **CHƯA CÓ** (lỗi/bảo trì/công suất tối đa) → **kế hoạch dùng dữ liệu
-> giả lập (synthetic data) ở Sprint 3.**
+> 📌 **Không còn số liệu bịa.** Những thứ dataset **không có** (doanh thu, trạng thái
+> online/offline, lỗi, mã khách hàng) đã được **bỏ khỏi UI** — vì team chưa có backend cung
+> cấp. Khi có backend Python thật, thêm lại bằng cách sửa tầng service (`src/services/api.ts`),
+> giao diện giữ nguyên.
+
+> ⚠️ Fault/maintenance vẫn để dành cho **Sprint 3** (trang Fault Diagnostics hiện là stub
+> trống, không hiển thị số bịa).
 
 ### Khối 2 — PRE-PROCESSING (Tiền xử lý / ETL)
 Bằng **Python**. ETL = Extract (trích xuất) → Clean (làm sạch) → Transform (biến đổi) →
@@ -130,20 +130,18 @@ Block diagram chia rõ 2 giai đoạn:
 - **Recharts** — vẽ biểu đồ đường/cột/donut.
 - **ECharts** — vẽ heatmap 24×7.
 - **React-Leaflet + OpenStreetMap** — bản đồ trạm sạc.
-- **Open Charge Map** — nguồn trạm sạc thật (Metro Vancouver), lấy 1 lần rồi lưu file.
+- **City of Boulder open data** — 148k phiên sạc thật, tổng hợp 1 lần rồi lưu file.
 - **TanStack Query** — quản lý việc lấy dữ liệu.
 
 ### 5.2. Cách tổ chức dữ liệu (quan trọng)
-Hiện **chưa có backend thật**, nên FE dùng cách kết hợp:
-- **Trạm sạc = thật:** 180 trạm Metro Vancouver lấy từ Open Charge Map, lưu sẵn trong
-  `src/data/ocm-sites.json` (script `scripts/fetch-ocm.mjs` lấy 1 lần; key để trong `.env`,
-  **không** đưa vào bundle).
-- **Session/số liệu vận hành = giả lập:** tạo có kiểm soát (seed cố định) và gắn lên chính
-  180 trạm thật đó → map, "Locations by City", donut, KPI **khớp nhau hết**.
+- **Toàn bộ là dữ liệu THẬT của Boulder**, đã tổng hợp offline vào
+  `src/data/boulder-data.json` (script `scripts/fetch-boulder.mjs`). 50 trạm (toạ độ geocode
+  1 lần), aggregate theo ngày + heatmap 24×7/trạm.
+- Những gì dataset **không có** (doanh thu, online/offline, lỗi) đã **bỏ khỏi UI** — không bịa.
 
 👉 Điểm hay: mọi trang lấy dữ liệu qua **một lớp trung gian** `src/services/api.ts`.
 Khi team backend Python làm xong API thật, **chỉ cần sửa 1 file này** để trỏ sang API thật —
-**không phải sửa lại giao diện.**
+**không phải sửa lại giao diện.** (Chi tiết ở mục 7 — Data & Architecture.)
 
 ### 5.3. Đã làm xong (đang chạy live)
 Deploy tại: **https://power-tech-dashboard.vercel.app** (tự động cập nhật mỗi khi push code).
@@ -193,3 +191,27 @@ src/
 ├─ lib/                ← tiện ích (bộ lọc thời gian, format số, query hooks, nav)
 └─ layout/             ← khung chung (sidebar, header)
 ```
+
+---
+
+## 7. Data & Architecture (để trình bày khi chấm)
+
+**Dữ liệu là THẬT, phục vụ ở dạng tĩnh (static) — đây là lựa chọn kiến trúc, không phải đi tắt.**
+
+- **Nguồn thật:** 148,136 phiên sạc thật của City of Boulder (energy, CO₂, thời lượng, thời gian).
+- **ETL đúng block diagram:** script `scripts/fetch-boulder.mjs` làm bước **Pre-processing
+  (Extract–Clean–Transform–Load)** — tải data thô 80MB, tổng hợp thành file nhỏ
+  `src/data/boulder-data.json` (~148KB). FE chỉ **trực quan hoá** (đúng vai trò khối Frontend).
+- **Best practice hiệu năng:** không dashboard nào bắt trình duyệt tải 148k dòng rồi tự tính;
+  luôn tổng hợp trước. "Static baked aggregate" chính là nguyên tắc đó.
+- **Ranh giới data rõ ràng:** mọi trang lấy data qua **một tầng service** (`src/services/api.ts`).
+  Đổi sang backend Python thật ⇒ sửa 1 file, không đụng giao diện.
+- **Cập nhật data:** thủ công `npm run refresh-data`, hoặc **tự động** bằng GitHub Action chạy
+  hằng tuần (`.github/workflows/refresh-data.yml`) → data mới tự commit + Vercel tự deploy.
+  Chân sidebar hiển thị **"Data as of <ngày>"**.
+- **Không có số liệu bịa:** những gì dataset không có (doanh thu, online/offline, lỗi) đã bỏ
+  khỏi UI. Fault Diagnostics + backend live là phạm vi **Sprint 3**.
+
+**Câu nói gọn:** "Dữ liệu là 148k phiên sạc thật của Boulder. Em làm ETL offline để tổng hợp
+(đúng khối Pre-processing trong block diagram), FE chỉ trực quan hoá qua một tầng service — khi
+có backend Python thật chỉ đổi 1 file. Data có thể refresh thủ công hoặc tự động hằng tuần."

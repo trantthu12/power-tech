@@ -15,15 +15,15 @@ export function useSites() {
   return useQuery({ queryKey: ["sites"], queryFn: api.getSites });
 }
 
-export function useConnectorBreakdown() {
-  return useQuery({
-    queryKey: ["connectors"],
-    queryFn: api.getConnectorBreakdown,
-  });
+export function useEnergyByZip() {
+  return useQuery({ queryKey: ["energy-by-zip"], queryFn: api.getEnergyByZip });
 }
 
-export function useCityBreakdown() {
-  return useQuery({ queryKey: ["cities"], queryFn: api.getCityBreakdown });
+export function useTopStations(limit = 5) {
+  return useQuery({
+    queryKey: ["top-stations", limit],
+    queryFn: () => api.getTopStations(limit),
+  });
 }
 
 export function useEnergyTrend(granularity: Granularity) {
@@ -33,10 +33,10 @@ export function useEnergyTrend(granularity: Granularity) {
   });
 }
 
-export function useRevenueTrend(granularity: Granularity) {
+export function useCo2Trend(granularity: Granularity) {
   return useQuery({
-    queryKey: ["revenue-trend", granularity],
-    queryFn: () => api.getRevenueTrend(granularity),
+    queryKey: ["co2-trend", granularity],
+    queryFn: () => api.getCo2Trend(granularity),
   });
 }
 
@@ -47,10 +47,10 @@ export function useUtilizationHeatmap(siteId?: string) {
   });
 }
 
-export function useRevenueHeatmap(siteId?: string) {
+export function useCo2Heatmap(siteId?: string) {
   return useQuery({
-    queryKey: ["revenue-heatmap", siteId ?? "all"],
-    queryFn: () => api.getRevenueHeatmap(siteId),
+    queryKey: ["co2-heatmap", siteId ?? "all"],
+    queryFn: () => api.getCo2Heatmap(siteId),
   });
 }
 
@@ -86,16 +86,5 @@ export function usePerformanceStats() {
   return useQuery({
     queryKey: ["performance-stats"],
     queryFn: api.getPerformanceStats,
-  });
-}
-
-export function useFaults() {
-  return useQuery({ queryKey: ["faults"], queryFn: api.getFaults });
-}
-
-export function useRecentSessions(limit = 50) {
-  return useQuery({
-    queryKey: ["sessions", limit],
-    queryFn: () => api.getRecentSessions(limit),
   });
 }

@@ -5,9 +5,9 @@ import { useFilter } from "@/lib/filter-context";
 import type { Granularity } from "@/types";
 
 const GRANULARITIES: { value: Granularity; label: string }[] = [
-  { value: "day", label: "24h" },
-  { value: "week", label: "7 days" },
-  { value: "month", label: "30 days" },
+  { value: "day", label: "30 days" },
+  { value: "week", label: "90 days" },
+  { value: "month", label: "12 months" },
 ];
 
 function formatRange(fromIso: string, toIso: string): string {

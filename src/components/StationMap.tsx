@@ -3,8 +3,8 @@ import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaf
 import { Card, CardHeader } from "./ui/Card";
 import { useSites } from "@/lib/queries";
 
-// Metro Vancouver, BC (fallback center before the sites load / fit).
-const DEFAULT_CENTER: [number, number] = [49.24, -122.98];
+// Boulder, CO (fallback center before the sites load / fit).
+const DEFAULT_CENTER: [number, number] = [40.015, -105.2705];
 
 /** Auto-zoom to frame the whole PowerTech network. */
 function FitToSites({ points }: { points: [number, number][] }) {
@@ -27,7 +27,7 @@ export function StationMap() {
       <div className="p-5 pb-3">
         <CardHeader
           title="Locations"
-          subtitle={`PowerTech network — ${rows.length} stations across Metro Vancouver, BC`}
+          subtitle={`PowerTech network — ${rows.length} real stations in Boulder, CO`}
         />
       </div>
       <div className="relative h-[360px] w-full">
@@ -48,8 +48,8 @@ export function StationMap() {
               center={[site.lat, site.lng]}
               radius={7}
               pathOptions={{
-                color: site.online ? "#5fa32f" : "#f43f5e",
-                fillColor: site.online ? "#7ac943" : "#fb7185",
+                color: "#5fa32f",
+                fillColor: "#7ac943",
                 fillOpacity: 0.85,
                 weight: 2,
               }}
@@ -65,16 +65,10 @@ export function StationMap() {
                     {site.zip && site.zip !== "—" ? `, ${site.zip}` : ""}
                   </div>
                   <div className="mt-1">
-                    Ports: <span className="font-medium">{site.numPorts}</span>
-                  </div>
-                  <div>
-                    Connectors:{" "}
+                    Connector:{" "}
                     <span className="font-medium">
                       {site.connectorTypes.join(", ")}
                     </span>
-                  </div>
-                  <div className={site.online ? "text-brand-600" : "text-rose-500"}>
-                    {site.online ? "Online" : "Offline"}
                   </div>
                 </div>
               </Popup>

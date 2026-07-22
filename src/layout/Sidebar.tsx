@@ -1,6 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { Zap } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/nav";
+import boulder from "@/data/boulder-data.json";
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const [dY, dM, dD] = (boulder as { meta: { dateEnd: string } }).meta.dateEnd.split("-");
+const dataAsOf = `${MONTHS[+dM - 1]} ${+dD}, ${dY}`;
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -74,8 +79,10 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           })}
         </nav>
 
-        <div className="border-t border-white/5 px-5 py-4 text-[11px] text-slate-500">
-          Sprint 2 &middot; Demo data
+        <div className="border-t border-white/5 px-5 py-4 text-[11px] leading-relaxed text-slate-500">
+          City of Boulder open data
+          <br />
+          Data as of {dataAsOf}
         </div>
       </aside>
     </>

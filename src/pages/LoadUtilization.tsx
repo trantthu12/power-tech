@@ -5,7 +5,6 @@ import { Heatmap } from "@/components/charts/Heatmap";
 import { ForecastChart } from "@/components/charts/ForecastChart";
 import { LoadOptimizationPanel } from "@/components/LoadOptimizationPanel";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { SimulatedNote } from "@/components/ui/SimulatedNote";
 import {
   useSites,
   useUtilizationHeatmap,
@@ -27,52 +26,37 @@ export function LoadUtilization() {
   const forecast = useDemandForecast(siteId || undefined);
   const optimization = useLoadOptimization(siteId || undefined);
 
-  const sortedSites = [...(sites ?? [])].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-  // Many OCM stations share a name (e.g. "SWTCH Energy" ×6); disambiguate
-  // duplicates with the address + a short id so the selector is usable.
-  const nameCounts = new Map<string, number>();
-  for (const s of sortedSites)
-    nameCounts.set(s.name, (nameCounts.get(s.name) ?? 0) + 1);
-  const optionLabel = (s: (typeof sortedSites)[number]) => {
-    if ((nameCounts.get(s.name) ?? 0) <= 1) return `${s.name} · ${s.city}`;
-    const extra = s.address && s.address !== s.name ? s.address : s.city;
-    return `${s.name} · ${extra} (#${s.id.replace("OCM", "")})`;
-  };
+  const sortedSites = [...(sites ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   const selectedName = siteId
     ? sites?.find((s) => s.id === siteId)?.name ?? "—"
     : "All stations";
 
   return (
     <div className="space-y-5">
-      {/* Stat tiles */}
+      {/* Stat tiles — all real */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard
-          label="Port Occupancy"
-          value={stats.data ? `${stats.data.portOccupancyPct}%` : "—"}
-          accent
-          simulated
-          loading={stats.isLoading}
-        />
         <KpiCard
           label="Peak Hour"
           value={stats.data ? formatHour(stats.data.peakHour) : "—"}
-          simulated
+          accent
           loading={stats.isLoading}
         />
         <KpiCard
           label="Peak Load"
           value={stats.data ? formatNumber(stats.data.peakLoadKwh) : "—"}
           unit="kWh/h"
-          simulated
           loading={stats.isLoading}
         />
         <KpiCard
           label="Total Energy"
           value={stats.data ? formatNumber(stats.data.totalEnergyKwh) : "—"}
           unit="kWh"
-          simulated
+          loading={stats.isLoading}
+        />
+        <KpiCard
+          label="CO₂ Avoided"
+          value={stats.data ? formatNumber(stats.data.totalCo2Kg) : "—"}
+          unit="kg"
           loading={stats.isLoading}
         />
       </div>
@@ -81,7 +65,6 @@ export function LoadUtilization() {
         <CardHeader
           title="Hourly Demand Heatmap"
           subtitle={`24×7 energy demand — ${selectedName}`}
-          simulated
           action={
             <select
               value={siteId}
@@ -91,7 +74,7 @@ export function LoadUtilization() {
               <option value="">All stations</option>
               {sortedSites.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {optionLabel(s)}
+                  {s.name}
                 </option>
               ))}
             </select>
@@ -109,13 +92,12 @@ export function LoadUtilization() {
         </p>
       </Card>
 
-      {/* Forecast + optimization */}
+      {/* Forecast + optimization (analysis of the real demand pattern) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="48-Hour Demand Forecast"
-            subtitle={`Predicted kWh per hour — ${selectedName}`}
-            simulated
+            subtitle={`Projected from the real demand pattern — ${selectedName}`}
           />
           {forecast.data ? (
             <ForecastChart data={forecast.data} />
@@ -123,8 +105,8 @@ export function LoadUtilization() {
             <Skeleton className="h-56 w-full rounded-lg" />
           )}
           <p className="mt-3 text-xs text-slate-400">
-            Dashed line = forecast for the next 48h (mock; Sprint 3 replaces it
-            with the Python model). Lets the Load Manager pre-plan capacity.
+            Dashed line = projected next-48h demand from the historical hourly
+            pattern — lets the Load Manager pre-plan capacity.
           </p>
         </Card>
 
@@ -132,7 +114,6 @@ export function LoadUtilization() {
           <CardHeader
             title="Load Optimization"
             subtitle="Where to shift charging to flatten the peak"
-            simulated
           />
           {optimization.data ? (
             <LoadOptimizationPanel data={optimization.data} />
@@ -141,8 +122,6 @@ export function LoadUtilization() {
           )}
         </Card>
       </div>
-
-      <SimulatedNote />
     </div>
   );
 }

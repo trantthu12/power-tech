@@ -9,11 +9,11 @@ import {
   Cell,
 } from "recharts";
 import type { SiteComparison } from "@/types";
-import { formatCurrency, formatNumber } from "@/lib/format";
+import { formatNumber } from "@/lib/format";
 
 interface SiteComparisonChartProps {
   data: SiteComparison[];
-  metric: "energyKwh" | "revenue";
+  metric: "energyKwh" | "sessions";
   limit?: number;
 }
 
@@ -27,8 +27,8 @@ export function SiteComparisonChart({
     .slice(0, limit)
     .map((r) => ({ name: r.name, value: r[metric] }));
 
-  const color = metric === "energyKwh" ? "#7ac943" : "#3b4a6b";
-  const fmt = metric === "energyKwh" ? formatNumber : formatCurrency;
+  const color = metric === "energyKwh" ? "#7ac943" : "#2a78d6";
+  const fmt = formatNumber;
 
   return (
     <div className="h-72 w-full">
@@ -57,7 +57,7 @@ export function SiteComparisonChart({
             width={120}
           />
           <Tooltip
-            formatter={(v: number) => [fmt(v), metric === "energyKwh" ? "Energy" : "Revenue"]}
+            formatter={(v: number) => [fmt(v), metric === "energyKwh" ? "Energy (kWh)" : "Sessions"]}
             contentStyle={{
               borderRadius: 8,
               border: "1px solid #e2e8f0",

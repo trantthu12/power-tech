@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Skeleton } from "./Skeleton";
-import { SimulatedMark } from "./SimulatedMark";
 
 interface KpiCardProps {
   label: string;
@@ -10,8 +9,6 @@ interface KpiCardProps {
   badge?: string;
   deltaPct?: number;
   accent?: boolean;
-  /** Mark the value as simulated (adds a * with tooltip on the title). */
-  simulated?: boolean;
   /** Show a shimmer placeholder instead of the value. */
   loading?: boolean;
 }
@@ -23,16 +20,12 @@ export function KpiCard({
   badge,
   deltaPct,
   accent = false,
-  simulated = false,
   loading = false,
 }: KpiCardProps) {
   return (
     <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-sm font-semibold text-navy-700">
-          {label}
-          {simulated && <SimulatedMark />}
-        </span>
+        <span className="text-sm font-semibold text-navy-700">{label}</span>
         {badge && (
           <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-400">
             {badge}

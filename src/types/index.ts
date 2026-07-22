@@ -34,8 +34,6 @@ export interface Site {
   zip: string;
   connectorTypes: ConnectorType[];
   numPorts: number;
-  online: boolean;
-  commissionedDate: string; // ISO
 }
 
 export type FaultStatus = "open" | "in_progress" | "resolved";
@@ -57,18 +55,10 @@ export interface FaultRecord {
 
 /** Aggregated KPI snapshot for the Network Overview landing page. */
 export interface NetworkKpis {
-  newChargingStations: number;
-  activeSessions: number;
+  totalStations: number;
   totalSessions: number;
   totalEnergyKwh: number;
-  totalRevenue: number;
-  newUsers: number;
-  faults: number;
-  connectivityLossPct: number;
-  /** Network availability % (station-time online) */
-  uptimePct: number;
-  /** Share of charging sessions that completed successfully % */
-  successRatePct: number;
+  totalCo2Kg: number;
 }
 
 export interface ConnectorBreakdown {
@@ -108,10 +98,7 @@ export interface SiteComparison {
   name: string;
   city: string;
   energyKwh: number;
-  revenue: number;
   sessions: number;
-  /** Average utilization estimate 0..100 (%) */
-  utilizationPct: number;
 }
 
 /** One hour of forecasted demand. */
@@ -138,14 +125,14 @@ export interface LoadOptimization {
 
 /** Load Utilization headline stats (per station or whole network). */
 export interface LoadStats {
-  /** % of ports busy on average (0..100) */
-  portOccupancyPct: number;
   /** Hour of day (0..23) with the highest average demand */
   peakHour: number;
   /** Average kWh delivered during the peak hour */
   peakLoadKwh: number;
-  /** Total energy over the window (kWh) */
+  /** Total energy (kWh) */
   totalEnergyKwh: number;
+  /** Total CO2 avoided (kg) */
+  totalCo2Kg: number;
 }
 
 /** Headline performance stats for the analytics page. */
@@ -153,7 +140,5 @@ export interface PerformanceStats {
   avgSessionDurationMin: number;
   avgEnergyPerSession: number;
   sessionsPerDay: number;
-  /** Session efficiency = delivered kWh / (ports * hours available), 0..100 */
-  utilizationPct: number;
-  totalSessions: number;
+  totalCo2Kg: number;
 }

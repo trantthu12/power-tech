@@ -10,12 +10,15 @@ interface FilterContextValue {
 
 const FilterContext = createContext<FilterContextValue | null>(null);
 
+// The Boulder dataset is historical (years of sessions), so the overview window
+// uses meaningful ranges that always contain data. The Granularity enum values
+// are reused as window keys: day = 30 days, week = 90 days, month = 12 months.
 function rangeForGranularity(granularity: Granularity): DateRangeFilter {
   const to = new Date(DEMO_NOW_MS);
   const from = new Date(to);
-  if (granularity === "day") from.setDate(from.getDate() - 1);
-  if (granularity === "week") from.setDate(from.getDate() - 7);
-  if (granularity === "month") from.setMonth(from.getMonth() - 1);
+  if (granularity === "day") from.setDate(from.getDate() - 30);
+  if (granularity === "week") from.setDate(from.getDate() - 90);
+  if (granularity === "month") from.setFullYear(from.getFullYear() - 1);
   return {
     granularity,
     from: from.toISOString(),
@@ -24,7 +27,7 @@ function rangeForGranularity(granularity: Granularity): DateRangeFilter {
 }
 
 export function FilterProvider({ children }: { children: ReactNode }) {
-  const [granularity, setGranularity] = useState<Granularity>("month");
+  const [granularity, setGranularity] = useState<Granularity>("day");
 
   const value = useMemo<FilterContextValue>(
     () => ({

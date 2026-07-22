@@ -31,5 +31,8 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 
+# Large raw dataset cache for the Boulder fetch script (re-downloaded on demand)
+scripts/.boulder-raw.json
+
 # Vercel
 .vercel

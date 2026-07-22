@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { SimulatedMark } from "./SimulatedMark";
 
 interface CardProps {
   children: ReactNode;
@@ -20,18 +19,13 @@ interface CardHeaderProps {
   title: string;
   subtitle?: string;
   action?: ReactNode;
-  /** Append a small * marking this card's figures as simulated. */
-  simulated?: boolean;
 }
 
-export function CardHeader({ title, subtitle, action, simulated }: CardHeaderProps) {
+export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
   return (
     <div className="mb-4 flex items-start justify-between">
       <div>
-        <h3 className="text-sm font-semibold text-navy-800">
-          {title}
-          {simulated && <SimulatedMark />}
-        </h3>
+        <h3 className="text-sm font-semibold text-navy-800">{title}</h3>
         {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
       </div>
       {action}
