@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-import { Zap } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/nav";
 import { useCity } from "@/lib/city-context";
 import type { City } from "@/lib/cities";
@@ -42,13 +41,15 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
-        <div className="flex items-center gap-2 px-5 py-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500">
-            <Zap className="h-5 w-5 text-white" fill="currentColor" />
+        {/* Brand: PowerTech (client). Logo art is on white, so it sits in a white card. */}
+        <div className="px-5 py-5">
+          <div className="rounded-xl bg-white p-3 shadow-sm">
+            <img
+              src="/powertech-logo.png"
+              alt="PowerTech"
+              className="mx-auto h-16 w-auto object-contain"
+            />
           </div>
-          <span className="text-lg font-bold tracking-tight text-white">
-            Power<span className="text-brand-500">Tech</span>
-          </span>
         </div>
 
         <nav className="mt-2 flex-1 overflow-y-auto py-2">
@@ -90,10 +91,22 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           })}
         </nav>
 
-        <div className="border-t border-white/5 px-5 py-4 text-[11px] leading-relaxed text-slate-500">
-          {meta.source}
-          <br />
-          Data as of {formatAsOf(meta.dateEnd)}
+        <div className="border-t border-white/5 px-5 py-4">
+          {/* Academic attribution: SFU (the team). Logo art is on white, so it sits in a white card. */}
+          <div className="mb-3 rounded-lg bg-white px-3 py-2">
+            <img
+              src="/sfu-logo.png"
+              alt="Simon Fraser University"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            SFU capstone project
+            <br />
+            {meta.source}
+            <br />
+            Data as of {formatAsOf(meta.dateEnd)}
+          </p>
         </div>
       </aside>
     </>
