@@ -155,6 +155,10 @@ export interface PerformanceStats {
   avgRevenuePerSession: number;
   /** Estimated wholesale electricity cost (USD) at an assumed commercial rate */
   electricityCost: number;
+  /** Unique drivers — only where the dataset has a customer/User ID (Palo Alto) */
+  uniqueDrivers?: number;
+  /** Average sessions per unique driver (repeat usage) */
+  sessionsPerDriver?: number;
 }
 
 // --- Infrastructure Planning (real public-station inventory, Colorado AFDC) ---

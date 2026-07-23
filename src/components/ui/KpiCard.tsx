@@ -11,7 +11,14 @@ interface KpiCardProps {
   accent?: boolean;
   /** Show a shimmer placeholder instead of the value. */
   loading?: boolean;
+  /** City-exclusive tint: blue = Palo Alto-only, pink = Boulder-only. */
+  tint?: "blue" | "pink";
 }
+
+const TINTS = {
+  blue: "border-blue-200 bg-blue-50",
+  pink: "border-pink-200 bg-pink-50",
+} as const;
 
 export function KpiCard({
   label,
@@ -21,9 +28,14 @@ export function KpiCard({
   deltaPct,
   accent = false,
   loading = false,
+  tint,
 }: KpiCardProps) {
   return (
-    <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div
+      className={`min-w-0 rounded-xl border p-5 shadow-sm ${
+        tint ? TINTS[tint] : "border-slate-200 bg-white"
+      }`}
+    >
       <div className="mb-3 flex items-center justify-between">
         <span className="text-sm font-semibold text-navy-700">{label}</span>
         {badge && (

@@ -4,45 +4,45 @@
 // reimplementing these against fetch().
 
 import type {
-  ConnectorCount,
   ForecastPoint,
   Granularity,
-  GrowthPoint,
   HeatmapCell,
-  InfraStats,
   LoadOptimization,
   LoadStats,
-  NetworkCount,
   NetworkKpis,
   PerformanceStats,
-  PublicStation,
   Site,
   SiteComparison,
   TimeSeriesPoint,
 } from "@/types";
 import { buildDataset } from "./mock-data";
 import type { Dataset } from "./mock-data";
-import stationsData from "@/data/boulder-stations.json";
+import type { City } from "@/lib/cities";
 import { DEMO_NOW_MS } from "@/lib/demo-time";
 
-let cache: Dataset | null = null;
-function data(): Dataset {
-  if (!cache) cache = buildDataset();
-  return cache;
+// One memoized Dataset per city; the other is built lazily on first switch.
+const cache = new Map<City, Dataset>();
+function data(city: City): Dataset {
+  let d = cache.get(city);
+  if (!d) {
+    d = buildDataset(city);
+    cache.set(city, d);
+  }
+  return d;
 }
 
 function delay<T>(value: T, ms = 200): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
-export function dataAsOf(): string {
-  return data().dateEnd;
+export function dataAsOf(city: City): string {
+  return data(city).dateEnd;
 }
 
 // --- heatmap / hourly helpers -------------------------------------------------
 
-function heatFor(siteId?: string): number[] {
-  const d = data();
+function heatFor(city: City, siteId?: string): number[] {
+  const d = data(city);
   if (!siteId) return d.heatAll;
   const site = d.sites.find((s) => s.id === siteId);
   return site ? site.heat : new Array(168).fill(0);
@@ -57,8 +57,8 @@ function heatToCells(heat: number[], scale = 1): HeatmapCell[] {
 }
 
 /** Average kWh per hour-of-day (0..23) per day, from a 168-cell heat array. */
-function hourlyProfile(heat: number[]): number[] {
-  const { numDays } = data();
+function hourlyProfile(city: City, heat: number[]): number[] {
+  const { numDays } = data(city);
   const out = new Array(24).fill(0) as number[];
   for (let dow = 0; dow < 7; dow++)
     for (let h = 0; h < 24; h++) out[h] += heat[dow * 24 + h] ?? 0;
@@ -67,14 +67,17 @@ function hourlyProfile(heat: number[]): number[] {
 
 // --- sites --------------------------------------------------------------------
 
-export function getSites(): Promise<Site[]> {
-  return delay(data().sites as Site[]);
+export function getSites(city: City): Promise<Site[]> {
+  return delay(data(city).sites as Site[]);
 }
 
 // --- Network Overview KPIs (all real) ----------------------------------------
 
-export function getNetworkKpis(range: { from: string; to: string }): Promise<NetworkKpis> {
-  const d = data();
+export function getNetworkKpis(
+  city: City,
+  range: { from: string; to: string }
+): Promise<NetworkKpis> {
+  const d = data(city);
   const from = range.from.slice(0, 10);
   const to = range.to.slice(0, 10);
   const win = d.dailyTotals.filter((r) => r.date >= from && r.date <= to);
@@ -96,6 +99,7 @@ export function getNetworkKpis(range: { from: string; to: string }): Promise<Net
 
 /** Top N stations by real energy, grouped by ZIP "area" (with area totals). */
 export function getTopStationsByArea(
+  city: City,
   perArea = 3
 ): Promise<
   {
@@ -106,7 +110,7 @@ export function getTopStationsByArea(
   }[]
 > {
   const byZip = new Map<string, { name: string; energyKwh: number }[]>();
-  for (const s of data().sites) {
+  for (const s of data(city).sites) {
     const list = byZip.get(s.zip) ?? [];
     list.push({ name: s.name, energyKwh: s.energyKwh });
     byZip.set(s.zip, list);
@@ -123,10 +127,10 @@ export function getTopStationsByArea(
   return delay(areas.sort((a, b) => b.energyKwh - a.energyKwh));
 }
 
-/** Energy delivered grouped by ZIP (Boulder is a single city). */
-export function getEnergyByZip(): Promise<{ zip: string; energyKwh: number }[]> {
+/** Energy delivered grouped by ZIP area. */
+export function getEnergyByZip(city: City): Promise<{ zip: string; energyKwh: number }[]> {
   const sums = new Map<string, number>();
-  for (const s of data().sites)
+  for (const s of data(city).sites)
     sums.set(s.zip, (sums.get(s.zip) ?? 0) + s.energyKwh);
   return delay(
     [...sums.entries()]
@@ -136,9 +140,12 @@ export function getEnergyByZip(): Promise<{ zip: string; energyKwh: number }[]> 
 }
 
 /** Top stations by real energy delivered. */
-export function getTopStations(limit = 5): Promise<{ name: string; energyKwh: number }[]> {
+export function getTopStations(
+  city: City,
+  limit = 5
+): Promise<{ name: string; energyKwh: number }[]> {
   return delay(
-    [...data().sites]
+    [...data(city).sites]
       .sort((a, b) => b.energyKwh - a.energyKwh)
       .slice(0, limit)
       .map((s) => ({ name: s.name, energyKwh: s.energyKwh }))
@@ -158,9 +165,9 @@ function bucketKey(date: string, g: Granularity): string {
   return date.slice(0, 7); // month
 }
 
-function trend(granularity: Granularity, scale: number, digits: number): TimeSeriesPoint[] {
+function trend(city: City, granularity: Granularity, scale: number, digits: number): TimeSeriesPoint[] {
   const buckets = new Map<string, number>();
-  for (const r of data().dailyTotals) {
+  for (const r of data(city).dailyTotals) {
     const k = bucketKey(r.date, granularity);
     buckets.set(k, (buckets.get(k) ?? 0) + r.energyKwh * scale);
   }
@@ -169,26 +176,26 @@ function trend(granularity: Granularity, scale: number, digits: number): TimeSer
     .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 }
 
-export function getEnergyTrend(g: Granularity): Promise<TimeSeriesPoint[]> {
-  return delay(trend(g, 1, 0));
+export function getEnergyTrend(city: City, g: Granularity): Promise<TimeSeriesPoint[]> {
+  return delay(trend(city, g, 1, 0));
 }
-export function getCo2Trend(g: Granularity): Promise<TimeSeriesPoint[]> {
-  return delay(trend(g, data().co2PerKwh, 0));
+export function getCo2Trend(city: City, g: Granularity): Promise<TimeSeriesPoint[]> {
+  return delay(trend(city, g, data(city).co2PerKwh, 0));
 }
 
 // --- heatmaps -----------------------------------------------------------------
 
-export function getUtilizationHeatmap(siteId?: string): Promise<HeatmapCell[]> {
-  return delay(heatToCells(heatFor(siteId)));
+export function getUtilizationHeatmap(city: City, siteId?: string): Promise<HeatmapCell[]> {
+  return delay(heatToCells(heatFor(city, siteId)));
 }
-export function getCo2Heatmap(siteId?: string): Promise<HeatmapCell[]> {
-  return delay(heatToCells(heatFor(siteId), data().co2PerKwh));
+export function getCo2Heatmap(city: City, siteId?: string): Promise<HeatmapCell[]> {
+  return delay(heatToCells(heatFor(city, siteId), data(city).co2PerKwh));
 }
 
 // --- site comparison ----------------------------------------------------------
 
-export function getSiteComparison(): Promise<SiteComparison[]> {
-  const rows: SiteComparison[] = data().sites.map((s) => ({
+export function getSiteComparison(city: City): Promise<SiteComparison[]> {
+  const rows: SiteComparison[] = data(city).sites.map((s) => ({
     siteId: s.id,
     name: s.name,
     city: s.city,
@@ -204,8 +211,8 @@ export function getSiteComparison(): Promise<SiteComparison[]> {
 // secondary rate, ~$0.11/kWh. Used only to estimate the cost side of revenue.
 const ELECTRICITY_COST_PER_KWH = 0.11;
 
-export function getPerformanceStats(): Promise<PerformanceStats> {
-  const d = data();
+export function getPerformanceStats(city: City): Promise<PerformanceStats> {
+  const d = data(city);
   return delay({
     avgSessionDurationMin: d.avgDurationMin,
     avgEnergyPerSession: +(d.totalEnergyKwh / d.totalSessions).toFixed(1),
@@ -214,15 +221,19 @@ export function getPerformanceStats(): Promise<PerformanceStats> {
     totalRevenue: d.totalRevenue,
     avgRevenuePerSession: +(d.totalRevenue / d.totalSessions).toFixed(2),
     electricityCost: Math.round(d.totalEnergyKwh * ELECTRICITY_COST_PER_KWH),
+    uniqueDrivers: d.uniqueDrivers,
+    sessionsPerDriver: d.uniqueDrivers
+      ? +(d.totalSessions / d.uniqueDrivers).toFixed(1)
+      : undefined,
   });
 }
 
 // --- Load Utilization ---------------------------------------------------------
 
-export function getLoadStats(siteId?: string): Promise<LoadStats> {
-  const d = data();
-  const heat = heatFor(siteId);
-  const profile = hourlyProfile(heat);
+export function getLoadStats(city: City, siteId?: string): Promise<LoadStats> {
+  const d = data(city);
+  const heat = heatFor(city, siteId);
+  const profile = hourlyProfile(city, heat);
   const totalEnergyKwh = heat.reduce((s, v) => s + v, 0);
   let peakHour = 0;
   for (let h = 1; h < 24; h++) if (profile[h] > profile[peakHour]) peakHour = h;
@@ -239,9 +250,9 @@ export function getLoadStats(siteId?: string): Promise<LoadStats> {
 }
 
 /** Station picker options, sorted by total energy (busiest first). */
-export function getStationOptions(): Promise<{ id: string; name: string; zip: string }[]> {
+export function getStationOptions(city: City): Promise<{ id: string; name: string; zip: string }[]> {
   return delay(
-    [...data().sites]
+    [...data(city).sites]
       .sort((a, b) => b.energyKwh - a.energyKwh)
       .map((s) => ({ id: s.id, name: s.name, zip: s.zip }))
   );
@@ -251,14 +262,14 @@ export function getStationOptions(): Promise<{ id: string; name: string; zip: st
  * Average hourly energy (kWh) profile for the given stations (keyed by site id).
  * Returns the plot rows plus the series metadata (name + ZIP area) for legends.
  */
-export function getStationHourly(ids: string[]): Promise<{
+export function getStationHourly(city: City, ids: string[]): Promise<{
   rows: { hour: number; [id: string]: number }[];
   series: { id: string; name: string; zip: string }[];
 }> {
-  const d = data();
+  const d = data(city);
   const chosen = d.sites.filter((s) => ids.includes(s.id));
   const series = chosen.map((s) => ({ id: s.id, name: s.name, zip: s.zip }));
-  const profiles = chosen.map((s) => ({ id: s.id, profile: hourlyProfile(s.heat) }));
+  const profiles = chosen.map((s) => ({ id: s.id, profile: hourlyProfile(city, s.heat) }));
   const rows: { hour: number; [id: string]: number }[] = [];
   for (let h = 0; h < 24; h++) {
     const row: { hour: number; [id: string]: number } = { hour: h };
@@ -274,10 +285,10 @@ export function getStationHourly(ids: string[]): Promise<{
  * capacity, so this uses real demand intensity + charger utilization as a proxy
  * for the reviewer's ">95% occupancy" idea rather than true occupancy.
  */
-export function getExpansionSignals(): Promise<
+export function getExpansionSignals(city: City): Promise<
   { zip: string; stations: number; energyKwh: number; energyPerStation: number; utilizationPct: number }[]
 > {
-  const d = data();
+  const d = data(city);
   const byZip = new Map<string, { stations: number; energyKwh: number; util: number }>();
   for (const s of d.sites) {
     const cur = byZip.get(s.zip) ?? { stations: 0, energyKwh: 0, util: 0 };
@@ -296,8 +307,8 @@ export function getExpansionSignals(): Promise<
   return delay(rows.sort((a, b) => b.energyPerStation - a.energyPerStation));
 }
 
-export function getDemandForecast(siteId?: string): Promise<ForecastPoint[]> {
-  const profile = hourlyProfile(heatFor(siteId));
+export function getDemandForecast(city: City, siteId?: string): Promise<ForecastPoint[]> {
+  const profile = hourlyProfile(city, heatFor(city, siteId));
   const points: ForecastPoint[] = [];
   const start = new Date(DEMO_NOW_MS);
   start.setMinutes(0, 0, 0);
@@ -314,8 +325,8 @@ export function getDemandForecast(siteId?: string): Promise<ForecastPoint[]> {
   return delay(points);
 }
 
-export function getLoadOptimization(siteId?: string): Promise<LoadOptimization> {
-  const profile = hourlyProfile(heatFor(siteId));
+export function getLoadOptimization(city: City, siteId?: string): Promise<LoadOptimization> {
+  const profile = hourlyProfile(city, heatFor(city, siteId));
   const ranked = profile.map((kwh, hour) => ({ hour, kwh })).sort((a, b) => b.kwh - a.kwh);
   const avg = profile.reduce((s, v) => s + v, 0) / 24;
   const peakHours = ranked.slice(0, 3);
@@ -328,64 +339,15 @@ export function getLoadOptimization(siteId?: string): Promise<LoadOptimization> 
   return delay({ peakHours, offPeakHours, peakKwh: peakHours[0]?.kwh ?? 0, shiftableKwh });
 }
 
-// --- Infrastructure Planning (real public-station inventory, Colorado AFDC) ----
-// This is a second real, independent dataset: the full public EV-charging
-// landscape of Boulder (204 stations across 11 networks), separate from the
-// City's own sessions data used elsewhere.
-
-const infra = stationsData as unknown as {
-  meta: {
-    source: string;
-    total: number;
-    l2Ports: number;
-    dcFastPorts: number;
-    networks: number;
-    newestYear: number;
-    newestYearCount: number;
-  };
-  byNetwork: NetworkCount[];
-  byConnector: ConnectorCount[];
-  growth: GrowthPoint[];
-  stations: PublicStation[];
-};
-
 /**
- * AC vs DC split of the CITY-OPERATED fleet (the 50 stations in the session
- * dataset). Every one is Level 2 (AC / J1772) per the real Port_Type field, so
- * DC = 0. DC fast charging is a Sprint 3 / Infrastructure expansion item.
+ * AC vs DC split of the CITY-OPERATED fleet. Every station in both cities'
+ * session datasets is Level 2 (AC / J1772), so DC = 0. DC fast charging is a
+ * Sprint 3 / Infrastructure expansion item.
  */
-export function getChargerPowerMix(): Promise<{ ac: number; dc: number; total: number }> {
+export function getChargerPowerMix(city: City): Promise<{ ac: number; dc: number; total: number }> {
   const DC = new Set<string>(["CCS", "CHAdeMO"]);
-  const sites = data().sites;
+  const sites = data(city).sites;
   const total = sites.length;
   const dc = sites.filter((s) => s.connectorTypes.some((c) => DC.has(c))).length;
   return delay({ ac: total - dc, dc, total });
-}
-
-export function getInfraStats(): Promise<InfraStats> {
-  const m = infra.meta;
-  return delay({
-    totalStations: m.total,
-    l2Ports: m.l2Ports,
-    dcFastPorts: m.dcFastPorts,
-    networks: m.networks,
-    newestYear: m.newestYear,
-    newestYearCount: m.newestYearCount,
-  });
-}
-
-export function getStationsByNetwork(): Promise<NetworkCount[]> {
-  return delay(infra.byNetwork);
-}
-
-export function getConnectorMix(): Promise<ConnectorCount[]> {
-  return delay(infra.byConnector);
-}
-
-export function getInfraGrowth(): Promise<GrowthPoint[]> {
-  return delay(infra.growth);
-}
-
-export function getPublicStations(): Promise<PublicStation[]> {
-  return delay(infra.stations);
 }

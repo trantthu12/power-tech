@@ -34,11 +34,16 @@ export function LoadUtilization() {
   const stationOptions = useStationOptions();
   // Default to the 5 busiest stations once the options load.
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
+  // Default to the 5 busiest; also re-seed when the city switches (old ids invalid).
   useEffect(() => {
-    if (stationOptions.data && selectedStations.length === 0) {
-      setSelectedStations(stationOptions.data.slice(0, 5).map((o) => o.id));
-    }
-  }, [stationOptions.data, selectedStations.length]);
+    const opts = stationOptions.data;
+    if (!opts) return;
+    const valid = new Set(opts.map((o) => o.id));
+    setSelectedStations((prev) => {
+      const keep = prev.filter((id) => valid.has(id));
+      return keep.length ? keep : opts.slice(0, 5).map((o) => o.id);
+    });
+  }, [stationOptions.data]);
   const stationHourly = useStationHourly(selectedStations);
   const expansion = useExpansionSignals();
 

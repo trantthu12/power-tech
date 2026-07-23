@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import { Card, CardHeader } from "./ui/Card";
 import { useSites } from "@/lib/queries";
-
-// Boulder, CO (fallback center before the sites load / fit).
-const DEFAULT_CENTER: [number, number] = [40.015, -105.2705];
+import { useCity } from "@/lib/city-context";
+import { cityMeta } from "@/lib/cities";
 
 /** Auto-zoom to frame the whole PowerTech network. */
 function FitToSites({ points }: { points: [number, number][] }) {
@@ -18,6 +17,8 @@ function FitToSites({ points }: { points: [number, number][] }) {
 }
 
 export function StationMap() {
+  const { city } = useCity();
+  const place = cityMeta(city);
   const { data: sites } = useSites();
   const rows = sites ?? [];
   const points = rows.map((s) => [s.lat, s.lng] as [number, number]);
@@ -27,12 +28,13 @@ export function StationMap() {
       <div className="p-5 pb-3">
         <CardHeader
           title="Locations"
-          subtitle={`PowerTech network, ${rows.length} real stations in Boulder, CO`}
+          subtitle={`PowerTech network, ${rows.length} real stations in ${place.place}`}
         />
       </div>
       <div className="relative h-[360px] w-full">
         <MapContainer
-          center={DEFAULT_CENTER}
+          key={city}
+          center={place.center}
           zoom={10}
           scrollWheelZoom={false}
           className="h-full w-full"

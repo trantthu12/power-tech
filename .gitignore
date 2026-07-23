@@ -36,3 +36,4 @@ scripts/.boulder-raw.json
 
 # Vercel
 .vercel
+scripts/.paloalto-raw.csv

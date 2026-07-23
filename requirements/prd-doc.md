@@ -79,7 +79,19 @@ different stakeholder (Section 4).
 The block diagram names **Palo Alto** and **Boulder** as candidate datasets
 (open data is used because comparable Canadian open data is not available).
 
-The dashboard is built on the **real City of Boulder EV-charging open dataset**:
+The dashboard ships **two real cities** with a header switch (Boulder | Palo
+Alto); every page, KPI, chart, and map re-derives from the selected city.
+
+**City of Palo Alto** (California) is the second dataset — the City's ChargePoint
+usage export: **259,415 real sessions across 47 stations (2011–2020)**. It is
+richer than Boulder in two ways the dashboard uses directly: **real billed Fee**
+(so revenue is actual, not estimated) and **real coordinates** (no geocoding). It
+also carries a **customer User ID**, so Palo Alto shows a **Unique Drivers**
+metric (21,441 drivers, ~12 sessions each) that Boulder's data cannot provide.
+City-exclusive cards are tinted (blue = Palo Alto-only, pink = Boulder-only).
+
+The primary/default city is built on the **real City of Boulder EV-charging open
+dataset**:
 
 - Source: `open-data.bouldercolorado.gov` — dataset
   `95992b3938be4622b07f0b05eba95d4c_0`.

@@ -1,11 +1,20 @@
 import { NavLink } from "react-router-dom";
 import { Zap } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/nav";
+import { useCity } from "@/lib/city-context";
+import type { City } from "@/lib/cities";
 import boulder from "@/data/boulder-data.json";
+import paloAlto from "@/data/palo-alto-data.json";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const [dY, dM, dD] = (boulder as { meta: { dateEnd: string } }).meta.dateEnd.split("-");
-const dataAsOf = `${MONTHS[+dM - 1]} ${+dD}, ${dY}`;
+const META: Record<City, { source: string; dateEnd: string }> = {
+  boulder: { source: "City of Boulder open data", dateEnd: boulder.meta.dateEnd },
+  "palo-alto": { source: "City of Palo Alto open data", dateEnd: paloAlto.meta.dateEnd },
+};
+function formatAsOf(dateEnd: string): string {
+  const [dY, dM, dD] = dateEnd.split("-");
+  return `${MONTHS[+dM - 1]} ${+dD}, ${dY}`;
+}
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -13,6 +22,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
+  const { city } = useCity();
+  const meta = META[city];
   return (
     <>
       {/* Mobile overlay */}
@@ -80,9 +91,9 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         </nav>
 
         <div className="border-t border-white/5 px-5 py-4 text-[11px] leading-relaxed text-slate-500">
-          City of Boulder open data
+          {meta.source}
           <br />
-          Data as of {dataAsOf}
+          Data as of {formatAsOf(meta.dateEnd)}
         </div>
       </aside>
     </>

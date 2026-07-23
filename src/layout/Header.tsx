@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/nav";
 import { useFilter } from "@/lib/filter-context";
+import { CitySwitch } from "@/components/CitySwitch";
 import type { Granularity } from "@/types";
 
 const GRANULARITIES: { value: Granularity; label: string }[] = [
@@ -46,6 +47,7 @@ export function Header({ onOpenNav }: HeaderProps) {
             {current.label}
           </h1>
         </div>
+        <CitySwitch />
       </div>
 
       {current.hasFilter && (

@@ -2,141 +2,141 @@ import { useQuery } from "@tanstack/react-query";
 import type { Granularity } from "@/types";
 import * as api from "@/services/api";
 import { useFilter } from "./filter-context";
+import { useCity } from "./city-context";
 
 export function useNetworkKpis() {
+  const { city } = useCity();
   const { filter } = useFilter();
   return useQuery({
-    queryKey: ["kpis", filter.from, filter.to],
-    queryFn: () => api.getNetworkKpis({ from: filter.from, to: filter.to }),
+    queryKey: ["kpis", city, filter.from, filter.to],
+    queryFn: () => api.getNetworkKpis(city, { from: filter.from, to: filter.to }),
   });
 }
 
 export function useSites() {
-  return useQuery({ queryKey: ["sites"], queryFn: api.getSites });
+  const { city } = useCity();
+  return useQuery({ queryKey: ["sites", city], queryFn: () => api.getSites(city) });
 }
 
 export function useEnergyByZip() {
-  return useQuery({ queryKey: ["energy-by-zip"], queryFn: api.getEnergyByZip });
+  const { city } = useCity();
+  return useQuery({ queryKey: ["energy-by-zip", city], queryFn: () => api.getEnergyByZip(city) });
 }
 
 export function useTopStations(limit = 5) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["top-stations", limit],
-    queryFn: () => api.getTopStations(limit),
+    queryKey: ["top-stations", city, limit],
+    queryFn: () => api.getTopStations(city, limit),
   });
 }
 
 export function useTopStationsByArea(perArea = 3) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["top-stations-by-area", perArea],
-    queryFn: () => api.getTopStationsByArea(perArea),
+    queryKey: ["top-stations-by-area", city, perArea],
+    queryFn: () => api.getTopStationsByArea(city, perArea),
   });
 }
 
 export function useStationOptions() {
-  return useQuery({ queryKey: ["station-options"], queryFn: api.getStationOptions });
+  const { city } = useCity();
+  return useQuery({ queryKey: ["station-options", city], queryFn: () => api.getStationOptions(city) });
 }
 
 export function useStationHourly(ids: string[]) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["station-hourly", ids],
-    queryFn: () => api.getStationHourly(ids),
+    queryKey: ["station-hourly", city, ids],
+    queryFn: () => api.getStationHourly(city, ids),
     enabled: ids.length > 0,
   });
 }
 
 export function useExpansionSignals() {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["expansion-signals"],
-    queryFn: api.getExpansionSignals,
+    queryKey: ["expansion-signals", city],
+    queryFn: () => api.getExpansionSignals(city),
   });
 }
 
 export function useEnergyTrend(granularity: Granularity) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["energy-trend", granularity],
-    queryFn: () => api.getEnergyTrend(granularity),
+    queryKey: ["energy-trend", city, granularity],
+    queryFn: () => api.getEnergyTrend(city, granularity),
   });
 }
 
 export function useCo2Trend(granularity: Granularity) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["co2-trend", granularity],
-    queryFn: () => api.getCo2Trend(granularity),
+    queryKey: ["co2-trend", city, granularity],
+    queryFn: () => api.getCo2Trend(city, granularity),
   });
 }
 
 export function useUtilizationHeatmap(siteId?: string) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["heatmap", siteId ?? "all"],
-    queryFn: () => api.getUtilizationHeatmap(siteId),
+    queryKey: ["heatmap", city, siteId ?? "all"],
+    queryFn: () => api.getUtilizationHeatmap(city, siteId),
   });
 }
 
 export function useCo2Heatmap(siteId?: string) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["co2-heatmap", siteId ?? "all"],
-    queryFn: () => api.getCo2Heatmap(siteId),
+    queryKey: ["co2-heatmap", city, siteId ?? "all"],
+    queryFn: () => api.getCo2Heatmap(city, siteId),
   });
 }
 
 export function useSiteComparison() {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["site-comparison"],
-    queryFn: api.getSiteComparison,
+    queryKey: ["site-comparison", city],
+    queryFn: () => api.getSiteComparison(city),
   });
 }
 
 export function useLoadStats(siteId?: string) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["load-stats", siteId ?? "all"],
-    queryFn: () => api.getLoadStats(siteId),
+    queryKey: ["load-stats", city, siteId ?? "all"],
+    queryFn: () => api.getLoadStats(city, siteId),
   });
 }
 
 export function useDemandForecast(siteId?: string) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["demand-forecast", siteId ?? "all"],
-    queryFn: () => api.getDemandForecast(siteId),
+    queryKey: ["demand-forecast", city, siteId ?? "all"],
+    queryFn: () => api.getDemandForecast(city, siteId),
   });
 }
 
 export function useLoadOptimization(siteId?: string) {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["load-optimization", siteId ?? "all"],
-    queryFn: () => api.getLoadOptimization(siteId),
+    queryKey: ["load-optimization", city, siteId ?? "all"],
+    queryFn: () => api.getLoadOptimization(city, siteId),
   });
 }
 
 export function usePerformanceStats() {
+  const { city } = useCity();
   return useQuery({
-    queryKey: ["performance-stats"],
-    queryFn: api.getPerformanceStats,
+    queryKey: ["performance-stats", city],
+    queryFn: () => api.getPerformanceStats(city),
   });
 }
 
-// --- Infrastructure Planning (real public-station inventory) ------------------
-
-export function useInfraStats() {
-  return useQuery({ queryKey: ["infra-stats"], queryFn: api.getInfraStats });
-}
-
 export function useChargerPowerMix() {
-  return useQuery({ queryKey: ["charger-power-mix"], queryFn: api.getChargerPowerMix });
-}
-
-export function useStationsByNetwork() {
-  return useQuery({ queryKey: ["stations-by-network"], queryFn: api.getStationsByNetwork });
-}
-
-export function useConnectorMix() {
-  return useQuery({ queryKey: ["connector-mix"], queryFn: api.getConnectorMix });
-}
-
-export function useInfraGrowth() {
-  return useQuery({ queryKey: ["infra-growth"], queryFn: api.getInfraGrowth });
-}
-
-export function usePublicStations() {
-  return useQuery({ queryKey: ["public-stations"], queryFn: api.getPublicStations });
+  const { city } = useCity();
+  return useQuery({
+    queryKey: ["charger-power-mix", city],
+    queryFn: () => api.getChargerPowerMix(city),
+  });
 }

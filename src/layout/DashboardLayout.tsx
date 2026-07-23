@@ -3,11 +3,13 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { FilterProvider } from "@/lib/filter-context";
+import { CityProvider } from "@/lib/city-context";
 
 export function DashboardLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
+    <CityProvider>
     <FilterProvider>
       {/* Fixed-height shell: only <main> scrolls → never two scrollbars */}
       <div className="flex h-screen overflow-hidden">
@@ -23,5 +25,6 @@ export function DashboardLayout() {
         </div>
       </div>
     </FilterProvider>
+    </CityProvider>
   );
 }

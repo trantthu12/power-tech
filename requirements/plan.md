@@ -6,6 +6,13 @@
 This plan covers what the front end delivers **this semester (Sprint 2)** and what
 is scheduled for **next semester (Sprint 3)**.
 
+**Two cities, one switch.** The dashboard ships both **Boulder** (default) and
+**Palo Alto**, toggled from a header switch. Selected city lives in a React
+context (persisted to localStorage) and is part of every query key, so switching
+re-derives all pages. Palo Alto adds real billed revenue, real coordinates, and a
+Unique Drivers metric (customer User ID) that Boulder's data lacks; city-exclusive
+cards are tinted (blue = Palo Alto, pink = Boulder).
+
 ---
 
 ## This Semester — Sprint 2 (delivered)

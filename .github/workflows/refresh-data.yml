@@ -1,9 +1,10 @@
-name: Refresh Boulder data
+name: Refresh datasets
 
-# Weekly (Sun 06:00 UTC) + manual. Re-runs the ETL script against the City of
-# Boulder open dataset and commits the refreshed aggregate if it changed, which
-# triggers a Vercel redeploy. Station coordinates are reused from the committed
-# file, so no geocoding is needed in CI.
+# Weekly (Sun 06:00 UTC) + manual. Re-runs the ETL scripts against the City of
+# Boulder and City of Palo Alto open datasets and commits the refreshed
+# aggregates if they changed, which triggers a Vercel redeploy. Boulder station
+# coordinates are reused from the committed file (no geocoding in CI); Palo Alto
+# ships real coordinates.
 on:
   schedule:
     - cron: "0 6 * * 0"
@@ -22,15 +23,15 @@ jobs:
           node-version: 20
       - name: Fetch + aggregate Boulder sessions data
         run: node scripts/fetch-boulder.mjs
-      - name: Fetch public station inventory (Colorado AFDC)
-        run: node scripts/fetch-stations.mjs
+      - name: Fetch + aggregate Palo Alto sessions data
+        run: node scripts/fetch-paloalto.mjs
       - name: Commit if changed
         run: |
           if [ -n "$(git status --porcelain src/data/)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add src/data/boulder-data.json src/data/boulder-stations.json
-            git commit -m "chore: weekly refresh of Boulder datasets"
+            git add src/data/boulder-data.json src/data/palo-alto-data.json
+            git commit -m "chore: weekly refresh of Boulder + Palo Alto datasets"
             git push
           else
             echo "No data changes."
