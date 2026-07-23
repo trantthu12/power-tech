@@ -27,9 +27,11 @@ function formatRange(fromIso: string, toIso: string): string {
 export function Header({ onOpenNav }: HeaderProps) {
   const location = useLocation();
   const { filter, setGranularity } = useFilter();
+  // Match nav items against the path with any /vodap prefix stripped off.
+  const path = location.pathname.replace(/^\/vodap/, "") || "/";
   const current =
     NAV_ITEMS.find((n) =>
-      n.path === "/" ? location.pathname === "/" : location.pathname.startsWith(n.path)
+      n.path === "/" ? path === "/" : path.startsWith(n.path)
     ) ?? NAV_ITEMS[0];
 
   return (

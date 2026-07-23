@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { NAV_ITEMS } from "@/lib/nav";
 import { useCity } from "@/lib/city-context";
 import type { City } from "@/lib/cities";
@@ -23,6 +23,11 @@ interface SidebarProps {
 export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
   const { city } = useCity();
   const meta = META[city];
+  // Preserve the /vodap prefix while navigating so the city switch stays on.
+  const pathname = useLocation().pathname;
+  const underVodap = pathname === "/vodap" || pathname.startsWith("/vodap/");
+  const navTo = (path: string) =>
+    underVodap ? `/vodap${path === "/" ? "" : path}` : path;
   return (
     <>
       {/* Mobile overlay */}
@@ -58,7 +63,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
             return (
               <NavLink
                 key={item.path}
-                to={item.path}
+                to={navTo(item.path)}
                 end={item.path === "/"}
                 onClick={onClose}
                 className={({ isActive }) =>

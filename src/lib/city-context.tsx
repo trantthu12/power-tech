@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { DEFAULT_CITY } from "./cities";
@@ -15,13 +15,10 @@ const CityContext = createContext<CityContextValue | null>(null);
 
 export function CityProvider({ children }: { children: ReactNode }) {
   const pathname = useLocation().pathname;
-  // Visiting /vodap unlocks the switch and keeps it unlocked for the rest of the
-  // session, so it survives client-side navigation to other menu items.
-  // No persistence: a hard reload on any other URL re-locks to Boulder.
-  const [unlocked, setUnlocked] = useState(pathname === "/vodap");
-  useEffect(() => {
-    if (pathname === "/vodap") setUnlocked(true);
-  }, [pathname]);
+  // The switch is available across the whole /vodap URL space (/vodap,
+  // /vodap/stations, …). Any other URL is Boulder-only. No persistence — the
+  // state is fully determined by the URL, so reloads and shares are consistent.
+  const unlocked = pathname === "/vodap" || pathname.startsWith("/vodap/");
 
   const [rawCity, setCity] = useState<City>(DEFAULT_CITY);
 
