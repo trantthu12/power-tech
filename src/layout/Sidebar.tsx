@@ -42,15 +42,15 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         ].join(" ")}
       >
         {/* Brand: PowerTech (client). Transparent logo sits directly on the dark rail. */}
-        <div className="px-5 py-6">
+        <div className="px-5 pb-2 pt-5">
           <img
             src="/powertech-logo.png"
             alt="PowerTech"
-            className="mx-auto h-20 w-auto object-contain"
+            className="mx-auto h-18 w-auto object-contain"
           />
         </div>
 
-        <nav className="mt-2 flex-1 overflow-y-auto py-2">
+        <nav className="flex-1 overflow-y-auto py-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
