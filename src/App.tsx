@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
 import { NetworkOverview } from "@/pages/NetworkOverview";
 import { Stations } from "@/pages/Stations";
@@ -7,18 +7,13 @@ import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
 import { InfrastructurePlanning } from "@/pages/InfrastructurePlanning";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
-/** Secret unlock: visiting /vodap enables the Boulder/Palo Alto city switch. */
-function UnlockCities() {
-  localStorage.setItem("powertech.unlockCities", "1");
-  return <Navigate to="/" replace />;
-}
-
 export default function App() {
   return (
     <Routes>
-      <Route path="/vodap" element={<UnlockCities />} />
       <Route element={<DashboardLayout />}>
         <Route index element={<NetworkOverview />} />
+        {/* Same landing as "/", but this URL reveals the city switch. */}
+        <Route path="vodap" element={<NetworkOverview />} />
         <Route path="stations" element={<Stations />} />
         <Route path="load-utilization" element={<LoadUtilization />} />
         <Route path="performance" element={<PerformanceAnalytics />} />

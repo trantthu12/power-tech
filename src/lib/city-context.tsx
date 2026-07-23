@@ -1,41 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { DEFAULT_CITY } from "./cities";
 import type { City } from "./cities";
 
 interface CityContextValue {
   city: City;
   setCity: (c: City) => void;
-  /** Whether the city switch is unlocked (via the /vodap route). */
+  /** Whether the city switch is available (only on the /vodap route). */
   unlocked: boolean;
 }
 
 const CityContext = createContext<CityContextValue | null>(null);
-const STORAGE_KEY = "powertech.city";
-const UNLOCK_KEY = "powertech.unlockCities";
-
-/** The multi-city switch is hidden by default; visiting /vodap unlocks it. */
-export function citiesUnlocked(): boolean {
-  return typeof localStorage !== "undefined" && localStorage.getItem(UNLOCK_KEY) === "1";
-}
-
-function initialCity(): City {
-  if (typeof localStorage !== "undefined") {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === "boulder" || saved === "palo-alto") return saved;
-  }
-  return DEFAULT_CITY;
-}
 
 export function CityProvider({ children }: { children: ReactNode }) {
-  const unlocked = citiesUnlocked();
-  const [rawCity, setCity] = useState<City>(initialCity);
+  // The switch is revealed only at the /vodap URL — no persistence, no redirect.
+  const unlocked = useLocation().pathname === "/vodap";
+  const [rawCity, setCity] = useState<City>(DEFAULT_CITY);
 
-  useEffect(() => {
-    if (typeof localStorage !== "undefined") localStorage.setItem(STORAGE_KEY, rawCity);
-  }, [rawCity]);
-
-  // When locked, the whole dashboard is Boulder-only regardless of any saved city.
+  // Every other URL is Boulder-only.
   const city = unlocked ? rawCity : DEFAULT_CITY;
 
   return (
