@@ -41,15 +41,13 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
-        {/* Brand: PowerTech (client). Logo art is on white, so it sits in a white card. */}
-        <div className="px-5 py-5">
-          <div className="rounded-xl bg-white p-3 shadow-sm">
-            <img
-              src="/powertech-logo.png"
-              alt="PowerTech"
-              className="mx-auto h-16 w-auto object-contain"
-            />
-          </div>
+        {/* Brand: PowerTech (client). Transparent logo sits directly on the dark rail. */}
+        <div className="px-5 py-6">
+          <img
+            src="/powertech-logo.png"
+            alt="PowerTech"
+            className="mx-auto h-20 w-auto object-contain"
+          />
         </div>
 
         <nav className="mt-2 flex-1 overflow-y-auto py-2">
@@ -93,11 +91,11 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
         <div className="border-t border-white/5 px-5 py-4">
           {/* Academic attribution: SFU (the team). Logo art is on white, so it sits in a white card. */}
-          <div className="mb-3 rounded-lg bg-white px-3 py-2">
+          <div className="mb-3 rounded-lg bg-white px-3 py-2.5">
             <img
               src="/sfu-logo.png"
               alt="Simon Fraser University"
-              className="h-6 w-auto object-contain"
+              className="h-auto w-full object-contain"
             />
           </div>
           <p className="text-[11px] leading-relaxed text-slate-500">
