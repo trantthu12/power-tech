@@ -75,13 +75,13 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           })}
         </nav>
 
-        <div className="border-t border-white/5 px-5 py-4">
-          {/* Academic attribution: SFU (the team). Logo art is on white, so it sits in a white card. */}
-          <div className="rounded-lg bg-white px-3 py-2.5">
+        {/* Academic attribution: SFU (the team). Compact white chip, matching the PowerTech badge. */}
+        <div className="flex justify-center border-t border-white/5 px-5 py-5">
+          <div className="rounded-xl bg-white p-2.5 shadow-sm">
             <img
               src="/sfu-logo.png"
               alt="Simon Fraser University"
-              className="h-auto w-full object-contain"
+              className="h-8 w-auto object-contain"
             />
           </div>
         </div>
