@@ -1,5 +1,19 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS } from "@/lib/nav";
+import { useCity } from "@/lib/city-context";
+import type { City } from "@/lib/cities";
+import boulder from "@/data/boulder-data.json";
+import paloAlto from "@/data/palo-alto-data.json";
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const META: Record<City, { source: string; dateEnd: string }> = {
+  boulder: { source: "City of Boulder open data", dateEnd: boulder.meta.dateEnd },
+  "palo-alto": { source: "City of Palo Alto open data", dateEnd: paloAlto.meta.dateEnd },
+};
+function formatAsOf(dateEnd: string): string {
+  const [dY, dM, dD] = dateEnd.split("-");
+  return `${MONTHS[+dM - 1]} ${+dD}, ${dY}`;
+}
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -7,6 +21,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
+  const { city } = useCity();
+  const meta = META[city];
   return (
     <>
       {/* Mobile overlay */}
@@ -76,14 +92,23 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* Academic attribution: SFU (the team). Compact white chip, matching the PowerTech badge. */}
-        <div className="flex justify-center border-t border-white/5 px-5 py-5">
-          <div className="rounded-xl bg-white p-2.5 shadow-sm">
-            <img
-              src="/sfu-logo.png"
-              alt="Simon Fraser University"
-              className="h-8 w-auto object-contain"
-            />
+        <div className="border-t border-white/5 px-5 py-5">
+          <div className="flex justify-center">
+            <div className="rounded-xl bg-white p-2.5 shadow-sm">
+              <img
+                src="/sfu-logo.png"
+                alt="Simon Fraser University"
+                className="h-8 w-auto object-contain"
+              />
+            </div>
           </div>
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-slate-500">
+            SFU capstone project
+            <br />
+            {meta.source}
+            <br />
+            Data as of {formatAsOf(meta.dateEnd)}
+          </p>
         </div>
       </aside>
     </>
