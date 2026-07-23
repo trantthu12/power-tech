@@ -65,13 +65,13 @@ export function PerformanceAnalytics() {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <KpiCard
-              label="Unique Drivers"
+              label="Registered Drivers"
               value={formatNumber(stats.uniqueDrivers)}
               tint="blue"
               loading={statsLoading}
             />
             <KpiCard
-              label="Sessions / Driver"
+              label="Avg Charges / Driver"
               value={stats.sessionsPerDriver ?? "—"}
               tint="blue"
               loading={statsLoading}
