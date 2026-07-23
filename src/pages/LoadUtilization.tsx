@@ -61,7 +61,7 @@ export function LoadUtilization() {
           value={stats.data ? `${stats.data.avgUtilizationPct}%` : "—"}
           accent
           loading={stats.isLoading}
-          hint="Time actually charging ÷ total time plugged in. Higher = less idle-blocking after charge finishes."
+          hint="Time actually charging / total time plugged in. Higher = less idle-blocking after charge finishes."
         />
         <KpiCard
           label="Peak Hour"

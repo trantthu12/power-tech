@@ -61,7 +61,7 @@ export interface NetworkKpis {
   totalCo2Kg: number;
   /** Gasoline displaced (US gallons) — real GHG co-benefit from the dataset */
   totalGasolineGal: number;
-  /** Charger utilization: active charging time ÷ total plugged-in time (%) */
+  /** Charger utilization: active charging time / total plugged-in time (%) */
   avgUtilizationPct: number;
   /** Share of stations that are AC (Level 2) vs DC fast (%) */
   acSharePct: number;
@@ -139,7 +139,7 @@ export interface LoadStats {
   totalEnergyKwh: number;
   /** Total CO2 avoided (kg) */
   totalCo2Kg: number;
-  /** Charger utilization: active charging time ÷ total plugged-in time (%) */
+  /** Charger utilization: active charging time / total plugged-in time (%) */
   avgUtilizationPct: number;
 }
 

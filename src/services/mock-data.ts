@@ -18,7 +18,7 @@ export interface SiteAgg extends Site {
   /** Estimated revenue (USD) from the real City of Boulder L2 time tariff */
   revenue: number;
   avgDurationMin: number;
-  /** Charger utilization: active charging time ÷ total plugged-in time (%) */
+  /** Charger utilization: active charging time / total plugged-in time (%) */
   utilizationPct: number;
   /** 168 cells: energy (kWh) per dayOfWeek*24 + hour, over the whole dataset */
   heat: number[];

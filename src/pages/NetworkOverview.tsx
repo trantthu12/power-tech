@@ -99,7 +99,7 @@ export function NetworkOverview() {
           label="Charging Efficiency"
           value={kpis ? `${kpis.avgUtilizationPct}%` : "—"}
           loading={isLoading}
-          hint="Time charging ÷ time plugged in."
+          hint="Time charging / time plugged in."
         />
       </div>
 

@@ -213,7 +213,7 @@ export function Stations() {
                   "Charging Efficiency",
                   "utilizationPct",
                   true,
-                  "Charging efficiency = time actually charging ÷ total time plugged in. Low % = vehicles idle-blocking the port after charging finishes."
+                  "Charging efficiency = time actually charging / total time plugged in. Low % = vehicles idle-blocking the port after charging finishes."
                 )}
               </tr>
             </thead>
