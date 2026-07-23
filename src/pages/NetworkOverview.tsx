@@ -91,9 +91,10 @@ export function NetworkOverview() {
           loading={isLoading}
         />
         <KpiCard
-          label="Charger Utilization"
+          label="Charging Efficiency"
           value={kpis ? `${kpis.avgUtilizationPct}%` : "—"}
           loading={isLoading}
+          hint="Time charging ÷ time plugged in."
         />
       </div>
 

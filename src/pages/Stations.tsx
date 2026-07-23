@@ -210,10 +210,10 @@ export function Stations() {
                 {th("CO₂ (kg)", "co2Kg", true)}
                 {th("Avg Duration", "avgDurationMin", true)}
                 {th(
-                  "Utilization",
+                  "Charging Efficiency",
                   "utilizationPct",
                   true,
-                  "Charger utilization = active charging time ÷ total plugged-in time. Low % = vehicles idle-blocking the port after charging finishes."
+                  "Charging efficiency = time actually charging ÷ total time plugged in. Low % = vehicles idle-blocking the port after charging finishes."
                 )}
               </tr>
             </thead>

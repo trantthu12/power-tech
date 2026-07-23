@@ -13,6 +13,8 @@ interface KpiCardProps {
   loading?: boolean;
   /** City-exclusive tint: blue = Palo Alto-only, pink = Boulder-only. */
   tint?: "blue" | "pink";
+  /** Small formula/explanation line shown under the value. */
+  hint?: string;
 }
 
 const TINTS = {
@@ -29,6 +31,7 @@ export function KpiCard({
   accent = false,
   loading = false,
   tint,
+  hint,
 }: KpiCardProps) {
   return (
     <div
@@ -57,6 +60,9 @@ export function KpiCard({
           </span>
           {unit && <span className="pb-0.5 text-sm text-slate-400">{unit}</span>}
         </div>
+      )}
+      {!loading && hint && (
+        <p className="mt-2 text-[11px] leading-snug text-slate-400">{hint}</p>
       )}
       {!loading && deltaPct !== undefined && (
         <div

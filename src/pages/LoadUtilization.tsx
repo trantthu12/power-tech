@@ -57,33 +57,38 @@ export function LoadUtilization() {
       {/* Stat tiles — all real */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <KpiCard
-          label="Charger Utilization"
+          label="Charging Efficiency"
           value={stats.data ? `${stats.data.avgUtilizationPct}%` : "—"}
           accent
           loading={stats.isLoading}
+          hint="Time actually charging ÷ total time plugged in. Higher = less idle-blocking after charge finishes."
         />
         <KpiCard
           label="Peak Hour"
           value={stats.data ? formatHour(stats.data.peakHour) : "—"}
           loading={stats.isLoading}
+          hint="Hour of day with the highest average energy demand."
         />
         <KpiCard
           label="Peak Load"
           value={stats.data ? formatNumber(stats.data.peakLoadKwh) : "—"}
           unit="kWh/h"
           loading={stats.isLoading}
+          hint="Avg kWh delivered network-wide during the peak hour."
         />
         <KpiCard
           label="Total Energy"
           value={stats.data ? formatNumber(stats.data.totalEnergyKwh) : "—"}
           unit="kWh"
           loading={stats.isLoading}
+          hint="Sum of all energy delivered (per station, or whole network)."
         />
         <KpiCard
           label="CO₂ Avoided"
           value={stats.data ? formatNumber(stats.data.totalCo2Kg) : "—"}
           unit="kg"
           loading={stats.isLoading}
+          hint="Emissions avoided vs an equivalent gasoline car."
         />
       </div>
 
@@ -192,7 +197,7 @@ export function LoadUtilization() {
                     <th className="py-2 pr-4 font-semibold">Area (ZIP)</th>
                     <th className="py-2 pr-4 text-right font-semibold">Stations</th>
                     <th className="py-2 pr-4 text-right font-semibold">Energy / Station</th>
-                    <th className="py-2 pr-4 text-right font-semibold">Utilization</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Charging Efficiency</th>
                     <th className="py-2 font-semibold">Signal</th>
                   </tr>
                 </thead>
@@ -221,7 +226,7 @@ export function LoadUtilization() {
               </table>
             </div>
             <p className="mt-3 text-xs text-slate-400">
-              Ranked by real demand intensity + charger utilization. (True port
+              Ranked by real demand intensity + charging efficiency. (True port
               occupancy needs station capacity data, planned for Sprint 3. This
               uses demand-per-station as the available proxy.)
             </p>
