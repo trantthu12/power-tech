@@ -3,7 +3,8 @@ import { CITIES } from "@/lib/cities";
 
 /** Segmented toggle to switch the whole dashboard between cities. */
 export function CitySwitch() {
-  const { city, setCity } = useCity();
+  const { city, setCity, unlocked } = useCity();
+  if (!unlocked) return null;
   return (
     <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1">
       {CITIES.map((c) => (
