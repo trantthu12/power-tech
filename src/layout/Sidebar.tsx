@@ -1,19 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS } from "@/lib/nav";
-import { useCity } from "@/lib/city-context";
-import type { City } from "@/lib/cities";
-import boulder from "@/data/boulder-data.json";
-import paloAlto from "@/data/palo-alto-data.json";
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const META: Record<City, { source: string; dateEnd: string }> = {
-  boulder: { source: "City of Boulder open data", dateEnd: boulder.meta.dateEnd },
-  "palo-alto": { source: "City of Palo Alto open data", dateEnd: paloAlto.meta.dateEnd },
-};
-function formatAsOf(dateEnd: string): string {
-  const [dY, dM, dD] = dateEnd.split("-");
-  return `${MONTHS[+dM - 1]} ${+dD}, ${dY}`;
-}
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -21,8 +7,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
-  const { city } = useCity();
-  const meta = META[city];
   return (
     <>
       {/* Mobile overlay */}
@@ -41,13 +25,15 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
-        {/* Brand: PowerTech (client). Transparent logo sits directly on the dark rail. */}
-        <div className="px-5 pb-2 pt-5">
-          <img
-            src="/powertech-logo.png"
-            alt="PowerTech"
-            className="mx-auto h-18 w-auto object-contain"
-          />
+        {/* Brand: PowerTech (client). Compact white badge lifts the logo off the dark rail. */}
+        <div className="flex justify-center px-5 pb-2 pt-5">
+          <div className="rounded-xl bg-white p-2.5 shadow-sm">
+            <img
+              src="/powertech-logo.png"
+              alt="PowerTech"
+              className="h-16 w-auto object-contain"
+            />
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-2">
@@ -91,20 +77,13 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
 
         <div className="border-t border-white/5 px-5 py-4">
           {/* Academic attribution: SFU (the team). Logo art is on white, so it sits in a white card. */}
-          <div className="mb-3 rounded-lg bg-white px-3 py-2.5">
+          <div className="rounded-lg bg-white px-3 py-2.5">
             <img
               src="/sfu-logo.png"
               alt="Simon Fraser University"
               className="h-auto w-full object-contain"
             />
           </div>
-          <p className="text-[11px] leading-relaxed text-slate-500">
-            SFU capstone project
-            <br />
-            {meta.source}
-            <br />
-            Data as of {formatAsOf(meta.dateEnd)}
-          </p>
         </div>
       </aside>
     </>
