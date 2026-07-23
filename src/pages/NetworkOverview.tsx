@@ -64,17 +64,20 @@ export function NetworkOverview() {
           label="Total Charging Stations"
           value={kpis ? formatNumber(kpis.totalStations) : "—"}
           loading={isLoading}
+          hint="City-operated Level 2 ports."
         />
         <KpiCard
           label="Charging Sessions"
           value={kpis ? formatCompact(kpis.totalSessions) : "—"}
           loading={isLoading}
+          hint="Completed charging sessions."
         />
         <KpiCard
           label="Total Energy"
           value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
           unit="kWh"
           loading={isLoading}
+          hint="Energy delivered to vehicles."
         />
         <KpiCard
           label="CO₂ Avoided"
@@ -82,6 +85,7 @@ export function NetworkOverview() {
           unit="kg"
           accent
           loading={isLoading}
+          hint="Vs equivalent gasoline cars."
         />
         <KpiCard
           label="Gasoline Saved"
@@ -89,6 +93,7 @@ export function NetworkOverview() {
           unit="gal"
           accent
           loading={isLoading}
+          hint="Fuel displaced by EV charging."
         />
         <KpiCard
           label="Charging Efficiency"
