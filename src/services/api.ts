@@ -86,6 +86,8 @@ export function getNetworkKpis(
   const win = d.dailyTotals.filter((r) => r.date >= from && r.date <= to);
   const sessions = win.reduce((s, r) => s + r.sessions, 0);
   const energy = win.reduce((s, r) => s + r.energyKwh, 0);
+  const charge = win.reduce((s, r) => s + r.chargeMin, 0);
+  const plugged = win.reduce((s, r) => s + r.durMin, 0);
   // Every city-operated station in the dataset is Level 2 (AC / J1772) — the raw
   // Port_Type field is "Level 2" for all sessions — so DC-fast share is 0.
   const acStations = d.sites.filter((s) => !s.connectorTypes.some((c) => c === "CCS" || c === "CHAdeMO")).length;
@@ -95,7 +97,7 @@ export function getNetworkKpis(
     totalEnergyKwh: Math.round(energy),
     totalCo2Kg: Math.round(energy * d.co2PerKwh),
     totalGasolineGal: Math.round(energy * d.galPerKwh),
-    avgUtilizationPct: d.avgUtilizationPct,
+    avgUtilizationPct: plugged ? Math.round((100 * charge) / plugged) : d.avgUtilizationPct,
     acSharePct: Math.round((100 * acStations) / d.sites.length),
   });
 }

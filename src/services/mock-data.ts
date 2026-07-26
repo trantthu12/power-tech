@@ -28,6 +28,10 @@ export interface DailyTotal {
   date: string;
   sessions: number;
   energyKwh: number;
+  /** Active charging minutes that day (for windowed charging efficiency) */
+  chargeMin: number;
+  /** Total plugged-in minutes that day */
+  durMin: number;
 }
 
 export interface Dataset {

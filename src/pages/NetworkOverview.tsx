@@ -36,6 +36,12 @@ function ChargerMix() {
         <div className="h-24" />
       ) : (
         <div className="space-y-4">
+          <div>
+            <p className="text-3xl font-bold tracking-tight text-navy-900">
+              {formatNumber(data.total)}
+            </p>
+            <p className="text-xs text-slate-400">Total city-operated stations</p>
+          </div>
           {[
             { label: "AC, Level 2 (J1772)", n: data.ac, color: "#2a78d6" },
             { label: "DC Fast (CCS, CHAdeMO)", n: data.dc, color: "#008300" },
@@ -98,7 +104,7 @@ export function NetworkOverview() {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           <KpiCard
             label="Charging Sessions"
             value={kpis ? formatCompact(kpis.totalSessions) : "—"}
@@ -128,6 +134,12 @@ export function NetworkOverview() {
             loading={isLoading}
             hint="Fuel displaced by EV charging."
           />
+          <KpiCard
+            label="Charging Efficiency"
+            value={kpis ? `${kpis.avgUtilizationPct}%` : "—"}
+            loading={isLoading}
+            hint="Time charging / time plugged in."
+          />
         </div>
         <Card>
           <CardHeader
@@ -144,22 +156,6 @@ export function NetworkOverview() {
           )}
         </Card>
       </section>
-
-      {/* Fixed network facts (no per-day data to window) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <KpiCard
-          label="Total Charging Stations"
-          value={kpis ? formatNumber(kpis.totalStations) : "—"}
-          loading={isLoading}
-          hint="City-operated Level 2 ports."
-        />
-        <KpiCard
-          label="Charging Efficiency"
-          value={kpis ? `${kpis.avgUtilizationPct}%` : "—"}
-          loading={isLoading}
-          hint="Time charging / time plugged in."
-        />
-      </div>
 
       {/* Top stations per area + energy per area */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

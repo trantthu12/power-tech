@@ -154,9 +154,11 @@ for (let i = 1; i < lines.length; i++) {
   site.heat[dow * 24 + hour] += energy;
 
   const dateKey = new Date(t.ms + offset).toISOString().slice(0, 10);
-  const dd = daily.get(dateKey) || { sessions: 0, energy: 0 };
+  const dd = daily.get(dateKey) || { sessions: 0, energy: 0, charge: 0, dur: 0 };
   dd.sessions++;
   dd.energy += energy;
+  dd.charge += charging;
+  dd.dur += duration;
   daily.set(dateKey, dd);
 
   const uid = (r[IDX.user] || "").trim();
@@ -190,7 +192,13 @@ const outSites = sites.map((s) => ({
 }));
 
 const dailyTotals = [...daily.entries()]
-  .map(([date, v]) => ({ date, sessions: v.sessions, energyKwh: Math.round(v.energy) }))
+  .map(([date, v]) => ({
+    date,
+    sessions: v.sessions,
+    energyKwh: Math.round(v.energy),
+    chargeMin: Math.round(v.charge),
+    durMin: Math.round(v.dur),
+  }))
   .sort((a, b) => a.date.localeCompare(b.date));
 
 const out = {
