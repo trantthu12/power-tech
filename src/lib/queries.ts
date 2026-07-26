@@ -69,11 +69,22 @@ export function useEnergyTrend(granularity: Granularity) {
   });
 }
 
-export function useCo2Trend(granularity: Granularity) {
+export function useSessionsTrend(granularity: Granularity) {
   const { city } = useCity();
   return useQuery({
-    queryKey: ["co2-trend", city, granularity],
-    queryFn: () => api.getCo2Trend(city, granularity),
+    queryKey: ["sessions-trend", city, granularity],
+    queryFn: () => api.getSessionsTrend(city, granularity),
+  });
+}
+
+/** Windowed energy series driven by the header time filter. */
+export function useEnergySeries() {
+  const { city } = useCity();
+  const { filter } = useFilter();
+  return useQuery({
+    queryKey: ["energy-series", city, filter.from, filter.to, filter.granularity],
+    queryFn: () =>
+      api.getEnergySeries(city, { from: filter.from, to: filter.to }, filter.granularity),
   });
 }
 
@@ -85,11 +96,19 @@ export function useUtilizationHeatmap(siteId?: string) {
   });
 }
 
-export function useCo2Heatmap(siteId?: string) {
+export function useWeekdayWeekendProfile(siteId?: string) {
   const { city } = useCity();
   return useQuery({
-    queryKey: ["co2-heatmap", city, siteId ?? "all"],
-    queryFn: () => api.getCo2Heatmap(city, siteId),
+    queryKey: ["weekday-weekend", city, siteId ?? "all"],
+    queryFn: () => api.getWeekdayWeekendProfile(city, siteId),
+  });
+}
+
+export function useIdleBlockingStations(limit = 5) {
+  const { city } = useCity();
+  return useQuery({
+    queryKey: ["idle-blocking", city, limit],
+    queryFn: () => api.getIdleBlockingStations(city, limit),
   });
 }
 

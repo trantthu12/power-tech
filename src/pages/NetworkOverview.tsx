@@ -4,8 +4,16 @@ import { WipCard } from "@/components/ui/WipCard";
 import { TopStations } from "@/components/TopStations";
 import { EnergyByZip } from "@/components/EnergyByZip";
 import { StationMap } from "@/components/StationMap";
-import { useNetworkKpis, useChargerPowerMix } from "@/lib/queries";
+import { TrendChart } from "@/components/charts/TrendChart";
+import { useNetworkKpis, useChargerPowerMix, useEnergySeries } from "@/lib/queries";
+import { useFilter } from "@/lib/filter-context";
 import { formatCompact, formatNumber } from "@/lib/format";
+
+const RANGE_LABEL: Record<string, string> = {
+  day: "last 30 days",
+  week: "last 90 days",
+  month: "last 12 months",
+};
 
 /** AC vs DC split of the Boulder public charging network (real AFDC connectors). */
 function ChargerMix() {
@@ -55,6 +63,8 @@ function ChargerMix() {
 
 export function NetworkOverview() {
   const { data: kpis, isLoading } = useNetworkKpis();
+  const { filter } = useFilter();
+  const energySeries = useEnergySeries();
 
   return (
     <div className="space-y-5">
@@ -102,6 +112,22 @@ export function NetworkOverview() {
           hint="Time charging / time plugged in."
         />
       </div>
+
+      {/* Windowed trend — follows the time filter (KPIs above use the same range) */}
+      <Card>
+        <CardHeader
+          title="Energy Delivered"
+          subtitle={`kWh over the ${RANGE_LABEL[filter.granularity] ?? "selected range"} (follows the time filter)`}
+        />
+        {energySeries.data && (
+          <TrendChart
+            data={energySeries.data}
+            granularity={filter.granularity}
+            color="#7ac943"
+            valueFormatter={(v) => `${formatNumber(v)} kWh`}
+          />
+        )}
+      </Card>
 
       {/* Top stations per area + energy per area */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

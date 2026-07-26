@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { TrendingUp, AlertCircle } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Heatmap } from "@/components/charts/Heatmap";
@@ -17,6 +18,7 @@ import {
   useStationOptions,
   useStationHourly,
   useExpansionSignals,
+  useIdleBlockingStations,
 } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 
@@ -26,15 +28,26 @@ function formatHour(h: number): string {
 
 export function LoadUtilization() {
   const { data: sites } = useSites();
-  const [siteId, setSiteId] = useState("");
+  // Deep-link target: /load-utilization?station=<id> (e.g. from the Stations table).
+  const [searchParams] = useSearchParams();
+  const stationParam = searchParams.get("station") ?? "";
+  const [siteId, setSiteId] = useState(stationParam);
+  // Follow the ?station param when it changes (drill-down from another page).
+  useEffect(() => {
+    // Syncing local state to an external URL param is a legitimate effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (stationParam) setSiteId(stationParam);
+  }, [stationParam]);
   const heatmap = useUtilizationHeatmap(siteId || undefined);
   const stats = useLoadStats(siteId || undefined);
   const forecast = useDemandForecast(siteId || undefined);
   const optimization = useLoadOptimization(siteId || undefined);
   const stationOptions = useStationOptions();
+  const idleBlocking = useIdleBlockingStations(5);
   // Default to the 5 busiest stations once the options load.
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
-  // Default to the 5 busiest; also re-seed when the city switches (old ids invalid).
+  // Default to the 5 busiest (or the deep-linked station); also re-seed when the
+  // city switches (old ids invalid).
   useEffect(() => {
     const opts = stationOptions.data;
     if (!opts) return;
@@ -44,9 +57,11 @@ export function LoadUtilization() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedStations((prev) => {
       const keep = prev.filter((id) => valid.has(id));
-      return keep.length ? keep : opts.slice(0, 5).map((o) => o.id);
+      if (keep.length) return keep;
+      if (stationParam && valid.has(stationParam)) return [stationParam];
+      return opts.slice(0, 5).map((o) => o.id);
     });
-  }, [stationOptions.data]);
+  }, [stationOptions.data, stationParam]);
   const stationHourly = useStationHourly(selectedStations);
   const expansion = useExpansionSignals();
 
@@ -184,6 +199,63 @@ export function LoadUtilization() {
           )}
         </Card>
       </div>
+
+      {/* Idle-blocking leaderboard — lowest charging efficiency first */}
+      <Card>
+        <CardHeader
+          title="Idle-Blocking Stations"
+          subtitle="Lowest charging efficiency: vehicles plugged in but not charging"
+        />
+        {idleBlocking.data ? (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-140 text-left text-sm">
+                <thead className="border-b border-slate-100 text-xs text-navy-700">
+                  <tr>
+                    <th className="py-2 pr-4 font-semibold">Station</th>
+                    <th className="py-2 pr-4 font-semibold">ZIP</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Charging Efficiency</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Sessions</th>
+                    <th className="py-2 text-right font-semibold">Energy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {idleBlocking.data.map((s) => (
+                    <tr
+                      key={s.id}
+                      onClick={() => setSiteId(s.id)}
+                      title="Show this station's demand heatmap above"
+                      className="cursor-pointer border-b border-slate-50 hover:bg-brand-50/40"
+                    >
+                      <td className="py-2.5 pr-4 font-medium text-navy-800">{s.name}</td>
+                      <td className="py-2.5 pr-4 text-slate-600">{s.zip}</td>
+                      <td className="py-2.5 pr-4 text-right">
+                        <span className="inline-flex items-center gap-1 font-medium text-red-600">
+                          <AlertCircle className="h-3 w-3" />
+                          {s.utilizationPct}%
+                        </span>
+                      </td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">
+                        {formatNumber(s.sessions)}
+                      </td>
+                      <td className="py-2.5 text-right text-slate-600">
+                        {formatNumber(s.energyKwh)} kWh
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              Charging efficiency = active charging time / total plugged-in time. A
+              low % means cars sit plugged in after charging finishes, blocking the
+              port for others. Click a row to see that station's demand pattern.
+            </p>
+          </>
+        ) : (
+          <Skeleton className="h-40 w-full rounded-lg" />
+        )}
+      </Card>
 
       {/* Expansion recommendation — highest-demand areas first */}
       <Card>

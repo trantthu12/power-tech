@@ -4,15 +4,16 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { SiteComparisonChart } from "@/components/charts/SiteComparisonChart";
 import { Heatmap } from "@/components/charts/Heatmap";
+import { WeekdayWeekendChart } from "@/components/charts/WeekdayWeekendChart";
 import { GranularityToggle } from "@/components/ui/GranularityToggle";
 import type { Granularity } from "@/types";
 import {
   useEnergyTrend,
-  useCo2Trend,
+  useSessionsTrend,
   usePerformanceStats,
   useSiteComparison,
   useUtilizationHeatmap,
-  useCo2Heatmap,
+  useWeekdayWeekendProfile,
 } from "@/lib/queries";
 import { formatNumber, formatCurrency } from "@/lib/format";
 import { useCity } from "@/lib/city-context";
@@ -22,10 +23,10 @@ export function PerformanceAnalytics() {
   const [granularity, setGranularity] = useState<Granularity>("month");
   const { data: stats, isLoading: statsLoading } = usePerformanceStats();
   const energy = useEnergyTrend(granularity);
-  const co2 = useCo2Trend(granularity);
+  const sessions = useSessionsTrend(granularity);
   const sites = useSiteComparison();
   const utilization = useUtilizationHeatmap();
-  const co2Heat = useCo2Heatmap();
+  const profile = useWeekdayWeekendProfile();
 
   return (
     <div className="space-y-5">
@@ -131,13 +132,16 @@ export function PerformanceAnalytics() {
           )}
         </Card>
         <Card>
-          <CardHeader title="CO₂ Avoided" subtitle={`Total kg per ${granularity}`} />
-          {co2.data && (
+          <CardHeader
+            title="Charging Sessions"
+            subtitle={`Total sessions per ${granularity}, EV adoption over time`}
+          />
+          {sessions.data && (
             <TrendChart
-              data={co2.data}
+              data={sessions.data}
               granularity={granularity}
-              color="#5fa32f"
-              valueFormatter={(v) => `${formatNumber(v)} kg`}
+              color="#2a78d6"
+              valueFormatter={(v) => `${formatNumber(v)} sessions`}
             />
           )}
         </Card>
@@ -162,8 +166,11 @@ export function PerformanceAnalytics() {
           {utilization.data && <Heatmap data={utilization.data} color="#5fa32f" valueSuffix=" kWh" />}
         </Card>
         <Card>
-          <CardHeader title="CO₂ Heatmap" subtitle="CO₂ avoided by day & hour · all-time" />
-          {co2Heat.data && <Heatmap data={co2Heat.data} color="#3b4a6b" valueSuffix=" kg" />}
+          <CardHeader
+            title="Weekday vs Weekend"
+            subtitle="Avg kWh per hour of day · all-time"
+          />
+          {profile.data && <WeekdayWeekendChart data={profile.data} />}
         </Card>
       </div>
     </div>

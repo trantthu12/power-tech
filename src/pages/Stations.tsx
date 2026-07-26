@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
   ChevronsUpDown,
@@ -32,6 +33,12 @@ const DEFAULT_KEY: SortKey = "energyKwh";
 export function Stations() {
   const { data: sites, isLoading } = useSites();
   const rows = useMemo(() => (sites ?? []) as SiteAgg[], [sites]);
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const underVodap = pathname === "/vodap" || pathname.startsWith("/vodap/");
+  const openStation = (id: string) =>
+    navigate(`${underVodap ? "/vodap" : ""}/load-utilization?station=${id}`);
 
   const [query, setQuery] = useState("");
   // sortKey === null → unsorted (natural DEFAULT_KEY desc order)
@@ -234,7 +241,12 @@ export function Stations() {
                 </tr>
               ) : (
                 pageRows.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-50 hover:bg-slate-50/50">
+                  <tr
+                    key={r.id}
+                    onClick={() => openStation(r.id)}
+                    title="View this station's load & utilization"
+                    className="cursor-pointer border-b border-slate-50 hover:bg-brand-50/40"
+                  >
                     <td className="px-4 py-3 font-medium text-navy-800">{r.name}</td>
                     <td className="px-4 py-3 text-slate-600">{r.zip}</td>
                     <td className="px-4 py-3">

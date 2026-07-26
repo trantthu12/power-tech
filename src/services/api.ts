@@ -165,22 +165,52 @@ function bucketKey(date: string, g: Granularity): string {
   return date.slice(0, 7); // month
 }
 
-function trend(city: City, granularity: Granularity, scale: number, digits: number): TimeSeriesPoint[] {
+function trendBy(
+  city: City,
+  granularity: Granularity,
+  pick: (r: { sessions: number; energyKwh: number }) => number
+): TimeSeriesPoint[] {
   const buckets = new Map<string, number>();
   for (const r of data(city).dailyTotals) {
     const k = bucketKey(r.date, granularity);
-    buckets.set(k, (buckets.get(k) ?? 0) + r.energyKwh * scale);
+    buckets.set(k, (buckets.get(k) ?? 0) + pick(r));
   }
   return [...buckets.entries()]
-    .map(([timestamp, value]) => ({ timestamp, value: +value.toFixed(digits) }))
+    .map(([timestamp, value]) => ({ timestamp, value: Math.round(value) }))
     .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 }
 
+/** All-time energy delivered, bucketed by granularity (the multi-year view). */
 export function getEnergyTrend(city: City, g: Granularity): Promise<TimeSeriesPoint[]> {
-  return delay(trend(city, g, 1, 0));
+  return delay(trendBy(city, g, (r) => r.energyKwh));
 }
-export function getCo2Trend(city: City, g: Granularity): Promise<TimeSeriesPoint[]> {
-  return delay(trend(city, g, data(city).co2PerKwh, 0));
+/** All-time charging sessions, bucketed by granularity (adoption / growth). */
+export function getSessionsTrend(city: City, g: Granularity): Promise<TimeSeriesPoint[]> {
+  return delay(trendBy(city, g, (r) => r.sessions));
+}
+
+/**
+ * Energy delivered within an explicit date range, bucketed by granularity.
+ * Drives the Network Overview trend so the time filter actually changes a chart.
+ */
+export function getEnergySeries(
+  city: City,
+  range: { from: string; to: string },
+  g: Granularity
+): Promise<TimeSeriesPoint[]> {
+  const from = range.from.slice(0, 10);
+  const to = range.to.slice(0, 10);
+  const buckets = new Map<string, number>();
+  for (const r of data(city).dailyTotals) {
+    if (r.date < from || r.date > to) continue;
+    const k = bucketKey(r.date, g);
+    buckets.set(k, (buckets.get(k) ?? 0) + r.energyKwh);
+  }
+  return delay(
+    [...buckets.entries()]
+      .map(([timestamp, value]) => ({ timestamp, value: Math.round(value) }))
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+  );
 }
 
 // --- heatmaps -----------------------------------------------------------------
@@ -188,8 +218,30 @@ export function getCo2Trend(city: City, g: Granularity): Promise<TimeSeriesPoint
 export function getUtilizationHeatmap(city: City, siteId?: string): Promise<HeatmapCell[]> {
   return delay(heatToCells(heatFor(city, siteId)));
 }
-export function getCo2Heatmap(city: City, siteId?: string): Promise<HeatmapCell[]> {
-  return delay(heatToCells(heatFor(city, siteId), data(city).co2PerKwh));
+
+/**
+ * Average energy (kWh) per hour of day, split into weekday (Mon-Fri) vs weekend
+ * (Sat/Sun). Surfaces the commuter-vs-leisure demand shape from the real heat
+ * pattern (a genuinely different view than the utilization heatmap).
+ */
+export function getWeekdayWeekendProfile(
+  city: City,
+  siteId?: string
+): Promise<{ hour: number; weekday: number; weekend: number }[]> {
+  const heat = heatFor(city, siteId);
+  const perDow = data(city).numDays / 7; // occurrences of each weekday in the dataset
+  const rows: { hour: number; weekday: number; weekend: number }[] = [];
+  for (let h = 0; h < 24; h++) {
+    let wd = 0;
+    for (let dow = 1; dow <= 5; dow++) wd += heat[dow * 24 + h] ?? 0;
+    const we = (heat[0 * 24 + h] ?? 0) + (heat[6 * 24 + h] ?? 0);
+    rows.push({
+      hour: h,
+      weekday: +(wd / (5 * perDow)).toFixed(1),
+      weekend: +(we / (2 * perDow)).toFixed(1),
+    });
+  }
+  return delay(rows);
 }
 
 // --- site comparison ----------------------------------------------------------
@@ -247,6 +299,32 @@ export function getLoadStats(city: City, siteId?: string): Promise<LoadStats> {
     totalCo2Kg: Math.round(totalEnergyKwh * d.co2PerKwh),
     avgUtilizationPct: utilization,
   });
+}
+
+/**
+ * Worst "idle-blocking" stations: lowest charging efficiency (active-charging
+ * time / plugged-in time). A low % means vehicles sit plugged in after charging
+ * finishes, blocking the port for others. Real per-station utilizationPct.
+ */
+export function getIdleBlockingStations(
+  city: City,
+  limit = 5
+): Promise<
+  { id: string; name: string; zip: string; utilizationPct: number; energyKwh: number; sessions: number }[]
+> {
+  const rows = [...data(city).sites]
+    .filter((s) => s.sessions > 0)
+    .sort((a, b) => a.utilizationPct - b.utilizationPct)
+    .slice(0, limit)
+    .map((s) => ({
+      id: s.id,
+      name: s.name,
+      zip: s.zip,
+      utilizationPct: s.utilizationPct,
+      energyKwh: s.energyKwh,
+      sessions: s.sessions,
+    }));
+  return delay(rows);
 }
 
 /** Station picker options, sorted by total energy (busiest first). */
