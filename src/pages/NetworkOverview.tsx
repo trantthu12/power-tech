@@ -157,15 +157,17 @@ export function NetworkOverview() {
         </Card>
       </section>
 
-      {/* Top stations per area + energy per area */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {/* Left: tall per-area list. Right: shorter cards stacked to match height. */}
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
         <TopStations />
-        <EnergyByZip />
+        <div className="space-y-4">
+          <EnergyByZip />
+          <ChargerMix />
+        </div>
       </div>
 
-      {/* Charger mix (real) + Sprint 3 holding cards */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <ChargerMix />
+      {/* Sprint 3 holding cards */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <WipCard
           title="Uptime / Downtime"
           subtitle="Station availability over time"
