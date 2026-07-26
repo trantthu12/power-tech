@@ -108,18 +108,26 @@ loads instantly and deploys as a pure static site (no backend required).
 
 ## Features
 
-- **Network Overview** — headline KPIs (stations, sessions, energy, CO₂ avoided,
-  gasoline saved, charging efficiency), top stations per area, energy by ZIP,
-  charger-type mix, and a station map.
-- **Stations** — searchable, sortable, paginated table of every station with
-  CSV export.
+- **Network Overview** — an **"Over time"** section whose range selector
+  (30 / 90 days / 12 months) drives the windowed KPIs (sessions, energy, CO₂
+  avoided, gasoline saved, charging efficiency) and an energy trend; plus
+  all-time views: top stations per area, energy by ZIP, charger-type mix (with
+  station count), and a station map.
+- **Stations** — searchable, sortable, paginated table of every station with CSV
+  export; click a row to drill into that station on Load Utilization.
 - **Load Utilization** — hourly demand heatmap, per-station hourly energy (up to
-  5 stations), 48-hour demand forecast, load optimization, and an expansion
-  recommendation.
-- **Performance Analytics** — financial view: total revenue, average revenue per
-  session, and electricity cost.
+  5 stations), an idle-blocking leaderboard (lowest charging efficiency), a
+  48-hour demand forecast, load optimization, and an expansion recommendation.
+- **Performance Analytics** — financial KPIs (total revenue, avg revenue per
+  session, electricity cost); an **"Over time"** section with energy and
+  charging-session (adoption) trends; site comparison; a utilization heatmap; and
+  a weekday-vs-weekend hourly profile.
 - **Infrastructure Planning · Sustainability · Fault Diagnostics** — Sprint 3
   pages, currently work-in-progress placeholders.
+
+> Widgets that respond to a time control are grouped in a bounded **"Over time"**
+> section; everything outside it is all-time (per-station data has no per-day
+> breakdown to window).
 
 ## Deployment
 
