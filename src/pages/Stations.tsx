@@ -31,7 +31,7 @@ const DEFAULT_KEY: SortKey = "energyKwh";
 
 export function Stations() {
   const { data: sites, isLoading } = useSites();
-  const rows = (sites ?? []) as SiteAgg[];
+  const rows = useMemo(() => (sites ?? []) as SiteAgg[], [sites]);
 
   const [query, setQuery] = useState("");
   // sortKey === null → unsorted (natural DEFAULT_KEY desc order)

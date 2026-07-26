@@ -11,13 +11,15 @@ export default defineConfig({
     },
   },
   build: {
+    // The entry chunk is mostly the baked dataset JSON (must ship); real code is
+    // already split per route + per vendor below.
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
         // Split heavy libs into their own chunks so they cache independently
         // and don't bloat the entry bundle.
         manualChunks: {
           react: ["react", "react-dom", "react-router-dom"],
-          echarts: ["echarts", "echarts-for-react"],
           recharts: ["recharts"],
           leaflet: ["leaflet", "react-leaflet"],
         },

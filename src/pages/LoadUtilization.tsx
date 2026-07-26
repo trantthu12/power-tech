@@ -39,6 +39,9 @@ export function LoadUtilization() {
     const opts = stationOptions.data;
     if (!opts) return;
     const valid = new Set(opts.map((o) => o.id));
+    // Seeding user-editable selection from async options (and resetting it when
+    // the city changes) is a legitimate sync-to-external-data effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedStations((prev) => {
       const keep = prev.filter((id) => valid.has(id));
       return keep.length ? keep : opts.slice(0, 5).map((o) => o.id);

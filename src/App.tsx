@@ -3,8 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
-// Lazy-load pages so their heavy chart/map libs (echarts, recharts, leaflet)
-// load per-route instead of all landing in the initial bundle.
+// Lazy-load pages so their heavy chart/map libs (recharts, leaflet) load
+// per-route instead of all landing in the initial bundle.
 const NetworkOverview = lazy(() =>
   import("@/pages/NetworkOverview").then((m) => ({ default: m.NetworkOverview }))
 );

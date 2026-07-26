@@ -11,6 +11,10 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 60_000,
       refetchOnWindowFocus: false,
+      retry: 1,
+      // Surface query failures to the nearest ErrorBoundary instead of
+      // leaving the UI stuck on a skeleton forever.
+      throwOnError: true,
     },
   },
 });
