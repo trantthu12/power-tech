@@ -221,12 +221,7 @@ export function LoadUtilization() {
                 </thead>
                 <tbody>
                   {idleBlocking.data.map((s) => (
-                    <tr
-                      key={s.id}
-                      onClick={() => setSiteId(s.id)}
-                      title="Show this station's demand heatmap above"
-                      className="cursor-pointer border-b border-slate-50 hover:bg-brand-50/40"
-                    >
+                    <tr key={s.id} className="border-b border-slate-50">
                       <td className="py-2.5 pr-4 font-medium text-navy-800">{s.name}</td>
                       <td className="py-2.5 pr-4 text-slate-600">{s.zip}</td>
                       <td className="py-2.5 pr-4 text-right">
@@ -249,7 +244,7 @@ export function LoadUtilization() {
             <p className="mt-3 text-xs text-slate-400">
               Charging efficiency = active charging time / total plugged-in time. A
               low % means cars sit plugged in after charging finishes, blocking the
-              port for others. Click a row to see that station's demand pattern.
+              port for others.
             </p>
           </>
         ) : (
