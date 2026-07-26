@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { TrendingUp, AlertCircle } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { KpiCard } from "@/components/ui/KpiCard";
@@ -28,42 +27,28 @@ function formatHour(h: number): string {
 
 export function LoadUtilization() {
   const { data: sites } = useSites();
-  // Deep-link target: /load-utilization?station=<id> (e.g. from the Stations table).
-  const [searchParams] = useSearchParams();
-  const stationParam = searchParams.get("station") ?? "";
-  const [siteId, setSiteId] = useState(stationParam);
-  // Follow the ?station param when it changes (drill-down from another page).
-  useEffect(() => {
-    // Syncing local state to an external URL param is a legitimate effect.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (stationParam) setSiteId(stationParam);
-  }, [stationParam]);
+  const [siteId, setSiteId] = useState("");
   const heatmap = useUtilizationHeatmap(siteId || undefined);
   const stats = useLoadStats(siteId || undefined);
   const forecast = useDemandForecast(siteId || undefined);
   const optimization = useLoadOptimization(siteId || undefined);
   const stationOptions = useStationOptions();
   const idleBlocking = useIdleBlockingStations(5);
-  // Default to the 5 busiest stations once the options load.
+  const expansion = useExpansionSignals();
+
+  // Default to the 5 busiest; re-seed when the city switches (old ids invalid).
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
-  // Default to the 5 busiest (or the deep-linked station); also re-seed when the
-  // city switches (old ids invalid).
   useEffect(() => {
     const opts = stationOptions.data;
     if (!opts) return;
     const valid = new Set(opts.map((o) => o.id));
-    // Seeding user-editable selection from async options (and resetting it when
-    // the city changes) is a legitimate sync-to-external-data effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedStations((prev) => {
       const keep = prev.filter((id) => valid.has(id));
-      if (keep.length) return keep;
-      if (stationParam && valid.has(stationParam)) return [stationParam];
-      return opts.slice(0, 5).map((o) => o.id);
+      return keep.length ? keep : opts.slice(0, 5).map((o) => o.id);
     });
-  }, [stationOptions.data, stationParam]);
+  }, [stationOptions.data]);
   const stationHourly = useStationHourly(selectedStations);
-  const expansion = useExpansionSignals();
 
   const sortedSites = [...(sites ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   const selectedName = siteId

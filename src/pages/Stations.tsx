@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
   ChevronsUpDown,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { StationDetailDrawer } from "@/components/StationDetailDrawer";
 import { useSites } from "@/lib/queries";
 import type { SiteAgg } from "@/services/mock-data";
 import { formatNumber } from "@/lib/format";
@@ -34,11 +34,7 @@ export function Stations() {
   const { data: sites, isLoading } = useSites();
   const rows = useMemo(() => (sites ?? []) as SiteAgg[], [sites]);
 
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const underVodap = pathname === "/vodap" || pathname.startsWith("/vodap/");
-  const openStation = (id: string) =>
-    navigate(`${underVodap ? "/vodap" : ""}/load-utilization?station=${id}`);
+  const [detail, setDetail] = useState<SiteAgg | null>(null);
 
   const [query, setQuery] = useState("");
   // sortKey === null → unsorted (natural DEFAULT_KEY desc order)
@@ -243,8 +239,8 @@ export function Stations() {
                 pageRows.map((r) => (
                   <tr
                     key={r.id}
-                    onClick={() => openStation(r.id)}
-                    title="View this station's load & utilization"
+                    onClick={() => setDetail(r)}
+                    title="View station details"
                     className="cursor-pointer border-b border-slate-50 hover:bg-brand-50/40"
                   >
                     <td className="px-4 py-3 font-medium text-navy-800">{r.name}</td>
@@ -282,6 +278,10 @@ export function Stations() {
           </table>
         </div>
       </Card>
+
+      {detail && (
+        <StationDetailDrawer site={detail} onClose={() => setDetail(null)} />
+      )}
     </div>
   );
 }
