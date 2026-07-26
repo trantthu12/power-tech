@@ -12,9 +12,9 @@ function formatHour(h: number): string {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2">
-      <p className="text-[11px] leading-tight text-slate-500">{label}</p>
-      <p className="text-base font-semibold tabular-nums text-navy-800">{value}</p>
+    <div className="rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2.5">
+      <p className="text-xs leading-tight text-slate-500">{label}</p>
+      <p className="text-lg font-semibold tabular-nums text-navy-800">{value}</p>
     </div>
   );
 }
@@ -55,7 +55,7 @@ export function StationDetailDrawer({
       <div
         role="dialog"
         aria-label={`${site.name} details`}
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-200 sm:max-w-lg ${
+        className={`absolute right-0 top-0 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl transition-transform duration-200 sm:max-w-2xl ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
