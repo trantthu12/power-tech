@@ -1,11 +1,25 @@
+import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
-import { NetworkOverview } from "@/pages/NetworkOverview";
-import { Stations } from "@/pages/Stations";
-import { LoadUtilization } from "@/pages/LoadUtilization";
-import { PerformanceAnalytics } from "@/pages/PerformanceAnalytics";
-import { InfrastructurePlanning } from "@/pages/InfrastructurePlanning";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
+
+// Lazy-load pages so their heavy chart/map libs (echarts, recharts, leaflet)
+// load per-route instead of all landing in the initial bundle.
+const NetworkOverview = lazy(() =>
+  import("@/pages/NetworkOverview").then((m) => ({ default: m.NetworkOverview }))
+);
+const Stations = lazy(() =>
+  import("@/pages/Stations").then((m) => ({ default: m.Stations }))
+);
+const LoadUtilization = lazy(() =>
+  import("@/pages/LoadUtilization").then((m) => ({ default: m.LoadUtilization }))
+);
+const PerformanceAnalytics = lazy(() =>
+  import("@/pages/PerformanceAnalytics").then((m) => ({ default: m.PerformanceAnalytics }))
+);
+const InfrastructurePlanning = lazy(() =>
+  import("@/pages/InfrastructurePlanning").then((m) => ({ default: m.InfrastructurePlanning }))
+);
 
 // The dashboard's page routes. Rendered twice: once at the root, and once under
 // the /vodap prefix, where the city switch is unlocked (see city-context).

@@ -10,4 +10,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split heavy libs into their own chunks so they cache independently
+        // and don't bloat the entry bundle.
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          echarts: ["echarts", "echarts-for-react"],
+          recharts: ["recharts"],
+          leaflet: ["leaflet", "react-leaflet"],
+        },
+      },
+    },
+  },
 });

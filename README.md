@@ -2,9 +2,9 @@
 
 An operations dashboard for a municipal EV charging network. Built as an SFU
 capstone project for **PowerTech**, using **real open data** from the City of
-Boulder (Colorado) and the City of Palo Alto (California). It turns raw charging
-session records into network KPIs, per-station analytics, load/utilization
-insights, and financial performance views.
+Boulder (Colorado). It turns raw charging session records into network KPIs,
+per-station analytics, load/utilization insights, and financial performance
+views.
 
 ## Live demo
 
@@ -16,12 +16,6 @@ insights, and financial performance views.
 | --- | --- |
 | Framework | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
 | Build tool | [Vite 6](https://vite.dev/) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
-| Routing | [React Router 7](https://reactrouter.com/) |
-| Data layer | [TanStack Query 5](https://tanstack.com/query) |
-| Charts | [Recharts](https://recharts.org/) + [Apache ECharts](https://echarts.apache.org/) |
-| Maps | [React Leaflet](https://react-leaflet.js.org/) + [OpenStreetMap](https://www.openstreetmap.org/) tiles |
-| Icons | [lucide-react](https://lucide.dev/) |
 | Hosting / CI | [Vercel](https://vercel.com/) (auto-deploy on push to `main`) |
 
 ## Prerequisites
@@ -63,9 +57,8 @@ npm run preview
 ```
 power-tech/
 ├── public/               # Static assets (logos, favicon)
-├── scripts/              # ETL scripts that fetch + clean the open data
-│   ├── fetch-boulder.mjs
-│   └── fetch-paloalto.mjs
+├── scripts/              # ETL script that fetches + cleans the open data
+│   └── fetch-boulder.mjs
 ├── src/
 │   ├── pages/            # One component per route (Network Overview, Stations, …)
 │   ├── components/       # Reusable UI (cards, charts, map, KPI tiles)
@@ -76,9 +69,8 @@ power-tech/
 │   │   └── filter-context.tsx# Time-range filter state
 │   ├── services/         # Data access layer
 │   │   └── api.ts            # Single boundary every page reads through
-│   ├── data/             # Baked static datasets (real, cleaned open data)
-│   │   ├── boulder-data.json
-│   │   └── palo-alto-data.json
+│   ├── data/             # Baked static dataset (real, cleaned open data)
+│   │   └── boulder-data.json
 │   ├── types/            # Shared TypeScript types
 │   ├── App.tsx           # Route definitions
 │   └── main.tsx          # App entry point
@@ -96,24 +88,21 @@ touching any page code.
 The dashboard ships with **real charging data baked into static JSON** so it
 loads instantly and deploys as a pure static site (no backend required).
 
-1. `scripts/fetch-boulder.mjs` and `scripts/fetch-paloalto.mjs` download the raw
-   open-data feeds, clean and aggregate them (per-station, per-ZIP, hourly
-   patterns, energy, CO₂, revenue, etc.).
-2. The cleaned result is written to `src/data/boulder-data.json` and
-   `src/data/palo-alto-data.json`.
-3. Run the whole pipeline with:
+1. `scripts/fetch-boulder.mjs` downloads the raw open-data feed, cleans and
+   aggregates it (per-station, per-ZIP, hourly patterns, energy, CO₂, revenue,
+   etc.).
+2. The cleaned result is written to `src/data/boulder-data.json`.
+3. Run the pipeline with:
 
    ```bash
    npm run refresh-data
    ```
 
-**Data sources & honesty notes**
+**Data source & honesty notes**
 
-- **Boulder** — City of Boulder open data. Revenue is an **estimate** computed
-  from the city's real published L2 time tariff applied to real session
-  durations.
-- **Palo Alto** — City of Palo Alto open data. Revenue uses the **real billed
-  fee** recorded in the dataset.
+- Source: City of Boulder open data.
+- Revenue is an **estimate** computed from the city's real published L2 time
+  tariff applied to real session durations.
 - Metrics that need data not yet available (station uptime, faults) are shown as
   clearly-labeled Sprint 3 placeholders rather than fabricated numbers.
 
@@ -128,7 +117,7 @@ loads instantly and deploys as a pure static site (no backend required).
   5 stations), 48-hour demand forecast, load optimization, and an expansion
   recommendation.
 - **Performance Analytics** — financial view: total revenue, average revenue per
-  session, electricity cost, and (Palo Alto) driver metrics.
+  session, and electricity cost.
 - **Infrastructure Planning · Sustainability · Fault Diagnostics** — Sprint 3
   pages, currently work-in-progress placeholders.
 
