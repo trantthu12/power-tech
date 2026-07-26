@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import { KpiCard } from "@/components/ui/KpiCard";
 import { Heatmap } from "@/components/charts/Heatmap";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useLoadStats, useUtilizationHeatmap } from "@/lib/queries";
@@ -9,6 +8,15 @@ import type { SiteAgg } from "@/services/mock-data";
 
 function formatHour(h: number): string {
   return `${String(h).padStart(2, "0")}:00`;
+}
+
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2">
+      <p className="text-[11px] leading-tight text-slate-500">{label}</p>
+      <p className="text-base font-semibold tabular-nums text-navy-800">{value}</p>
+    </div>
+  );
 }
 
 /** Slide-in panel showing one station's detail, opened from the Stations table. */
@@ -69,37 +77,34 @@ export function StationDetailDrawer({
         </div>
 
         {/* Body */}
-        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5">
-          <div className="grid grid-cols-2 gap-3">
-            <KpiCard label="Charging Efficiency" value={`${site.utilizationPct}%`} accent />
-            <KpiCard label="Sessions" value={formatNumber(site.sessions)} />
-            <KpiCard label="Energy" value={formatNumber(site.energyKwh)} unit="kWh" />
-            <KpiCard label="CO₂ Avoided" value={formatNumber(site.co2Kg)} unit="kg" />
-            <KpiCard label="Revenue" value={formatCurrency(site.revenue)} />
-            <KpiCard label="Avg Duration" value={site.avgDurationMin} unit="min" />
-            <KpiCard
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <Stat label="Charging Eff." value={`${site.utilizationPct}%`} />
+            <Stat label="Sessions" value={formatNumber(site.sessions)} />
+            <Stat label="Energy (kWh)" value={formatNumber(site.energyKwh)} />
+            <Stat label="CO₂ (kg)" value={formatNumber(site.co2Kg)} />
+            <Stat label="Revenue" value={formatCurrency(site.revenue)} />
+            <Stat label="Avg Duration" value={`${site.avgDurationMin} min`} />
+            <Stat
               label="Peak Hour"
               value={stats.data ? formatHour(stats.data.peakHour) : "—"}
-              loading={stats.isLoading}
             />
-            <KpiCard
+            <Stat
               label="Peak Load"
-              value={stats.data ? formatNumber(stats.data.peakLoadKwh) : "—"}
-              unit="kWh/h"
-              loading={stats.isLoading}
+              value={stats.data ? `${formatNumber(stats.data.peakLoadKwh)} kWh/h` : "—"}
             />
           </div>
 
           <div>
             <h3 className="mb-2 text-sm font-semibold text-navy-800">Hourly Demand</h3>
-            <p className="mb-3 text-xs text-slate-400">
-              Energy (kWh) by weekday &amp; hour. Darker = higher demand.
-            </p>
             {heatmap.data ? (
               <Heatmap data={heatmap.data} color="#5fa32f" valueSuffix=" kWh" />
             ) : (
               <Skeleton className="h-40 w-full rounded-lg" />
             )}
+            <p className="mt-2 text-[11px] text-slate-400">
+              Energy (kWh) by weekday &amp; hour. Darker = higher demand.
+            </p>
           </div>
         </div>
       </div>
