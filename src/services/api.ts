@@ -73,6 +73,9 @@ export function getSites(city: City): Promise<Site[]> {
 
 // --- Network Overview KPIs (all real) ----------------------------------------
 
+// Network KPIs. Sessions/energy/CO2/gasoline are windowed to the selected range
+// (the "Over time" section); station count and charging efficiency are structural
+// all-time facts.
 export function getNetworkKpis(
   city: City,
   range: { from: string; to: string }

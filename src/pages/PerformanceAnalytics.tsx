@@ -114,47 +114,52 @@ export function PerformanceAnalytics() {
         </p>
       </div>
 
-      {/* Trends */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-navy-800">Trends</h2>
-        <GranularityToggle value={granularity} onChange={setGranularity} />
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader title="Energy Delivered" subtitle={`Total kWh per ${granularity}`} />
-          {energy.data && (
-            <TrendChart
-              data={energy.data}
-              granularity={granularity}
-              color="#7ac943"
-              valueFormatter={(v) => `${formatNumber(v)} kWh`}
+      {/* OVER TIME — the only filterable section (everything below is all-time) */}
+      <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-navy-800">Over time</h2>
+            <p className="text-xs text-slate-400">Both charts follow this selector.</p>
+          </div>
+          <GranularityToggle value={granularity} onChange={setGranularity} />
+        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader title="Energy Delivered" subtitle={`Total kWh per ${granularity}`} />
+            {energy.data && (
+              <TrendChart
+                data={energy.data}
+                granularity={granularity}
+                color="#7ac943"
+                valueFormatter={(v) => `${formatNumber(v)} kWh`}
+              />
+            )}
+          </Card>
+          <Card>
+            <CardHeader
+              title="Charging Sessions"
+              subtitle={`Total sessions per ${granularity}, EV adoption over time`}
             />
-          )}
-        </Card>
-        <Card>
-          <CardHeader
-            title="Charging Sessions"
-            subtitle={`Total sessions per ${granularity}, EV adoption over time`}
-          />
-          {sessions.data && (
-            <TrendChart
-              data={sessions.data}
-              granularity={granularity}
-              color="#2a78d6"
-              valueFormatter={(v) => `${formatNumber(v)} sessions`}
-            />
-          )}
-        </Card>
-      </div>
+            {sessions.data && (
+              <TrendChart
+                data={sessions.data}
+                granularity={granularity}
+                color="#2a78d6"
+                valueFormatter={(v) => `${formatNumber(v)} sessions`}
+              />
+            )}
+          </Card>
+        </div>
+      </section>
 
       {/* Site comparison */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Site Comparison, Energy" subtitle="Top sites by kWh · all-time" />
+          <CardHeader title="Site Comparison, Energy" subtitle="Top sites by kWh" />
           {sites.data && <SiteComparisonChart data={sites.data} metric="energyKwh" />}
         </Card>
         <Card>
-          <CardHeader title="Site Comparison, Sessions" subtitle="Top sites by session count · all-time" />
+          <CardHeader title="Site Comparison, Sessions" subtitle="Top sites by session count" />
           {sites.data && <SiteComparisonChart data={sites.data} metric="sessions" />}
         </Card>
       </div>
@@ -162,13 +167,13 @@ export function PerformanceAnalytics() {
       {/* Heatmaps */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Utilization Heatmap" subtitle="Energy demand by day & hour · all-time" />
+          <CardHeader title="Utilization Heatmap" subtitle="Energy demand by day & hour" />
           {utilization.data && <Heatmap data={utilization.data} color="#5fa32f" valueSuffix=" kWh" />}
         </Card>
         <Card>
           <CardHeader
             title="Weekday vs Weekend"
-            subtitle="Avg kWh per hour of day · all-time"
+            subtitle="Avg kWh per hour of day"
           />
           {profile.data && <WeekdayWeekendChart data={profile.data} />}
         </Card>

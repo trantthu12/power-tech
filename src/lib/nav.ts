@@ -28,7 +28,8 @@ export const NAV_ITEMS: NavItem[] = [
     icon: LayoutDashboard,
     audience: "All stakeholders",
     sprint: 2,
-    hasFilter: true,
+    // Time control now lives in the on-page "Over time" section, not the header.
+    hasFilter: false,
   },
   {
     label: "Stations",

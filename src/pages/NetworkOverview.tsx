@@ -15,6 +15,12 @@ const RANGE_LABEL: Record<string, string> = {
   month: "last 12 months",
 };
 
+const RANGES = [
+  { g: "day", label: "30 days" },
+  { g: "week", label: "90 days" },
+  { g: "month", label: "12 months" },
+] as const;
+
 /** AC vs DC split of the Boulder public charging network (real AFDC connectors). */
 function ChargerMix() {
   const { data, isLoading } = useChargerPowerMix();
@@ -63,47 +69,89 @@ function ChargerMix() {
 
 export function NetworkOverview() {
   const { data: kpis, isLoading } = useNetworkKpis();
-  const { filter } = useFilter();
+  const { filter, setGranularity } = useFilter();
   const energySeries = useEnergySeries();
 
   return (
     <div className="space-y-5">
-      {/* KPI grid — all real City of Boulder data */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {/* OVER TIME — everything the range selector can drive */}
+      <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold text-navy-800">
+            Over time
+            <span className="ml-2 font-normal text-slate-400">follows the range selector →</span>
+          </h2>
+          <div className="inline-flex items-center gap-1 rounded-lg bg-white p-1 shadow-sm ring-1 ring-slate-200">
+            {RANGES.map((r) => (
+              <button
+                key={r.g}
+                onClick={() => setGranularity(r.g)}
+                className={[
+                  "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3",
+                  filter.granularity === r.g
+                    ? "bg-brand-500 text-white shadow-sm"
+                    : "text-slate-500 hover:text-navy-700",
+                ].join(" ")}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <KpiCard
+            label="Charging Sessions"
+            value={kpis ? formatCompact(kpis.totalSessions) : "—"}
+            loading={isLoading}
+            hint="Completed charging sessions."
+          />
+          <KpiCard
+            label="Total Energy"
+            value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
+            unit="kWh"
+            loading={isLoading}
+            hint="Energy delivered to vehicles."
+          />
+          <KpiCard
+            label="CO₂ Avoided"
+            value={kpis ? formatNumber(kpis.totalCo2Kg) : "—"}
+            unit="kg"
+            accent
+            loading={isLoading}
+            hint="Vs equivalent gasoline cars."
+          />
+          <KpiCard
+            label="Gasoline Saved"
+            value={kpis ? formatNumber(kpis.totalGasolineGal) : "—"}
+            unit="gal"
+            accent
+            loading={isLoading}
+            hint="Fuel displaced by EV charging."
+          />
+        </div>
+        <Card>
+          <CardHeader
+            title="Energy Delivered"
+            subtitle={`Total kWh, ${RANGE_LABEL[filter.granularity] ?? "selected range"}`}
+          />
+          {energySeries.data && (
+            <TrendChart
+              data={energySeries.data}
+              granularity={filter.granularity}
+              color="#7ac943"
+              valueFormatter={(v) => `${formatNumber(v)} kWh`}
+            />
+          )}
+        </Card>
+      </section>
+
+      {/* Fixed network facts (no per-day data to window) */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <KpiCard
           label="Total Charging Stations"
           value={kpis ? formatNumber(kpis.totalStations) : "—"}
           loading={isLoading}
           hint="City-operated Level 2 ports."
-        />
-        <KpiCard
-          label="Charging Sessions"
-          value={kpis ? formatCompact(kpis.totalSessions) : "—"}
-          loading={isLoading}
-          hint="Completed charging sessions."
-        />
-        <KpiCard
-          label="Total Energy"
-          value={kpis ? formatNumber(kpis.totalEnergyKwh) : "—"}
-          unit="kWh"
-          loading={isLoading}
-          hint="Energy delivered to vehicles."
-        />
-        <KpiCard
-          label="CO₂ Avoided"
-          value={kpis ? formatNumber(kpis.totalCo2Kg) : "—"}
-          unit="kg"
-          accent
-          loading={isLoading}
-          hint="Vs equivalent gasoline cars."
-        />
-        <KpiCard
-          label="Gasoline Saved"
-          value={kpis ? formatNumber(kpis.totalGasolineGal) : "—"}
-          unit="gal"
-          accent
-          loading={isLoading}
-          hint="Fuel displaced by EV charging."
         />
         <KpiCard
           label="Charging Efficiency"
@@ -112,22 +160,6 @@ export function NetworkOverview() {
           hint="Time charging / time plugged in."
         />
       </div>
-
-      {/* Windowed trend — follows the time filter (KPIs above use the same range) */}
-      <Card>
-        <CardHeader
-          title="Energy Delivered"
-          subtitle={`kWh over the ${RANGE_LABEL[filter.granularity] ?? "selected range"} (follows the time filter)`}
-        />
-        {energySeries.data && (
-          <TrendChart
-            data={energySeries.data}
-            granularity={filter.granularity}
-            color="#7ac943"
-            valueFormatter={(v) => `${formatNumber(v)} kWh`}
-          />
-        )}
-      </Card>
 
       {/* Top stations per area + energy per area */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
