@@ -83,10 +83,7 @@ export function NetworkOverview() {
       {/* OVER TIME — everything the range selector can drive */}
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-navy-800">
-            Over time
-            <span className="ml-2 font-normal text-slate-400">follows the range selector →</span>
-          </h2>
+          <h2 className="text-sm font-semibold text-navy-800">Over time</h2>
           <div className="inline-flex items-center gap-1 rounded-lg bg-white p-1 shadow-sm ring-1 ring-slate-200">
             {RANGES.map((r) => (
               <button
