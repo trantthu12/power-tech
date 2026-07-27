@@ -75,7 +75,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
         )}
       >
         {/* Brand centered; collapse toggle pinned to the right (desktop). */}
-        <div className="relative flex items-center justify-center px-3 pb-3 pt-4">
+        <div className="relative flex items-center justify-center px-3 pb-4 pt-4">
           {/* PowerTech badge — hidden on the collapsed desktop rail. */}
           <div
             className={cx(
@@ -86,7 +86,7 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
             <img
               src="/powertech-logo.png"
               alt="PowerTech"
-              className="h-12 w-auto object-contain"
+              className="h-16 w-auto object-contain"
             />
           </div>
           {/* Collapse toggle (desktop only — mobile uses the drawer).
