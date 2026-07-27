@@ -27,7 +27,7 @@ function ChargerMix() {
   const total = data?.total ?? 0;
   const pct = (n: number) => (total ? Math.round((100 * n) / total) : 0);
   return (
-    <Card>
+    <Card className="flex flex-col lg:min-h-85">
       <CardHeader
         title="Charger Types (AC / DC)"
         subtitle="City-operated fleet, stations by power type"
@@ -35,7 +35,7 @@ function ChargerMix() {
       {isLoading || !data ? (
         <div className="h-24" />
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-1 flex-col justify-between gap-4">
           <div>
             <p className="text-3xl font-bold tracking-tight text-navy-900">
               {formatNumber(data.total)}
@@ -157,11 +157,11 @@ export function NetworkOverview() {
         </Card>
       </section>
 
-      {/* Left: tall per-area list. Right: shorter cards stacked to match height. */}
+      {/* Left: tall per-area list. Right: two cards get a little extra height. */}
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
         <TopStations />
-        <div className="space-y-4">
-          <EnergyByZip />
+        <div className="flex flex-col gap-4">
+          <EnergyByZip className="lg:min-h-85" />
           <ChargerMix />
         </div>
       </div>

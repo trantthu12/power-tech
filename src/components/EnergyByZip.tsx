@@ -3,13 +3,13 @@ import { useEnergyByZip } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 import { CATEGORICAL as COLORS } from "@/lib/colors";
 
-export function EnergyByZip() {
+export function EnergyByZip({ className }: { className?: string }) {
   const { data } = useEnergyByZip();
   const rows = data ?? [];
   const max = rows.reduce((m, r) => Math.max(m, r.energyKwh), 0) || 1;
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader
         title="Energy by Area (ZIP)"
         subtitle="Total kWh delivered per area, areas defined by ZIP code"
