@@ -4,6 +4,7 @@ import type { DateRangeFilter, Granularity } from "@/types";
 import type { City } from "./cities";
 import boulder from "@/data/boulder-data.json";
 import paloAlto from "@/data/palo-alto-data.json";
+import newYork from "@/data/new-york-data.json";
 import { useCity } from "./city-context";
 
 interface FilterContextValue {
@@ -18,6 +19,7 @@ const FilterContext = createContext<FilterContextValue | null>(null);
 const DATE_END: Record<City, string> = {
   boulder: boulder.meta.dateEnd,
   "palo-alto": paloAlto.meta.dateEnd,
+  "new-york": newYork.meta.dateEnd,
 };
 
 // The Granularity enum values are reused as window keys:

@@ -2,17 +2,23 @@ import { Card, CardHeader } from "./ui/Card";
 import { useEnergyByZip } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 import { CATEGORICAL as COLORS } from "@/lib/colors";
+import { useCity } from "@/lib/city-context";
+import { areaWord } from "@/lib/cities";
 
 export function EnergyByZip({ className }: { className?: string }) {
   const { data } = useEnergyByZip();
+  const { city } = useCity();
+  const area = areaWord(city);
   const rows = data ?? [];
   const max = rows.reduce((m, r) => Math.max(m, r.energyKwh), 0) || 1;
 
   return (
     <Card className={className}>
       <CardHeader
-        title="Energy by Area (ZIP)"
-        subtitle="Total kWh delivered per area, areas defined by ZIP code"
+        title={`Energy by Area (${area})`}
+        subtitle={`Total kWh delivered per area, areas defined by ${
+          area === "Borough" ? "borough" : "ZIP code"
+        }`}
       />
       <ul className="space-y-3">
         {rows.map((r, i) => (

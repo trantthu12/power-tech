@@ -6,11 +6,13 @@ import { useCity } from "@/lib/city-context";
 import type { City } from "@/lib/cities";
 import boulder from "@/data/boulder-data.json";
 import paloAlto from "@/data/palo-alto-data.json";
+import newYork from "@/data/new-york-data.json";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const META: Record<City, { source: string; dateEnd: string }> = {
   boulder: { source: "City of Boulder open data", dateEnd: boulder.meta.dateEnd },
   "palo-alto": { source: "City of Palo Alto open data", dateEnd: paloAlto.meta.dateEnd },
+  "new-york": { source: "NYC Open Data — municipal charging", dateEnd: newYork.meta.dateEnd },
 };
 function formatAsOf(dateEnd: string): string {
   const [dY, dM, dD] = dateEnd.split("-");

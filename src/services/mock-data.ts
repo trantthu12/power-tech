@@ -7,6 +7,7 @@ import type { ConnectorType, Site } from "@/types";
 import type { City } from "@/lib/cities";
 import boulder from "@/data/boulder-data.json";
 import paloAlto from "@/data/palo-alto-data.json";
+import newYork from "@/data/new-york-data.json";
 
 /** A station plus its real aggregated stats. */
 export interface SiteAgg extends Site {
@@ -76,7 +77,7 @@ interface RawSite {
   heat: number[];
 }
 
-const RAW: Record<City, unknown> = { boulder, "palo-alto": paloAlto };
+const RAW: Record<City, unknown> = { boulder, "palo-alto": paloAlto, "new-york": newYork };
 
 /** Build the dataset from a city's baked aggregates. */
 export function buildDataset(city: City): Dataset {

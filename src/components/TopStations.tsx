@@ -2,10 +2,14 @@ import { Card, CardHeader } from "./ui/Card";
 import { useTopStationsByArea } from "@/lib/queries";
 import { formatNumber } from "@/lib/format";
 import { CATEGORICAL as COLORS } from "@/lib/colors";
+import { useCity } from "@/lib/city-context";
+import { areaWord } from "@/lib/cities";
 
-/** Top 3 stations by energy within each ZIP "area". */
+/** Top 3 stations by energy within each "area" (ZIP or, for NYC, borough). */
 export function TopStations() {
   const { data } = useTopStationsByArea(3);
+  const { city } = useCity();
+  const areaLbl = areaWord(city);
   const areas = data ?? [];
   const max =
     areas.reduce((m, a) => Math.max(m, ...a.stations.map((s) => s.energyKwh)), 0) || 1;
@@ -14,7 +18,7 @@ export function TopStations() {
     <Card>
       <CardHeader
         title="Top Stations by Area"
-        subtitle="Top 3 stations per ZIP area, by energy delivered"
+        subtitle={`Top 3 stations per ${areaLbl === "Borough" ? "borough" : "ZIP"}, by energy delivered`}
       />
       <div className="space-y-5">
         {areas.map((area, ai) => (
