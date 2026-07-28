@@ -58,11 +58,12 @@ export function PerformanceAnalytics() {
         />
       </div>
 
-      {/* Drivers — only where the dataset has a customer/User ID (Palo Alto) */}
+      {/* Drivers — only where the dataset has a customer/driver ID (Palo Alto, New York) */}
       {stats?.uniqueDrivers != null && (
         <div>
           <h2 className="mb-3 text-sm font-semibold text-navy-800">
-            Drivers <span className="font-normal text-slate-400">· Palo Alto only</span>
+            Drivers{" "}
+            <span className="font-normal text-slate-400">· from real driver IDs</span>
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <KpiCard
@@ -110,6 +111,8 @@ export function PerformanceAnalytics() {
         <p className="mt-2 text-xs text-slate-400">
           {city === "palo-alto"
             ? "Revenue is the real billed Fee from the City of Palo Alto ChargePoint dataset (actual charges, not an estimate). Electricity cost assumes ~$0.11/kWh (commercial rate)."
+            : city === "new-york"
+            ? "Revenue estimated at ~$0.25/kWh applied to real session energy — the NYC open dataset does not publish pricing. Electricity cost assumes ~$0.11/kWh (commercial rate)."
             : "Revenue estimated from the real City of Boulder Level 2 tariff ($1/hr for the first 2 hours, $2.50/hr for hours 3 to 4, 4-hour cap) applied to real session durations. Electricity cost assumes ~$0.11/kWh (Xcel Energy Colorado commercial rate). The open dataset does not include revenue."}
         </p>
       </div>
