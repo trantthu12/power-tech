@@ -2,9 +2,9 @@
 // (148k rows) into compact baked aggregates for the app, and geocode the 50
 // station addresses (the dataset has no coordinates). Run:
 //   node scripts/fetch-boulder.mjs
-// Writes src/data/boulder-data.json. Re-basing shifts the real 2018-2023 dates
-// forward (whole weeks, preserving weekday/hour) so the latest session aligns
-// with the app's fixed DEMO_NOW.
+// Writes src/data/boulder-data.json. Dates are kept as the real calendar dates
+// (2018-2023) — no re-basing. The app anchors its "recent" range filters to
+// meta.dateEnd (the latest real session) so historical data fills them honestly.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -14,8 +14,6 @@ const root = resolve(__dirname, "..");
 const CACHE = resolve(root, "scripts/.boulder-raw.json");
 const SRC =
   "https://opendata.arcgis.com/datasets/95992b3938be4622b07f0b05eba95d4c_0.geojson";
-const DEMO_NOW_MS = new Date("2026-07-20T12:00:00Z").getTime();
-const DAY = 86400000;
 const RATE_PER_KWH = 0.3; // legacy field (kept in meta; revenue now uses the real tariff)
 
 // Real published City of Boulder Level 2 pricing (effective 2025-06-01):
@@ -59,17 +57,8 @@ function durMin(s) {
   return h * 60 + m;
 }
 
-// --- first pass: find max start date for re-basing ---
-let maxStart = 0;
-for (const f of feats) {
-  const t = parseDT(f.properties.Start_Date___Time);
-  if (t && t.ms > maxStart) maxStart = t.ms;
-}
-// Shift so the latest session lands exactly on DEMO_NOW (so the recent-window
-// filters have data). Hour-of-day is kept from the original timestamp; the
-// heatmap uses the original weekday so the real weekly pattern is preserved.
-const offset = DEMO_NOW_MS - maxStart;
-console.log(`Re-basing by ${(offset / DAY).toFixed(1)} days`);
+// Keep the real calendar dates — no re-basing.
+const offset = 0;
 
 // --- aggregate ---
 const sitesMap = new Map(); // name -> site agg

@@ -16,9 +16,9 @@ const RANGE_LABEL: Record<string, string> = {
 };
 
 const RANGES = [
-  { g: "day", label: "30 days" },
-  { g: "week", label: "90 days" },
-  { g: "month", label: "12 months" },
+  { g: "day", label: "Last 30 days" },
+  { g: "week", label: "Last 90 days" },
+  { g: "month", label: "Last 12 months" },
 ] as const;
 
 /** AC vs DC split of the Boulder public charging network (real AFDC connectors). */

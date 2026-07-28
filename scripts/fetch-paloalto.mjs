@@ -12,8 +12,6 @@ const root = resolve(__dirname, "..");
 const CACHE = resolve(root, "scripts/.paloalto-raw.csv");
 const SRC =
   "https://data.paloalto.gov/datasets/194693-electric-vehicle-charging-station-usage-july-2011-dec-2020.download/";
-const DEMO_NOW_MS = new Date("2026-07-20T12:00:00Z").getTime();
-const DAY = 86400000;
 
 // --- load raw CSV (cache to avoid re-downloading ~81MB) ---
 let text;
@@ -85,15 +83,8 @@ function durMin(s) {
   return h * 60 + m;
 }
 
-// --- first pass: latest start date (for re-basing to DEMO_NOW) ---
-let maxStart = 0;
-for (let i = 1; i < lines.length; i++) {
-  if (!lines[i]) continue;
-  const t = parseDT(splitCsv(lines[i])[IDX.start]);
-  if (t && t.ms > maxStart) maxStart = t.ms;
-}
-const offset = DEMO_NOW_MS - maxStart;
-console.log(`Parsed header; re-basing by ${(offset / DAY).toFixed(1)} days`);
+// Keep the real calendar dates — no re-basing.
+const offset = 0;
 
 // --- aggregate ---
 const sitesMap = new Map();

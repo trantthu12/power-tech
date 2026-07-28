@@ -18,7 +18,6 @@ import type {
 import { buildDataset } from "./mock-data";
 import type { Dataset } from "./mock-data";
 import type { City } from "@/lib/cities";
-import { DEMO_NOW_MS } from "@/lib/demo-time";
 
 // One memoized Dataset per city; the other is built lazily on first switch.
 const cache = new Map<City, Dataset>();
@@ -393,7 +392,8 @@ export function getExpansionSignals(city: City): Promise<
 export function getDemandForecast(city: City, siteId?: string): Promise<ForecastPoint[]> {
   const profile = hourlyProfile(city, heatFor(city, siteId));
   const points: ForecastPoint[] = [];
-  const start = new Date(DEMO_NOW_MS);
+  // Project forward from the dataset's latest real day.
+  const start = new Date(dataAsOf(city));
   start.setMinutes(0, 0, 0);
   for (let i = 1; i <= 48; i++) {
     const t = new Date(start.getTime() + i * 3600000);

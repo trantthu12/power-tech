@@ -1,7 +1,10 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { DateRangeFilter, Granularity } from "@/types";
-import { DEMO_NOW_MS } from "./demo-time";
+import type { City } from "./cities";
+import boulder from "@/data/boulder-data.json";
+import paloAlto from "@/data/palo-alto-data.json";
+import { useCity } from "./city-context";
 
 interface FilterContextValue {
   filter: DateRangeFilter;
@@ -10,15 +13,22 @@ interface FilterContextValue {
 
 const FilterContext = createContext<FilterContextValue | null>(null);
 
-// The Boulder dataset is historical (years of sessions), so the overview window
-// uses meaningful ranges that always contain data. The Granularity enum values
-// are reused as window keys: day = 30 days, week = 90 days, month = 12 months.
-function rangeForGranularity(granularity: Granularity): DateRangeFilter {
-  const to = new Date(DEMO_NOW_MS);
+// Latest real session per city. Windows anchor here (not the wall clock) so the
+// "recent" ranges always contain data — the datasets are historical.
+const DATE_END: Record<City, string> = {
+  boulder: boulder.meta.dateEnd,
+  "palo-alto": paloAlto.meta.dateEnd,
+};
+
+// The Granularity enum values are reused as window keys:
+// day = last 30 days, week = last 90 days, month = last 12 months — all
+// measured back from the dataset's latest session (dateEnd).
+function rangeForGranularity(granularity: Granularity, dateEnd: string): DateRangeFilter {
+  const to = new Date(`${dateEnd}T23:59:59.999Z`);
   const from = new Date(to);
-  if (granularity === "day") from.setDate(from.getDate() - 30);
-  if (granularity === "week") from.setDate(from.getDate() - 90);
-  if (granularity === "month") from.setFullYear(from.getFullYear() - 1);
+  if (granularity === "day") from.setUTCDate(from.getUTCDate() - 30);
+  if (granularity === "week") from.setUTCDate(from.getUTCDate() - 90);
+  if (granularity === "month") from.setUTCFullYear(from.getUTCFullYear() - 1);
   return {
     granularity,
     from: from.toISOString(),
@@ -27,14 +37,15 @@ function rangeForGranularity(granularity: Granularity): DateRangeFilter {
 }
 
 export function FilterProvider({ children }: { children: ReactNode }) {
+  const { city } = useCity();
   const [granularity, setGranularity] = useState<Granularity>("day");
 
   const value = useMemo<FilterContextValue>(
     () => ({
-      filter: rangeForGranularity(granularity),
+      filter: rangeForGranularity(granularity, DATE_END[city]),
       setGranularity,
     }),
-    [granularity]
+    [granularity, city]
   );
 
   return (

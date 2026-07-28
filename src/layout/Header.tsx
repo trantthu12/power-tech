@@ -6,9 +6,9 @@ import { CitySwitch } from "@/components/CitySwitch";
 import type { Granularity } from "@/types";
 
 const GRANULARITIES: { value: Granularity; label: string }[] = [
-  { value: "day", label: "30 days" },
-  { value: "week", label: "90 days" },
-  { value: "month", label: "12 months" },
+  { value: "day", label: "Last 30 days" },
+  { value: "week", label: "Last 90 days" },
+  { value: "month", label: "Last 12 months" },
 ];
 
 function formatRange(fromIso: string, toIso: string): string {
