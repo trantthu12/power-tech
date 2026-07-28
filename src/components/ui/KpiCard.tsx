@@ -11,7 +11,7 @@ interface KpiCardProps {
   accent?: boolean;
   /** Show a shimmer placeholder instead of the value. */
   loading?: boolean;
-  /** City-exclusive tint: blue = Palo Alto-only, pink = Boulder-only. */
+  /** Tint for data only some datasets expose (blue = driver data: Palo Alto + NYC). */
   tint?: "blue" | "pink";
   /** Small formula/explanation line shown under the value. */
   hint?: string;
