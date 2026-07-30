@@ -389,6 +389,14 @@ export function getExpansionSignals(city: City): Promise<
   return delay(rows.sort((a, b) => b.energyPerStation - a.energyPerStation));
 }
 
+// Weekend dampening per city, from each dataset's real weekend/weekday energy
+// ratio (Boulder ≈0.93, Palo Alto ≈0.72, New York ≈1.04).
+const WEEKEND_FACTOR: Record<City, number> = {
+  boulder: 0.9,
+  "palo-alto": 0.7,
+  "new-york": 1,
+};
+
 export function getDemandForecast(city: City, siteId?: string): Promise<ForecastPoint[]> {
   const profile = hourlyProfile(city, heatFor(city, siteId));
   const points: ForecastPoint[] = [];
@@ -398,7 +406,7 @@ export function getDemandForecast(city: City, siteId?: string): Promise<Forecast
   for (let i = 1; i <= 48; i++) {
     const t = new Date(start.getTime() + i * 3600000);
     const dow = t.getDay();
-    const weekend = dow === 0 || dow === 6 ? 0.7 : 1;
+    const weekend = dow === 0 || dow === 6 ? WEEKEND_FACTOR[city] : 1;
     const wiggle = 1 + (((i * 7) % 5) - 2) / 40;
     points.push({
       timestamp: t.toISOString(),
