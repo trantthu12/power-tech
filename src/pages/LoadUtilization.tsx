@@ -159,7 +159,7 @@ export function LoadUtilization() {
         <Card>
           <CardHeader
             title="48-Hour Demand Forecast"
-            subtitle={`Projected from the real demand pattern, ${selectedName}`}
+            subtitle={`Next 48 hours · ${selectedName}`}
           />
           {forecast.data ? (
             <ForecastChart data={forecast.data} />
@@ -167,8 +167,8 @@ export function LoadUtilization() {
             <Skeleton className="h-56 w-full rounded-lg" />
           )}
           <p className="mt-3 text-xs text-slate-400">
-            Dashed line = projected next-48h demand from the historical hourly
-            pattern, lets the Load Manager pre-plan capacity.
+            Dashed line = the typical hourly demand from past data, repeated 48h
+            ahead — a guide for planning capacity, not a precise forecast.
           </p>
         </Card>
 
