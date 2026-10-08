@@ -277,10 +277,6 @@ export function getPerformanceStats(city: City): Promise<PerformanceStats> {
     totalRevenue: d.totalRevenue,
     avgRevenuePerSession: +(d.totalRevenue / d.totalSessions).toFixed(2),
     electricityCost: Math.round(d.totalEnergyKwh * ELECTRICITY_COST_PER_KWH),
-    uniqueDrivers: d.uniqueDrivers,
-    sessionsPerDriver: d.uniqueDrivers
-      ? +(d.totalSessions / d.uniqueDrivers).toFixed(1)
-      : undefined,
   });
 }
 
@@ -390,11 +386,9 @@ export function getExpansionSignals(city: City): Promise<
 }
 
 // Weekend dampening per city, from each dataset's real weekend/weekday energy
-// ratio (Boulder ≈0.93, Palo Alto ≈0.72, New York ≈1.04).
+// ratio (Boulder ≈0.93).
 const WEEKEND_FACTOR: Record<City, number> = {
   boulder: 0.9,
-  "palo-alto": 0.7,
-  "new-york": 1,
 };
 
 export function getDemandForecast(city: City, siteId?: string): Promise<ForecastPoint[]> {

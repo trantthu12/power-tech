@@ -6,8 +6,6 @@
 import type { ConnectorType, Site } from "@/types";
 import type { City } from "@/lib/cities";
 import boulder from "@/data/boulder-data.json";
-import paloAlto from "@/data/palo-alto-data.json";
-import newYork from "@/data/new-york-data.json";
 
 /** A station plus its real aggregated stats. */
 export interface SiteAgg extends Site {
@@ -49,8 +47,6 @@ export interface Dataset {
   totalCo2Kg: number;
   totalGasolineGal: number;
   totalRevenue: number;
-  /** Unique drivers (only available where the dataset has a customer/User ID) */
-  uniqueDrivers?: number;
   avgDurationMin: number;
   /** Network-wide charger utilization (%) */
   avgUtilizationPct: number;
@@ -77,7 +73,7 @@ interface RawSite {
   heat: number[];
 }
 
-const RAW: Record<City, unknown> = { boulder, "palo-alto": paloAlto, "new-york": newYork };
+const RAW: Record<City, unknown> = { boulder };
 
 /** Build the dataset from a city's baked aggregates. */
 export function buildDataset(city: City): Dataset {
@@ -89,7 +85,6 @@ export function buildDataset(city: City): Dataset {
       co2Kg: number;
       gasolineGal: number;
       revenue: number;
-      uniqueDrivers?: number;
       avgDurationMin: number;
       utilizationPct: number;
       dateEnd: string;
@@ -134,7 +129,6 @@ export function buildDataset(city: City): Dataset {
     totalCo2Kg: raw.meta.co2Kg,
     totalGasolineGal: raw.meta.gasolineGal,
     totalRevenue: raw.meta.revenue,
-    uniqueDrivers: raw.meta.uniqueDrivers,
     avgDurationMin: raw.meta.avgDurationMin,
     avgUtilizationPct: raw.meta.utilizationPct,
     dateEnd: raw.meta.dateEnd,

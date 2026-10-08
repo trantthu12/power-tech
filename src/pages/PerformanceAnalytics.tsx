@@ -16,10 +16,8 @@ import {
   useWeekdayWeekendProfile,
 } from "@/lib/queries";
 import { formatNumber, formatCurrency } from "@/lib/format";
-import { useCity } from "@/lib/city-context";
 
 export function PerformanceAnalytics() {
-  const { city } = useCity();
   const [granularity, setGranularity] = useState<Granularity>("month");
   const { data: stats, isLoading: statsLoading } = usePerformanceStats();
   const energy = useEnergyTrend(granularity);
@@ -58,30 +56,6 @@ export function PerformanceAnalytics() {
         />
       </div>
 
-      {/* Drivers — only where the dataset has a customer/driver ID (Palo Alto, New York) */}
-      {stats?.uniqueDrivers != null && (
-        <div>
-          <h2 className="mb-3 text-sm font-semibold text-navy-800">
-            Drivers{" "}
-            <span className="font-normal text-slate-400">· from real driver IDs</span>
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <KpiCard
-              label="Registered Drivers"
-              value={formatNumber(stats.uniqueDrivers)}
-              tint="blue"
-              loading={statsLoading}
-            />
-            <KpiCard
-              label="Avg Charges / Driver"
-              value={stats.sessionsPerDriver ?? "—"}
-              tint="blue"
-              loading={statsLoading}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Financials (estimated) */}
       <div>
         <h2 className="mb-3 text-sm font-semibold text-navy-800">
@@ -92,13 +66,13 @@ export function PerformanceAnalytics() {
           <KpiCard
             label="Total Revenue"
             value={stats ? formatCurrency(stats.totalRevenue) : "—"}
-            badge={city === "palo-alto" ? "real" : "est."}
+            badge="est."
             loading={statsLoading}
           />
           <KpiCard
             label="Avg Revenue / Session"
             value={stats ? formatCurrency(stats.avgRevenuePerSession) : "—"}
-            badge={city === "palo-alto" ? "real" : "est."}
+            badge="est."
             loading={statsLoading}
           />
           <KpiCard
@@ -109,11 +83,7 @@ export function PerformanceAnalytics() {
           />
         </div>
         <p className="mt-2 text-xs text-slate-400">
-          {city === "palo-alto"
-            ? "Revenue is the real billed Fee from the City of Palo Alto ChargePoint dataset (actual charges, not an estimate). Electricity cost assumes ~$0.11/kWh (commercial rate)."
-            : city === "new-york"
-            ? "Revenue estimated at ~$0.25/kWh applied to real session energy — the NYC open dataset does not publish pricing. Electricity cost assumes ~$0.11/kWh (commercial rate)."
-            : "Revenue estimated from the real City of Boulder Level 2 tariff ($1/hr for the first 2 hours, $2.50/hr for hours 3 to 4, 4-hour cap) applied to real session durations. Electricity cost assumes ~$0.11/kWh (Xcel Energy Colorado commercial rate). The open dataset does not include revenue."}
+          Revenue estimated from the real City of Boulder Level 2 tariff ($1/hr for the first 2 hours, $2.50/hr for hours 3 to 4, 4-hour cap) applied to real session durations. Electricity cost assumes ~$0.11/kWh (Xcel Energy Colorado commercial rate). The open dataset does not include revenue.
         </p>
       </div>
 
