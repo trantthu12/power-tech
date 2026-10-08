@@ -1,6 +1,6 @@
 // One-off: turn the real Boulder open-data EV charging SESSIONS dataset
-// (148k rows) into compact baked aggregates for the app, and geocode the 50
-// station addresses (the dataset has no coordinates). Run:
+// (148k rows, ~78k unique sessions) into compact baked aggregates for the app,
+// and geocode the station addresses (the dataset has no coordinates). Run:
 //   node scripts/fetch-boulder.mjs
 // Writes src/data/boulder-data.json. Dates are kept as the real calendar dates
 // (2018-2023) — no re-basing. The app anchors its "recent" range filters to
@@ -43,10 +43,12 @@ console.log(`Parsed ${feats.length} sessions`);
 
 // --- helpers ---
 function parseDT(s) {
-  // "M/D/YYYY H:mm"
+  // "M/D/YYYY H:mm", or "YYYY-MM-DD HH:mm:ss" on some 2023 rows
   if (!s) return null;
   const [datePart, timePart = "0:0"] = s.trim().split(" ");
-  const [m, d, y] = datePart.split("/").map(Number);
+  const [m, d, y] = datePart.includes("-")
+    ? (([yy, mm, dd]) => [mm, dd, yy])(datePart.split("-").map(Number))
+    : datePart.split("/").map(Number);
   const [hh, mm] = timePart.split(":").map(Number);
   if (!y || !m || !d) return null;
   return { ms: Date.UTC(y, m - 1, d, hh || 0, mm || 0), hour: hh || 0 };
@@ -60,8 +62,43 @@ function durMin(s) {
 // Keep the real calendar dates — no re-basing.
 const offset = 0;
 
+// The published file is two overlapping exports concatenated, so most sessions
+// appear twice (once per date format). A session is identified by station,
+// address, start minute and energy.
+const seen = new Set();
+const sessions = [];
+for (const f of feats) {
+  const p = f.properties;
+  const t = parseDT(p.Start_Date___Time);
+  if (!t) continue;
+  const name = (p.Station_Name || "Unknown").trim();
+  const address = (p.Address || "").trim();
+  const energy = parseFloat(p.Energy__kWh_) || 0;
+  const key = `${name}|${address}|${t.ms}|${energy.toFixed(2)}`;
+  if (seen.has(key)) continue;
+  seen.add(key);
+  sessions.push({ p, t, name, address, energy });
+}
+console.log(`${sessions.length} unique sessions`);
+
+// A few station names cover two addresses; each address is its own site. The
+// busiest address keeps the plain id, the others get their street number, and
+// every split site shows its address in the name so the two can be told apart.
+const addrCounts = new Map(); // name -> Map(address -> sessions)
+for (const { name, address } of sessions) {
+  const m = addrCounts.get(name) || new Map();
+  m.set(address, (m.get(address) || 0) + 1);
+  addrCounts.set(name, m);
+}
+function siteId(name, address) {
+  const base = "BLDR-" + name.replace(/[^A-Za-z0-9]+/g, "").toUpperCase();
+  const counts = [...addrCounts.get(name).entries()].sort((a, b) => b[1] - a[1]);
+  if (counts[0][0] === address) return base;
+  return `${base}-${address.match(/^\d+/)?.[0] ?? counts.findIndex(([a]) => a === address) + 1}`;
+}
+
 // --- aggregate ---
-const sitesMap = new Map(); // name -> site agg
+const sitesMap = new Map(); // "name|address" -> site agg
 const daily = new Map(); // date -> {sessions, energy}
 let netEnergy = 0,
   netCo2 = 0,
@@ -71,21 +108,7 @@ let netEnergy = 0,
   netRevenue = 0,
   netSessions = 0;
 
-const usedIds = new Set();
-function siteId(name) {
-  const base = "BLDR-" + name.replace(/[^A-Za-z0-9]+/g, "").toUpperCase();
-  let id = base;
-  let n = 2;
-  while (usedIds.has(id)) id = `${base}-${n++}`; // guarantee uniqueness
-  usedIds.add(id);
-  return id;
-}
-
-for (const f of feats) {
-  const p = f.properties;
-  const t = parseDT(p.Start_Date___Time);
-  if (!t) continue;
-  const energy = parseFloat(p.Energy__kWh_) || 0;
+for (const { p, t, name, address, energy } of sessions) {
   const co2 = parseFloat(p.GHG_Savings__kg_) || 0;
   const gasoline = parseFloat(p.Gasoline_Savings__gallons_) || 0;
   const duration = durMin(p.Total_Duration__hh_mm_ss_);
@@ -93,13 +116,13 @@ for (const f of feats) {
   const dow = new Date(t.ms).getUTCDay();
   const hour = t.hour;
 
-  const name = (p.Station_Name || "Unknown").trim();
-  let site = sitesMap.get(name);
+  const siteKey = `${name}|${address}`;
+  let site = sitesMap.get(siteKey);
   if (!site) {
     site = {
-      id: siteId(name),
-      name,
-      address: (p.Address || "").trim(),
+      id: siteId(name, address),
+      name: addrCounts.get(name).size > 1 ? `${name} (${address})` : name,
+      address,
       zip: (p.Zip_Postal_Code || "").trim(),
       sessions: 0,
       energyKwh: 0,
@@ -110,7 +133,7 @@ for (const f of feats) {
       chargeMin: 0,
       heat: new Array(168).fill(0),
     };
-    sitesMap.set(name, site);
+    sitesMap.set(siteKey, site);
   }
   const revenue = sessionRevenue(duration);
   site.sessions++;
@@ -170,7 +193,7 @@ const prevPath = resolve(root, "src/data/boulder-data.json");
 if (existsSync(prevPath)) {
   try {
     for (const s of JSON.parse(readFileSync(prevPath, "utf8")).sites || [])
-      if (s.lat && s.lng) coordCache.set(s.name, [s.lat, s.lng]);
+      if (s.lat && s.lng) coordCache.set(s.id, [s.lat, s.lng]);
   } catch {
     /* ignore */
   }
@@ -178,7 +201,7 @@ if (existsSync(prevPath)) {
 
 console.log("Resolving coordinates…");
 for (let i = 0; i < sites.length; i++) {
-  const cached = coordCache.get(sites[i].name);
+  const cached = coordCache.get(sites[i].id);
   const [lat, lng] = cached || (await geocode(sites[i].address, i));
   sites[i].lat = lat;
   sites[i].lng = lng;
