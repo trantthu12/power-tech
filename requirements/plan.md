@@ -6,12 +6,10 @@
 This plan covers what the front end delivers **this semester (Sprint 2)** and what
 is scheduled for **next semester (Sprint 3)**.
 
-**Two cities, one switch.** The dashboard ships both **Boulder** (default) and
-**Palo Alto**, toggled from a header switch. Selected city lives in a React
-context (persisted to localStorage) and is part of every query key, so switching
-re-derives all pages. Palo Alto adds real billed revenue, real coordinates, and a
-Unique Drivers metric (customer User ID) that Boulder's data lacks; city-exclusive
-cards are tinted (blue = Palo Alto, pink = Boulder).
+**One city.** The dashboard ships **Boulder** only. The selected city still lives
+in a React context and is part of every query key, so another city can be added
+later without touching the pages; the header switch stays hidden while only one
+city is configured.
 
 ---
 
@@ -51,7 +49,7 @@ menu on mobile).
   pagination, and CSV export.
 
 The Charger Types (AC/DC) card on Network Overview reflects the operated fleet:
-all 50 stations are Level 2 (AC); DC fast is a Sprint 3 expansion item. (The
+all 53 stations are Level 2 (AC); DC fast is a Sprint 3 expansion item. (The
 Colorado AFDC public-station inventory is kept for the Sprint 3 Infrastructure
 Planning page.)
 
@@ -97,18 +95,18 @@ pointing the service layer at the live API. No UI rewrite is required.
 | Charts | Recharts (line/bar/area) + ECharts (heatmap) | Recharts animation disabled for stable rendering |
 | Map | React-Leaflet + OpenStreetMap | Free, no API key |
 | Data fetching | TanStack Query + `services/api.ts` | Single swap point for the real backend |
-| Data delivery | Static baked JSON aggregates (`src/data/`) | Built offline by ETL scripts; refresh manual or scheduled weekly |
+| Data delivery | Static baked JSON aggregates (`src/data/`) | Built offline by ETL scripts; refreshed manually |
 | Revenue | Estimated from the real City of Boulder L2 time tariff on real durations | $1/hr (0–2h), $2.50/hr (2–4h), 4h cap; labelled "estimated" in the UI |
 
 ---
 
 ## Data Pipeline
 
-- `scripts/fetch-boulder.mjs` — aggregates the ~140k real Boulder charging
-  sessions into `src/data/boulder-data.json` (50 stations, daily totals, 24×7
-  heatmap per station).
+- `scripts/fetch-boulder.mjs` — de-duplicates the raw Boulder feed (148k rows,
+  ~78k unique sessions) and aggregates it into `src/data/boulder-data.json`
+  (53 stations, daily totals, 24×7 heatmap per station).
 - `scripts/fetch-stations.mjs` — fetches the Colorado AFDC public-station
   inventory into `src/data/boulder-stations.json` (204 stations, networks,
   connectors, growth).
-- `npm run refresh-data` runs both; a weekly scheduled job can refresh them
-  automatically. The sidebar shows the current "Data as of" date.
+- `npm run refresh-data` rebuilds the Boulder sessions data; there is no
+  scheduled refresh. The sidebar shows the current "Data as of" date.

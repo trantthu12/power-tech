@@ -79,27 +79,18 @@ different stakeholder (Section 4).
 The block diagram names **Palo Alto** and **Boulder** as candidate datasets
 (open data is used because comparable Canadian open data is not available).
 
-The dashboard ships **two real cities** with a header switch (Boulder | Palo
-Alto); every page, KPI, chart, and map re-derives from the selected city.
-
-**City of Palo Alto** (California) is the second dataset — the City's ChargePoint
-usage export: **259,415 real sessions across 47 stations (2011–2020)**. It is
-richer than Boulder in two ways the dashboard uses directly: **real billed Fee**
-(so revenue is actual, not estimated) and **real coordinates** (no geocoding). It
-also carries a **customer User ID**, so Palo Alto shows a **Unique Drivers**
-metric (21,441 drivers, ~12 sessions each) that Boulder's data cannot provide.
-City-exclusive cards are tinted (blue = Palo Alto-only, pink = Boulder-only).
-
-The primary/default city is built on the **real City of Boulder EV-charging open
-dataset**:
+The dashboard ships **one real city, Boulder**, built on the **real City of
+Boulder EV-charging open dataset**:
 
 - Source: `open-data.bouldercolorado.gov` — dataset
   `95992b3938be4622b07f0b05eba95d4c_0`.
-- Content: **~140,000 real charging sessions across 50 city-owned stations**, each
+- Content: **~78,000 unique real charging sessions across 53 city-owned stations**, each
   with station name, address, ZIP, start/end time, duration, **energy (kWh)**,
   **avoided emissions (GHG kg)**, **gasoline displaced (gallons)**, and charging
-  time (Level 2).
-- The **50 city-operated stations are all Level 2 (AC / J1772)** per the
+  time (Level 2). The published file is two overlapping exports concatenated
+  (148k rows), so the ETL drops the duplicate copy of each session. Three station
+  names cover two addresses each; those are shown as separate stations.
+- The **53 city-operated stations are all Level 2 (AC / J1772)** per the
   dataset's real Port_Type field, so the Charger Types (AC/DC) card reports 100%
   AC; DC fast charging is a Sprint 3 expansion item. A second real dataset (the
   **Colorado AFDC** public-station inventory, 204 stations) is kept for the
@@ -166,8 +157,8 @@ backend's role (Blocks 2 & 3). The front end **turns data into clear visuals**
 - Every page reads data through a **single service layer** (`src/services/api.ts`).
   When the Python backend exposes a live API, only this one file changes — the UI
   stays the same.
-- Data can be refreshed **manually** (`npm run refresh-data`) or **automatically**
-  via a weekly scheduled job; the sidebar shows the "Data as of" date.
+- Data is refreshed **manually** (`npm run refresh-data`); the sidebar shows the
+  "Data as of" date.
 
 ---
 
