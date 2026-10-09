@@ -112,5 +112,5 @@ pointing the service layer at the live API. No UI rewrite is required.
 - `scripts/fetch-stations.mjs` — fetches the Colorado AFDC public-station
   inventory into `src/data/boulder-stations.json` (204 stations, networks,
   connectors, growth).
-- `npm run refresh-data` runs that older ETL; do not run it unless the script
-  is brought in line with v3. There is no scheduled refresh. The sidebar shows the current "Data as of" date.
+- The data is updated by replacing the curated file; there is no refresh
+  command or scheduled refresh. The sidebar shows the current "Data as of" date.

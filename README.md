@@ -50,7 +50,6 @@ npm run preview
 | `npm run build` | Type-check (`tsc -b`) and produce an optimized build in `dist/`. |
 | `npm run preview` | Serve the built `dist/` locally to sanity-check the production bundle. |
 | `npm run lint` | Run ESLint over the project. |
-| `npm run refresh-data` | Re-run the ETL scripts to rebuild the baked datasets (see [Data pipeline](#data-pipeline)). |
 
 ## Project structure
 
@@ -88,15 +87,11 @@ touching any page code.
 The dashboard ships with **real charging data baked into static JSON** so it
 loads instantly and deploys as a pure static site (no backend required).
 
-1. `scripts/fetch-boulder.mjs` downloads the raw open-data feed, cleans and
-   aggregates it (per-station, per-ZIP, hourly patterns, energy, CO₂, revenue,
-   etc.).
-2. The cleaned result is written to `src/data/boulder-data.json`.
-3. Run the pipeline with:
-
-   ```bash
-   npm run refresh-data
-   ```
+`src/data/boulder-data.json` is the curated Boulder dataset: the raw open-data
+feed de-duplicated and aggregated per station, per ZIP and per hour (energy,
+CO₂, revenue, etc.), with renamed chargers counted once under their current
+name. It is updated by replacing the file; there is no refresh command.
+`scripts/fetch-boulder.mjs` is the older ETL and does not reproduce this file.
 
 **Data source & honesty notes**
 

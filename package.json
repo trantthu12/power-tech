@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint .",
-    "refresh-data": "node scripts/fetch-boulder.mjs"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",

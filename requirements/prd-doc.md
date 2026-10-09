@@ -160,8 +160,8 @@ backend's role (Blocks 2 & 3). The front end **turns data into clear visuals**
 - Every page reads data through a **single service layer** (`src/services/api.ts`).
   When the Python backend exposes a live API, only this one file changes — the UI
   stays the same.
-- Data is refreshed **manually** (`npm run refresh-data`); the sidebar shows the
-  "Data as of" date.
+- Data is updated **manually** by replacing the curated JSON file; the sidebar
+  shows the "Data as of" date.
 
 ---
 
