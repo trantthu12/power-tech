@@ -143,16 +143,6 @@ export function Sidebar({ mobileOpen, onClose }: SidebarProps) {
                     >
                       {item.label}
                     </span>
-                    {item.sprint === 3 && (
-                      <span
-                        className={cx(
-                          "rounded bg-slate-600/70 px-1.5 py-0.5 text-[10px] font-medium text-slate-200",
-                          collapsed && "lg:hidden",
-                        )}
-                      >
-                        S3
-                      </span>
-                    )}
                   </>
                 )}
               </NavLink>
