@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "@/layout/DashboardLayout";
-import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
 // Lazy-load pages so their heavy chart/map libs (recharts, leaflet) load
 // per-route instead of all landing in the initial bundle.
@@ -20,6 +19,12 @@ const PerformanceAnalytics = lazy(() =>
 const InfrastructurePlanning = lazy(() =>
   import("@/pages/InfrastructurePlanning").then((m) => ({ default: m.InfrastructurePlanning }))
 );
+const Sustainability = lazy(() =>
+  import("@/pages/Sustainability").then((m) => ({ default: m.Sustainability }))
+);
+const FaultDiagnostics = lazy(() =>
+  import("@/pages/FaultDiagnostics").then((m) => ({ default: m.FaultDiagnostics }))
+);
 
 // The dashboard's page routes. Rendered twice: once at the root, and once under
 // the /vodap prefix, where the city switch is unlocked (see city-context).
@@ -31,39 +36,8 @@ function dashboardRoutes() {
       <Route path="load-utilization" element={<LoadUtilization />} />
       <Route path="performance" element={<PerformanceAnalytics />} />
       <Route path="infrastructure" element={<InfrastructurePlanning />} />
-      <Route
-        path="sustainability"
-        element={
-          <PlaceholderPage
-            title="Sustainability Scoring"
-            audience="Executive / ESG Officer"
-            sprint={3}
-            widgets={[
-              "Energy delivered and avoided emissions",
-              "Ageing asset flags",
-              "CO₂ offset estimate",
-              "ESG summary panel",
-            ]}
-          />
-        }
-      />
-      <Route
-        path="faults"
-        element={
-          <PlaceholderPage
-            title="Fault Diagnostics"
-            audience="Operations Manager"
-            sprint={3}
-            widgets={[
-              "Risk-ranked alert table",
-              "Fault history timeline",
-              "Mean Time Between Failures trend",
-              "Mean Time To Repair trends",
-              "Fault probability",
-            ]}
-          />
-        }
-      />
+      <Route path="sustainability" element={<Sustainability />} />
+      <Route path="faults" element={<FaultDiagnostics />} />
     </>
   );
 }

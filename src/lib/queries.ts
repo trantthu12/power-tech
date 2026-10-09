@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Granularity } from "@/types";
 import * as api from "@/services/api";
+import { getOpsData } from "@/services/ops";
 import { useFilter } from "./filter-context";
 import { useCity } from "./city-context";
 
@@ -158,4 +159,9 @@ export function useChargerPowerMix() {
     queryKey: ["charger-power-mix", city],
     queryFn: () => api.getChargerPowerMix(city),
   });
+}
+
+/** Boulder operations data (planning, sustainability, faults); loaded on demand. */
+export function useOpsData() {
+  return useQuery({ queryKey: ["ops"], queryFn: getOpsData, staleTime: Infinity });
 }

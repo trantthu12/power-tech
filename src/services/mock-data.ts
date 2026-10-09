@@ -1,7 +1,8 @@
 // Dataset built from the REAL City of Boulder EV charging sessions dataset
-// (148k sessions aggregated offline into src/data/boulder-data.json by
-// scripts/fetch-boulder.mjs). Everything the app shows — stations, sessions,
-// energy, CO2, duration, the 24×7 demand pattern, per-station stats — is real.
+// (77,935 de-duplicated sessions aggregated offline into
+// src/data/boulder-data.json by scripts/export_dashboard_json.py). Everything it
+// holds — stations, sessions, energy, CO2, duration, the 24×7 demand pattern,
+// per-station stats — is real.
 
 import type { ConnectorType, Site } from "@/types";
 import type { City } from "@/lib/cities";

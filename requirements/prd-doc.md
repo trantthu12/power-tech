@@ -103,10 +103,10 @@ Boulder EV-charging open dataset**:
 > **explicit estimate** — the real published City of Boulder Level 2 tariff
 > ($1/hr for the first 2 hours, $2.50/hr for hours 3–4, 4-hour cap) applied to the
 > dataset's real session durations (electricity cost assumes ~$0.11/kWh, the Xcel
-> Energy Colorado commercial rate). Fields with **no data source** (uptime /
-> online status, fault & maintenance records) are **not fabricated**: they appear
-> as clearly-labelled "Sprint 3" placeholder cards showing what will populate once
-> the source is available.
+> Energy Colorado commercial rate). Fields with **no real data source** (port
+> ratings and install dates, uptime, fault & maintenance records, telemetry) come
+> from the team's **synthetic dataset** and every card that uses them carries a
+> "synthetic" badge.
 
 ---
 
@@ -131,7 +131,7 @@ Boulder EV-charging open dataset**:
 |---|---|---|
 | Data | Real open data available now (Boulder sessions; Colorado AFDC inventory) | Synthetic data for fault / maintenance / capacity (no source yet) |
 | Pages | Network Overview, Load Utilization, Performance Analytics, Stations | Infrastructure Planning, Sustainability Scoring, Fault Diagnostics |
-| Note | Operational pages built on real open data | Depend on the ML engine (MCDA) and synthetic fault/maintenance data; stubbed with labelled placeholder cards |
+| Note | Operational pages built on real open data | Built on the synthetic dataset workbook; FR-02 fault model scored offline; MCDA is an interim in-browser model |
 
 > **Sprint 2 focuses on the operational pages** that real data can support today.
 > Pages that depend on fault/maintenance/capacity data are scheduled for Sprint 3.
@@ -154,8 +154,8 @@ backend's role (Blocks 2 & 3). The front end **turns data into clear visuals**
 
 **Data & architecture approach**
 - The real datasets are aggregated **offline** into compact JSON files
-  (`src/data/`) by ETL scripts (`scripts/fetch-boulder.mjs`,
-  `scripts/fetch-stations.mjs`) — this is the Pre-Processing block. The browser
+  (`src/data/`) by export scripts (`scripts/export_dashboard_json.py`,
+  `scripts/export_ops_json.py`) — this is the Pre-Processing block. The browser
   loads small pre-aggregated files instead of hundreds of thousands of raw rows.
 - Every page reads data through a **single service layer** (`src/services/api.ts`).
   When the Python backend exposes a live API, only this one file changes — the UI

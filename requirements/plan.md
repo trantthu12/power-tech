@@ -55,24 +55,24 @@ Planning page.)
 
 ---
 
-## Next Semester — Sprint 3 (planned)
+## Sprint 3 Pages
 
-Sprint 3 pages depend on the **inputs that have no data source yet** (fault,
-maintenance, capacity, uptime). The plan is to generate **synthetic data** for
-these, then build the pages against the same service layer.
+These pages read `src/data/boulder-ops.json`, exported from the team's synthetic
+dataset workbook. Real session data and synthetic infrastructure / maintenance /
+telemetry data are labelled separately on every card.
 
-| Page | Stakeholder | Needs (Sprint 3 input) |
-|------|-------------|------------------------|
-| **Infrastructure Planning** | Network Planner | MCDA ranking, priority score table, coverage-gap analysis, short-term demand forecast, expansion recommendations — all require the Python Site-Scoring & Optimization (MCDA) model. Page is stubbed with labelled placeholder cards. |
-| **Sustainability Scoring** | Executive / ESG Officer | Energy & avoided-emissions rollups, ageing-asset flags, CO₂ offset estimate, ESG summary. Partly derivable from real data; asset age/ESG panels need synthetic asset metadata. |
-| **Fault Diagnostics** | Operations Manager | Risk-ranked alert table, fault-history timeline, MTBF/MTTR trends, fault probability — all require fault & maintenance records (synthetic). |
+| Page | Stakeholder | Status |
+|------|-------------|--------|
+| **Infrastructure Planning** | Network Planner | ✅ Built. MCDA ranking and priority table use an interim in-browser model (weights shown on the page) until the Python MCDA engine is available. |
+| **Sustainability Scoring** | Executive / ESG Officer | ✅ Built. Energy/CO₂ roll-ups are real; ageing-asset flags use synthetic install dates. |
+| **Fault Diagnostics** | Operations Manager | ✅ Built. Fault probabilities come from the FR-02 LightGBM model (7-day horizon). On 2022–2023 it scores ROC-AUC 0.71, precision 5%, recall 75%, below the FR-02 targets for AUC and precision. |
 
 **Backend integration (Sprint 3):** connect the Python ML engine (demand
 forecasting, MCDA site scoring, fault-detection model) to the dashboard by
 pointing the service layer at the live API. No UI rewrite is required.
 
-> Sprint 3 pages currently exist as placeholder stubs ("coming in Sprint 3") so
-> navigation is complete and no fabricated numbers are shown.
+> Synthetic figures carry a "synthetic" badge; model and forecast outputs carry
+> "model" / "forecast", so no synthetic number is presented as real.
 
 ---
 
@@ -106,11 +106,8 @@ pointing the service layer at the live API. No UI rewrite is required.
   sessions from the 148k-row raw feed, 44 stations / 86 ports, renamed chargers
   counted once under their current name, daily totals and a 24×7 heatmap per
   station.
-- `scripts/fetch-boulder.mjs` — the older ETL. It still emits one station per
-  (name, address) pair (53 stations, 2 ports each), so re-running it overwrites
-  the curated file.
-- `scripts/fetch-stations.mjs` — fetches the Colorado AFDC public-station
-  inventory into `src/data/boulder-stations.json` (204 stations, networks,
-  connectors, growth).
-- The data is updated by replacing the curated file; there is no refresh
-  command or scheduled refresh. The sidebar shows the current "Data as of" date.
+- `src/data/boulder-ops.json` — ports, maintenance events, monthly reliability,
+  FR-02 fault probabilities, sustainability roll-ups and planning metrics.
+- Both files are exported from `PowerTech_synthetic_dataset.xlsx` by
+  `scripts/export_dashboard_json.py` and `scripts/export_ops_json.py` (see the
+  README). There is no scheduled refresh. The sidebar shows the current "Data as of" date.
