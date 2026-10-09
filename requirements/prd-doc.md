@@ -84,13 +84,16 @@ Boulder EV-charging open dataset**:
 
 - Source: `open-data.bouldercolorado.gov` — dataset
   `95992b3938be4622b07f0b05eba95d4c_0`.
-- Content: **~78,000 unique real charging sessions across 53 city-owned stations**, each
+- Content: **~78,000 unique real charging sessions across 44 city-owned stations (86 ports)**, each
   with station name, address, ZIP, start/end time, duration, **energy (kWh)**,
   **avoided emissions (GHG kg)**, **gasoline displaced (gallons)**, and charging
   time (Level 2). The published file is two overlapping exports concatenated
-  (148k rows), so the ETL drops the duplicate copy of each session. Three station
-  names cover two addresses each; those are shown as separate stations.
-- The **53 city-operated stations are all Level 2 (AC / J1772)** per the
+  (148k rows), so the duplicate copy of each session is dropped. Chargers that
+  were renamed (e.g. COMM VITALITY / 1000WALNUT1 → MUNICIPAL SC / 1000WALNUT1 in
+  2023) are counted once, under the current name, with all their sessions. Two
+  station names cover two addresses each; those are separate stations and show
+  their address in the name.
+- The **44 city-operated stations are all Level 2 (AC / J1772)** per the
   dataset's real Port_Type field, so the Charger Types (AC/DC) card reports 100%
   AC; DC fast charging is a Sprint 3 expansion item. A second real dataset (the
   **Colorado AFDC** public-station inventory, 204 stations) is kept for the

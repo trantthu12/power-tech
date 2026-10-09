@@ -49,7 +49,7 @@ menu on mobile).
   pagination, and CSV export.
 
 The Charger Types (AC/DC) card on Network Overview reflects the operated fleet:
-all 53 stations are Level 2 (AC); DC fast is a Sprint 3 expansion item. (The
+all 44 stations are Level 2 (AC); DC fast is a Sprint 3 expansion item. (The
 Colorado AFDC public-station inventory is kept for the Sprint 3 Infrastructure
 Planning page.)
 
@@ -102,11 +102,15 @@ pointing the service layer at the live API. No UI rewrite is required.
 
 ## Data Pipeline
 
-- `scripts/fetch-boulder.mjs` — de-duplicates the raw Boulder feed (148k rows,
-  ~78k unique sessions) and aggregates it into `src/data/boulder-data.json`
-  (53 stations, daily totals, 24×7 heatmap per station).
+- `src/data/boulder-data.json` — the curated Boulder dataset (v3): ~78k unique
+  sessions from the 148k-row raw feed, 44 stations / 86 ports, renamed chargers
+  counted once under their current name, daily totals and a 24×7 heatmap per
+  station.
+- `scripts/fetch-boulder.mjs` — the older ETL. It still emits one station per
+  (name, address) pair (53 stations, 2 ports each), so re-running it overwrites
+  the curated file.
 - `scripts/fetch-stations.mjs` — fetches the Colorado AFDC public-station
   inventory into `src/data/boulder-stations.json` (204 stations, networks,
   connectors, growth).
-- `npm run refresh-data` rebuilds the Boulder sessions data; there is no
-  scheduled refresh. The sidebar shows the current "Data as of" date.
+- `npm run refresh-data` runs that older ETL; do not run it unless the script
+  is brought in line with v3. There is no scheduled refresh. The sidebar shows the current "Data as of" date.
