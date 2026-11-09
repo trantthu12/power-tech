@@ -63,7 +63,7 @@ telemetry data are labelled separately on every card.
 
 | Page | Stakeholder | Status |
 |------|-------------|--------|
-| **Infrastructure Planning** | Network Planner | ✅ Built. MCDA ranking and priority table use an interim in-browser model (weights shown on the page) until the Python MCDA engine is available. |
+| **Infrastructure Planning** | Network Planner | ✅ Built. A 2D action matrix replaces the single-score MCDA ranking: each station gets a Reliability Index (Ri) and a Demand Pressure Index (Di), 0–100 against fixed anchors, and a quadrant (Expand, Refurbish, Decommission / Review, Retain / Monitor) split at 50. Ri uses synthetic maintenance data. |
 | **Sustainability Scoring** | Executive / ESG Officer | ✅ Built. Energy/CO₂ roll-ups are real; ageing-asset flags use synthetic install dates. |
 | **Fault Diagnostics** | Operations Manager | ✅ Built. Fault probabilities come from the FR-02 LightGBM model (7-day horizon). On 2022–2023 it scores ROC-AUC 0.71, precision 5%, recall 75%, below the FR-02 targets for AUC and precision. |
 

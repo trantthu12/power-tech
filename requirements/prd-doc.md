@@ -117,7 +117,7 @@ Boulder EV-charging open dataset**:
 | 1 | **Network Overview** (landing) | All stakeholders | High-level KPI cards, geographic/station map, system status banner, filter | 2 |
 | 2 | **Load Utilization** | Load Manager | 24×7 heatmap of hourly demand per site, 48-hour demand-forecast chart, load-optimization panel, port occupancy rates, peak hourly usage | 2 |
 | 3 | **Performance Analytics** | All stakeholders | KPI trend charts (session efficiency, utilization trend), site comparison (energy & financial), peak demand, distribution/capacity profiles, underutilization tracking, occupancy per region | 2 |
-| 4 | **Infrastructure Planning** | Network Planner | MCDA ranking, priority score table, coverage-gap analysis, short-term demand forecast, expansion recommendations | 3 |
+| 4 | **Infrastructure Planning** | Network Planner | Station action matrix (Reliability Index Ri vs Demand Pressure Index Di, split at 50 into Expand / Refurbish / Decommission / Retain) with filters, short-term demand forecast, expansion recommendations for Expand stations | 3 |
 | 5 | **Sustainability Scoring** | Executive / ESG Officer | Energy delivered & avoided emissions, ageing-asset flags, CO₂ offset estimate, ESG summary panel | 3 |
 | 6 | **Fault Diagnostics** | Operations Manager | Risk-ranked alert table, fault-history timeline, MTBF trend, MTTR trends, fault probability | 3 |
 
@@ -131,7 +131,7 @@ Boulder EV-charging open dataset**:
 |---|---|---|
 | Data | Real open data available now (Boulder sessions; Colorado AFDC inventory) | Synthetic data for fault / maintenance / capacity (no source yet) |
 | Pages | Network Overview, Load Utilization, Performance Analytics, Stations | Infrastructure Planning, Sustainability Scoring, Fault Diagnostics |
-| Note | Operational pages built on real open data | Built on the synthetic dataset workbook; FR-02 fault model scored offline; MCDA is an interim in-browser model |
+| Note | Operational pages built on real open data | Built on the synthetic dataset workbook; FR-02 fault model scored offline; Ri/Di action matrix computed offline |
 
 > **Sprint 2 focuses on the operational pages** that real data can support today.
 > Pages that depend on fault/maintenance/capacity data are scheduled for Sprint 3.

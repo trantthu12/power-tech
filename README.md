@@ -134,10 +134,14 @@ On macOS, LightGBM needs `libomp` (`brew install libomp`).
   session, electricity cost); an **"Over time"** section with energy and
   charging-session (adoption) trends; site comparison; a utilization heatmap; and
   a weekday-vs-weekend hourly profile.
-- **Infrastructure Planning** — installed capacity vs network peak load, an MCDA
-  ranking of areas (occupancy, session growth, peak load vs capacity, downtime),
-  a station priority table, coverage-gap analysis against a 20% occupancy target,
-  a 6-month demand forecast, and expansion recommendations.
+- **Infrastructure Planning** — installed capacity vs network peak load, a
+  station action matrix that plots each station's Reliability Index (Ri: uptime,
+  first-attempt success, failures, maintenance cost) against its Demand Pressure
+  Index (Di: sessions per port, dwell, occupancy, time with every port busy),
+  split at 50 into Expand / Refurbish / Decommission / Retain, with filters for
+  inactive stations and public vs fleet; a 6-month demand forecast; and ports to
+  add at Expand stations. Weights and scoring anchors are constants at the top
+  of `scripts/export_ops_json.py`.
 - **Sustainability** — energy delivered and CO₂ avoided per year, a CO₂ offset
   estimate (EPA equivalencies), an ESG summary, and ageing-asset flags.
 - **Fault Diagnostics** — uptime, MTBF, MTTR and maintenance cost; a risk-ranked

@@ -69,32 +69,30 @@ export interface FaultModel {
   test: { rocAuc: number; precision: number; recall: number };
 }
 
-export type McdaCriterion = "occupancy" | "growth" | "peakLoad" | "downtime";
+export type RiComponent = "uptime" | "firstAttempt" | "failures" | "maintenanceCost";
+export type DiComponent = "sessions" | "dwell" | "occupancy" | "allBusy";
+export type Quadrant = "expand" | "refurbish" | "decommission" | "retain";
 
-/** Planning metrics for one area (ZIP) or one station over the last 12 months. */
-export interface PlanningRow {
-  ports: number;
-  installedKw: number;
-  sessions12m: number;
-  sessionsPrev12m: number;
-  growthPct: number | null;
-  occupancyPct: number;
-  peakKw: number;
-  peakLoadPct: number;
-  uptimePct: number | null;
-  score: number;
-  /** Weighted contribution of each criterion to the score (points, sums to score). */
-  criteria: Record<McdaCriterion, number>;
-}
-
-export interface ZipPlanning extends PlanningRow {
-  zip: string;
-  addPorts: number;
-}
-
-export interface StationPlanning extends PlanningRow {
+/** One station on the action matrix, scored over the last 12 months. */
+export interface MatrixStation {
   siteId: string;
   zip: string;
+  use: "public" | "fleet";
+  active: boolean;
+  ports: number;
+  sessions12m: number;
+  growthPct: number | null;
+  /** Reliability Index, 0-100. */
+  ri: number;
+  /** Demand Pressure Index, 0-100. */
+  di: number;
+  quadrant: Quadrant;
+  /** Raw value and 0-100 score of each component (null when there is no data). */
+  components: Record<RiComponent | DiComponent, { value: number | null; score: number | null }>;
+  /** Ports to add; only "expand" stations get a non-zero value. */
+  addPorts: number;
+  /** Null when the station has no full previous year to forecast from. */
+  forecast: { next6mKwh: number | null; sameMonthsLastYearKwh: number; growthPct: number | null };
 }
 
 export interface OpsData {
@@ -110,15 +108,18 @@ export interface OpsData {
   };
   infrastructure: {
     window: { from: string; to: string };
-    weights: Record<McdaCriterion, number>;
     targetOccupancyPct: number;
-    zips: ZipPlanning[];
-    stations: StationPlanning[];
+    matrix: {
+      midpoint: number;
+      weights: { ri: Record<RiComponent, number>; di: Record<DiComponent, number> };
+      /** Component value that scores 0 and the value that scores 100. */
+      anchors: Record<RiComponent | DiComponent, [number, number]>;
+      stations: MatrixStation[];
+    };
     forecast: {
       history: { month: string; energyKwh: number }[];
       forecast: { month: string; energyKwh: number }[];
       growthPct: number;
-      byZip: { zip: string; next6mKwh: number; sameMonthsLastYearKwh: number; growthPct: number }[];
     };
     networkPeak: { peakKw12m: number; meanDailyPeakKw12m: number; installedKw: number };
   };

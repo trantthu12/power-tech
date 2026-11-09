@@ -40,8 +40,28 @@ ACTIVE_SINCE = pd.Timestamp("2023-06-01")   # a port with no session since then 
 AGEING_YEARS = 8                            # L2 EVSE service life is typically ~10 years
 TARGET_OCCUPANCY = 0.20                     # plugged-in share of port-hours we plan to
 MIN_PREV_SESSIONS = 50                      # below this, year-on-year growth is not meaningful
-MAX_GROWTH = 1.0                            # growth is capped at +100% for scoring and sizing
-MCDA_WEIGHTS = {"occupancy": 0.35, "growth": 0.25, "peakLoad": 0.25, "downtime": 0.15}
+MAX_GROWTH = 1.0                            # growth is capped at +100% for sizing
+
+# Station action matrix: a Reliability Index (Ri) and a Demand Pressure Index
+# (Di), each 0-100. Every component scores 0 at its "bad" value and 100 at its
+# "good" value, linearly in between and clipped. The index is the weighted mean
+# of its components; a component without data is left out and the remaining
+# weights are rescaled. Edit the weights and anchors here.
+RI_WEIGHTS = {"uptime": 0.25, "firstAttempt": 0.25, "failures": 0.25, "maintenanceCost": 0.25}
+DI_WEIGHTS = {"sessions": 0.25, "dwell": 0.25, "occupancy": 0.25, "allBusy": 0.25}
+ANCHORS = {                                 # component: (score 0, score 100)
+    "uptime": (97.0, 100.0),                # % of port-hours up; 97% is the NEVI minimum
+    "firstAttempt": (70.0, 95.0),           # % of visits charging on the first attempt
+    "failures": (6.0, 0.0),                 # failures per port per year
+    "maintenanceCost": (2000.0, 0.0),       # maintenance USD per port per year
+    "sessions": (0.0, 3.0),                 # sessions per port per day
+    "dwell": (0.0, 8.0),                    # mean hours plugged in per session
+    "occupancy": (0.0, 40.0),               # % of port-hours with a vehicle plugged in
+    "allBusy": (0.0, 20.0),                 # % of time every port is in use
+}
+MIDPOINT = 50                               # quadrant split on both axes; a score of exactly 50 counts as high
+QUADRANTS = {(True, True): "expand", (True, False): "refurbish",   # (Di high, Ri high)
+             (False, False): "decommission", (False, True): "retain"}
 H = 7                                       # FR-02 horizon, days
 SIG = ["connector_warnings", "trip_events", "auth_failures", "comm_dropouts"]
 
@@ -58,9 +78,28 @@ def rnd(x, n=1):
     return None if x is None or pd.isna(x) else round(float(x), n)
 
 
-def minmax(s):
-    span = s.max() - s.min()
-    return (s - s.min()) / span if span else s * 0
+def anchor_score(name, value):
+    if value is None or pd.isna(value):
+        return None
+    bad, good = ANCHORS[name]
+    return float(np.clip(100 * (value - bad) / (good - bad), 0, 100))
+
+
+def index(parts, weights):
+    """Weighted mean of the component scores that have data."""
+    have = {k: w for k, w in weights.items() if parts[k]["score"] is not None}
+    if not have:
+        return None
+    return sum(parts[k]["score"] * w for k, w in have.items()) / sum(have.values())
+
+
+def all_busy_pct(sess, n_ports, lo_hi):
+    """Share of 15-minute slots in the window when sessions occupy every port."""
+    grid = pd.date_range(*lo_hi, freq="15min", inclusive="left")
+    d = np.zeros(len(grid) + 1)
+    np.add.at(d, np.searchsorted(grid, sess.start.values), 1)
+    np.add.at(d, np.searchsorted(grid, sess.end.values), -1)
+    return 100 * float((np.cumsum(d)[:-1] >= n_ports).mean())
 
 
 # ---- FR-02 features, as in fr02_evaluation.py, extended to the last day ----
@@ -265,82 +304,80 @@ def main():
     prof12["zip"] = prof12.station_id.map(zip_of)
     act = pi[pi.active]
 
-    def area_metrics(key, keys_of_station):
-        st_k = st.assign(k=keys_of_station)
-        res = []
-        for k, stg in st_k.groupby("k"):
-            ids = set(stg.station_id)
-            ports_k = act[act.station_id.isin(ids)]
-            if ports_k.empty:
-                continue
-            m12 = mr12[mr12.station_id.isin(ids)]
-            dwell = s12[s12.station_id.isin(ids)].dwell_h.sum()
-            n12 = int(s12.station_id.isin(ids).sum())
-            nprev = int(sprev.station_id.isin(ids).sum())
-            if key == "zip":
-                load = prof12[prof12.zip == k].groupby("interval_start").load_kW.sum()
-            else:
-                load = prof12[prof12.station_id.isin(ids)].groupby("interval_start").load_kW.sum()
-            kw = ports_k.evse_rated_kW.sum()
-            res.append({
-                key: k, "ports": int(len(ports_k)), "installedKw": rnd(kw, 1),
-                "sessions12m": n12, "sessionsPrev12m": nprev,
-                "growthPct": rnd(100 * (n12 - nprev) / nprev, 1) if nprev >= MIN_PREV_SESSIONS else None,
-                "occupancyPct": rnd(100 * dwell / m12.port_hours.sum(), 1) if m12.port_hours.sum() else 0,
-                "peakKw": rnd(load.max() if len(load) else 0, 1),
-                "peakLoadPct": rnd(100 * (load.max() if len(load) else 0) / kw, 1),
-                "uptimePct": rnd(100 * (1 - m12.downtime_h.sum() / m12.port_hours.sum()), 2) if m12.port_hours.sum() else None,
-            })
-        return pd.DataFrame(res)
+    # Per station: Ri and Di components, the matrix quadrant, ports to add at
+    # "expand" stations, and a 6-month energy forecast. An active station is
+    # scored on its active ports; an inactive one on all of its ports.
+    ev12 = window(ev, "start", LAST_12M)
+    s["month"] = s.start.dt.to_period("M")
+    next6 = pd.period_range("2023-12", periods=6, freq="M")
+    station_month = s.groupby(["station_id", "month"]).energy_kWh.sum()
+    site_of = dict(zip(st.site_id, st.station_id))
+    stations = []
+    for site_id, stg in st.groupby("site_id"):
+        ids = set(stg.station_id)
+        ports_all = pi[pi.station_id.isin(ids)]
+        active = bool(ports_all.active.any())
+        ports_k = ports_all[ports_all.active] if active else ports_all
+        n = len(ports_k)
+        m12 = mr12[mr12.station_id.isin(ids)]
+        ph, visits = m12.port_hours.sum(), m12.visits.sum()
+        e12 = ev12[ev12.port_id.isin(ports_k.port_id)]
+        ss = s12[s12.station_id.isin(ids)]
+        raw = {
+            "uptime": 100 * (1 - m12.downtime_h.sum() / ph) if ph else None,
+            "firstAttempt": 100 * m12.first_attempt_successes.sum() / visits if visits else None,
+            "failures": e12.is_failure.sum() / n,
+            "maintenanceCost": e12.cost_usd.sum() / n,
+            "sessions": len(ss) / n / 365,
+            "dwell": ss.dwell_h.mean() if len(ss) else None,
+            "occupancy": 100 * ss.dwell_h.sum() / ph if ph else None,
+            "allBusy": all_busy_pct(ss, n, LAST_12M),
+        }
+        parts = {k: {"value": rnd(v, 2), "score": rnd(anchor_score(k, v), 1)} for k, v in raw.items()}
+        ri, di = index(parts, RI_WEIGHTS), index(parts, DI_WEIGHTS)
+        quadrant = QUADRANTS[(di >= MIDPOINT, ri >= MIDPOINT)]
 
-    def score(df):
-        crit = pd.DataFrame({
-            "occupancy": minmax(df.occupancyPct),
-            "growth": minmax(df.growthPct.fillna(0).clip(-100, 100 * MAX_GROWTH)),
-            "peakLoad": minmax(df.peakLoadPct),
-            "downtime": minmax(100 - df.uptimePct.fillna(100)),
+        nprev = int(sprev.station_id.isin(ids).sum())
+        growth = (len(ss) - nprev) / nprev if nprev >= MIN_PREV_SESSIONS else None
+        g = min(max(growth or 0, 0), MAX_GROWTH)
+        # Ports needed to bring next year's plugged-in hours down to the target occupancy.
+        need = int(np.ceil(round((raw["occupancy"] or 0) / 100 * n * (1 + g) / TARGET_OCCUPANCY, 6)))
+        em = station_month[station_month.index.get_level_values(0).isin(ids)].groupby(level=1).sum()
+        last = em[(em.index >= pd.Period("2022-12")) & (em.index <= pd.Period("2023-11"))].sum()
+        prev = em[(em.index >= pd.Period("2021-12")) & (em.index <= pd.Period("2022-11"))].sum()
+        eg = last / prev if prev else None     # no energy the year before: growth unknown
+        same = sum(em.get(mo - 12, 0) for mo in next6)
+        stations.append({
+            "siteId": site_id, "zip": zip_of[site_of[site_id]], "use": stg.site_use.iloc[0],
+            "active": active, "ports": n, "sessions12m": int(len(ss)),
+            "growthPct": rnd(100 * growth, 1) if growth is not None else None,
+            "ri": rnd(ri, 1), "di": rnd(di, 1), "quadrant": quadrant, "components": parts,
+            "addPorts": max(need - n, 0) if quadrant == "expand" else 0,
+            # Without a full previous year, there is no seasonal-naive forecast.
+            "forecast": {"next6mKwh": int(round(same * eg)) if eg and same else None,
+                         "sameMonthsLastYearKwh": int(round(same)),
+                         "growthPct": rnd(100 * (eg - 1), 1) if eg and same else None},
         })
-        contrib = crit.mul(pd.Series(MCDA_WEIGHTS))
-        df["score"] = (100 * contrib.sum(axis=1)).round(1)
-        df["criteria"] = [{k: rnd(100 * v, 1) for k, v in r.items()} for _, r in contrib.iterrows()]
-        return df.sort_values("score", ascending=False)
-
-    zips = score(area_metrics("zip", st.zip.astype(int).astype(str)))
-    growth = (zips.growthPct.fillna(0) / 100).clip(0, MAX_GROWTH)
-    # Ports needed to bring next year's plugged-in hours down to the target occupancy.
-    need = np.ceil(zips.occupancyPct / 100 * zips.ports * (1 + growth) / TARGET_OCCUPANCY)
-    zips["addPorts"] = (need - zips.ports).clip(lower=0).astype(int)
-    stations = score(area_metrics("siteId", st.site_id))
-    stations["zip"] = stations.siteId.map(dict(zip(st.site_id, st.zip.astype(int).astype(str))))
+    stations.sort(key=lambda r: (-r["di"], -r["ri"]))
 
     # Monthly network energy + a 6-month seasonal-naive forecast scaled by the
     # last-12-month vs previous-12-month growth.
-    s["month"] = s.start.dt.to_period("M")
     monthly = s.groupby("month").energy_kWh.sum()
     yoy = window(s, "start", LAST_12M).energy_kWh.sum() / window(s, "start", PREV_12M).energy_kWh.sum()
     hist = [{"month": str(mo), "energyKwh": int(round(v))} for mo, v in monthly.items()]
-    fc = [{"month": str(mo), "energyKwh": int(round(monthly[mo - 12] * yoy))}
-          for mo in pd.period_range("2023-12", periods=6, freq="M")]
-    zmonthly = s.assign(zip=s.station_id.map(zip_of)).groupby(["zip", "month"]).energy_kWh.sum()
-    zfc = []
-    for z in zips["zip"]:
-        zm = zmonthly.loc[z]
-        last = zm[(zm.index >= pd.Period("2022-12")) & (zm.index <= pd.Period("2023-11"))].sum()
-        prev = zm[(zm.index >= pd.Period("2021-12")) & (zm.index <= pd.Period("2022-11"))].sum()
-        g = last / prev if prev else 1
-        nxt = sum(zm.get(mo - 12, 0) * g for mo in pd.period_range("2023-12", periods=6, freq="M"))
-        same = sum(zm.get(mo - 12, 0) for mo in pd.period_range("2023-12", periods=6, freq="M"))
-        zfc.append({"zip": z, "next6mKwh": int(round(nxt)), "sameMonthsLastYearKwh": int(round(same)),
-                    "growthPct": rnd(100 * (g - 1), 1)})
+    fc = [{"month": str(mo), "energyKwh": int(round(monthly[mo - 12] * yoy))} for mo in next6]
 
     nd12 = window(nd, "date", LAST_12M)
     infrastructure = {
         "window": {"from": "2022-12-01", "to": "2023-11-30"},
-        "weights": MCDA_WEIGHTS,
         "targetOccupancyPct": int(TARGET_OCCUPANCY * 100),
-        "zips": json.loads(zips.to_json(orient="records")),
-        "stations": json.loads(stations.to_json(orient="records")),
-        "forecast": {"history": hist, "forecast": fc, "growthPct": rnd(100 * (yoy - 1), 1), "byZip": zfc},
+        "matrix": {
+            "midpoint": MIDPOINT,
+            "weights": {"ri": RI_WEIGHTS, "di": DI_WEIGHTS},
+            "anchors": {k: list(v) for k, v in ANCHORS.items()},
+            "stations": stations,
+        },
+        "forecast": {"history": hist, "forecast": fc, "growthPct": rnd(100 * (yoy - 1), 1)},
         "networkPeak": {
             "peakKw12m": rnd(nd12.peak_load_kW.max(), 1),
             "meanDailyPeakKw12m": rnd(nd12.peak_load_kW.mean(), 1),
@@ -369,11 +406,15 @@ def main():
     assert len(events) == len(ev)
     assert len(risk) == int(pi.active.sum())
     assert sum(y["sessions"] for y in yearly) == len(s)
+    assert len(stations) == st.site_id.nunique() == 44
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(json.dumps(model, indent=1))
     print(f"ports {len(ports)}, events {len(events)}, months {len(reliability)}, "
-          f"alerts {sum(r['alert'] for r in risk)}, zips {len(zips)}, stations {len(stations)}")
+          f"alerts {sum(r['alert'] for r in risk)}, stations {len(stations)}")
+    for r in stations:
+        print(f"  {r['siteId']:32} {r['use']:6} {'active' if r['active'] else 'INACT.':6} "
+              f"Ri {r['ri']:5.1f}  Di {r['di']:5.1f}  {r['quadrant']:12} +{r['addPorts']}")
 
 
 if __name__ == "__main__":
