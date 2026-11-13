@@ -7,9 +7,17 @@ import { AlertTriangle, ArrowRight } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { DataBadge } from "@/components/ui/DataBadge";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { AXIS_TICK, CATEGORY_COLORS, GRID_STROKE, TOOLTIP_LABEL, TOOLTIP_STYLE, monthLabel } from "./chart-style";
+import {
+  AXIS_TICK,
+  CATEGORY_COLORS,
+  GRID_STROKE,
+  TOOLTIP_LABEL,
+  TOOLTIP_STYLE,
+  faultLabel,
+  monthLabel,
+} from "./chart-style";
 import { useOpsData, useSites } from "@/lib/queries";
-import { reliability12m } from "@/services/ops";
+import { reliability12m, topFaults } from "@/services/ops";
 import { formatNumber } from "@/lib/format";
 
 /** Months of uptime history in the chart. */
@@ -18,15 +26,6 @@ const UPTIME_MONTHS = 24;
 const TOP_FAULTS = 5;
 const TOP_RISK = 3;
 const LOWEST_UPTIME = 3;
-
-/** "ConnectorLockFailure" -> "Connector lock failure", "EVCommunicationError" -> "EV communication error" */
-function faultLabel(code: string): string {
-  const words = (code.match(/[A-Z]+(?![a-z])|[A-Z][a-z]*/g) ?? [code]).map((w) =>
-    w.length > 1 && w === w.toUpperCase() ? w : w.toLowerCase(),
-  );
-  const text = words.join(" ");
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
 
 function useStationNames() {
   const { data: sites } = useSites();
@@ -138,19 +137,8 @@ export function FaultsCard() {
   const { data: ops } = useOpsData();
   const names = useStationNames();
 
-  const faults = useMemo(() => {
-    if (!ops) return [];
-    const from = ops.reliability.slice(-12)[0].month;
-    const counts = new Map<string, { code: string; category: string; n: number }>();
-    for (const e of ops.events) {
-      if (!e.failure || e.start.slice(0, 7) < from) continue;
-      const c = counts.get(e.code) ?? { code: e.code, category: e.category, n: 0 };
-      c.n += 1;
-      counts.set(e.code, c);
-    }
-    return [...counts.values()].sort((a, b) => b.n - a.n).slice(0, TOP_FAULTS);
-  }, [ops]);
-  const max = faults[0]?.n ?? 1;
+  const faults = useMemo(() => (ops ? topFaults(ops, TOP_FAULTS) : []), [ops]);
+  const max = faults[0]?.failures ?? 1;
   const risk = ops?.risk;
   const alerts = risk?.ports.filter((p) => p.alert).length ?? 0;
   const top = risk?.ports.slice(0, TOP_RISK) ?? [];
@@ -179,12 +167,12 @@ export function FaultsCard() {
                   <span className="text-navy-800">
                     {faultLabel(f.code)} <span className="text-xs text-slate-400">{f.category}</span>
                   </span>
-                  <span className="shrink-0 font-semibold text-navy-800">{f.n}</span>
+                  <span className="shrink-0 font-semibold text-navy-800">{f.failures}</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-slate-100">
                   <div
                     className="h-1.5 rounded-full"
-                    style={{ width: `${(100 * f.n) / max}%`, background: CATEGORY_COLORS[f.category] ?? "#94a3b8" }}
+                    style={{ width: `${(100 * f.failures) / max}%`, background: CATEGORY_COLORS[f.category] ?? "#94a3b8" }}
                   />
                 </div>
               </li>

@@ -22,10 +22,11 @@ import {
   GRID_STROKE,
   TOOLTIP_LABEL,
   TOOLTIP_STYLE,
+  faultLabel,
   monthLabel,
 } from "@/components/ops/chart-style";
 import { useOpsData, useSites } from "@/lib/queries";
-import { reliability12m } from "@/services/ops";
+import { reliability12m, topFaults } from "@/services/ops";
 import type { OpsData } from "@/services/ops";
 import { formatNumber } from "@/lib/format";
 
@@ -38,6 +39,13 @@ const TELEMETRY_LABELS: Record<string, string> = {
 
 /** Ports shown in the alert table. */
 const ALERT_ROWS = 12;
+/** "2022-12" -> "Dec 2022" */
+function monthYear(ym: string): string {
+  return new Date(`${ym}-01T00:00:00`).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+/** Fault codes listed in the top-faults table. */
+const FAULT_ROWS = 10;
 
 function portLabel(portId: string): string {
   return portId.slice(portId.lastIndexOf("-") + 1);
@@ -74,6 +82,7 @@ export function FaultDiagnostics() {
   const risk = ops?.risk;
   const alerts = risk?.ports.filter((p) => p.alert) ?? [];
   const history = useMemo(() => (ops ? faultHistory(ops) : null), [ops]);
+  const faults = useMemo(() => (ops ? topFaults(ops, FAULT_ROWS) : null), [ops]);
   const trend = useMemo(() => {
     if (!ops) return [];
     const mtbf = rolling(ops.reliability.map((m) => m.mtbfH), 3);
@@ -200,6 +209,60 @@ export function FaultDiagnostics() {
               Top {ALERT_ROWS} of {risk.ports.length} active ports. Red = above the alert threshold (
               {Math.round(risk.model.threshold * 100)}%). Main drivers are the features that pushed
               this port's score up most. Telemetry and failure history are synthetic.
+            </p>
+          </>
+        ) : (
+          <Skeleton className="h-64 w-full rounded-lg" />
+        )}
+      </Card>
+
+      {/* Most common fault codes */}
+      <Card>
+        <CardHeader
+          title="Top Faults"
+          subtitle={`Failures by fault code, last 12 months (${r12 ? monthYear(r12.from) : "—"} – ${ops ? monthYear(ops.meta.dateEnd.slice(0, 7)) : "—"})`}
+          action={<DataBadge />}
+        />
+        {faults ? (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead className="border-b border-slate-100 text-xs text-navy-700">
+                  <tr>
+                    <th className="py-2 pr-4 font-semibold">Fault</th>
+                    <th className="py-2 pr-4 font-semibold">Repair Category</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Failures</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Avg Repair Time</th>
+                    <th className="py-2 pr-4 text-right font-semibold">Total Cost</th>
+                    <th className="py-2 text-right font-semibold">Stations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {faults.map((f) => (
+                    <tr key={f.code} className="border-b border-slate-50">
+                      <td className="py-2.5 pr-4 font-medium text-navy-800">{faultLabel(f.code)}</td>
+                      <td className="py-2.5 pr-4 text-slate-600">
+                        <span className="inline-flex items-center gap-2">
+                          <span
+                            className="h-2 w-2 rounded-full"
+                            style={{ background: CATEGORY_COLORS[f.category] ?? "#94a3b8" }}
+                          />
+                          {f.category}
+                        </span>
+                      </td>
+                      <td className="py-2.5 pr-4 text-right font-semibold text-navy-800">{f.failures}</td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">{f.mttrH.toFixed(1)} h</td>
+                      <td className="py-2.5 pr-4 text-right text-slate-600">${formatNumber(f.costUsd)}</td>
+                      <td className="py-2.5 text-right text-slate-600">{f.stations}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              {faults.length < FAULT_ROWS ? `All ${faults.length} fault codes seen` : `Top ${FAULT_ROWS} fault codes`}{" "}
+              in the period. Failures only; inspections are left out. Stations = stations with at least one failure
+              of that code. Maintenance events are synthetic.
             </p>
           </>
         ) : (

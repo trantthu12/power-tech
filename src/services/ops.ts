@@ -152,3 +152,38 @@ export function reliability12m(ops: OpsData) {
     failedVisits: sum("failedVisits"),
   };
 }
+
+export interface FaultSummary {
+  code: string;
+  category: string;
+  failures: number;
+  mttrH: number;
+  costUsd: number;
+  stations: number;
+}
+
+/** Failures per fault code over the last 12 months, most frequent first. */
+export function topFaults(ops: OpsData, n: number): FaultSummary[] {
+  const from = ops.reliability.slice(-12)[0].month;
+  const byCode = new Map<string, { category: string; failures: number; repairH: number; cost: number; sites: Set<string> }>();
+  for (const e of ops.events) {
+    if (!e.failure || e.start.slice(0, 7) < from) continue;
+    const c = byCode.get(e.code) ?? { category: e.category, failures: 0, repairH: 0, cost: 0, sites: new Set<string>() };
+    c.failures += 1;
+    c.repairH += e.repairH;
+    c.cost += e.costUsd;
+    c.sites.add(e.siteId);
+    byCode.set(e.code, c);
+  }
+  return [...byCode.entries()]
+    .map(([code, c]) => ({
+      code,
+      category: c.category,
+      failures: c.failures,
+      mttrH: c.repairH / c.failures,
+      costUsd: c.cost,
+      stations: c.sites.size,
+    }))
+    .sort((a, b) => b.failures - a.failures || b.costUsd - a.costUsd)
+    .slice(0, n);
+}

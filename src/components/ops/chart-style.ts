@@ -15,6 +15,15 @@ export function monthLabel(ym: string): string {
   });
 }
 
+/** "ConnectorLockFailure" -> "Connector lock failure", "EVCommunicationError" -> "EV communication error" */
+export function faultLabel(code: string): string {
+  const words = (code.match(/[A-Z]+(?![a-z])|[A-Z][a-z]*/g) ?? [code]).map((w) =>
+    w.length > 1 && w === w.toUpperCase() ? w : w.toLowerCase(),
+  );
+  const text = words.join(" ");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 /** Fixed colour per repair category, used by every fault chart. */
 export const CATEGORY_COLORS: Record<string, string> = {
   "Connector / Cable": "#2a78d6",
