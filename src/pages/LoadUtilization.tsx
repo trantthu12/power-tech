@@ -282,7 +282,7 @@ export function LoadUtilization() {
             </div>
             <p className="mt-3 text-xs text-slate-400">
               Ranked by real demand intensity + charging efficiency. (True port
-              occupancy needs station capacity data, planned for Sprint 3. This
+              occupancy needs station capacity data. This
               uses demand-per-station as the available proxy.)
             </p>
           </>
