@@ -64,8 +64,7 @@ function ChargerMix() {
           ))}
           <p className="text-xs text-slate-400">
             All {formatNumber(data.total)} city-operated stations are Level 2 (AC).
-            DC fast charging is a planned expansion (Infrastructure Planning,
-            Sprint 3).
+            DC fast charging is a planned expansion.
           </p>
         </div>
       )}
