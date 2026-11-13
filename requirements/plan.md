@@ -34,8 +34,8 @@ menu on mobile).
 - **Network Overview** — KPI cards (total stations, sessions, energy, CO₂
   avoided, gasoline saved, charger utilization), Top 3 Stations per area (ZIP),
   Energy by Area (ZIP), a Charger Types (AC vs DC) breakdown, a station map, and
-  the time filter. Includes Sprint-3 holding cards for Uptime/Downtime and
-  Faults & Alerts.
+  the time filter. Uptime/Downtime and Faults & Alerts cards summarise the
+  last 12 months from the operations data (synthetic maintenance, FR-02 risk).
 - **Load Utilization** — 24×7 hourly-demand heatmap with a per-station selector,
   charger-utilization KPI, peak hour and peak load, a per-station hourly energy
   line chart (multi-select up to 5 stations; legend labelled with ZIP area),

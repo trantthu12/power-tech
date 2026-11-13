@@ -1,9 +1,9 @@
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Card, CardHeader } from "@/components/ui/Card";
-import { WipCard } from "@/components/ui/WipCard";
 import { TopStations } from "@/components/TopStations";
 import { EnergyByZip } from "@/components/EnergyByZip";
 import { StationMap } from "@/components/StationMap";
+import { FaultsCard, UptimeCard } from "@/components/ops/NetworkReliability";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { useNetworkKpis, useChargerPowerMix, useEnergySeries } from "@/lib/queries";
 import { useFilter } from "@/lib/filter-context";
@@ -163,18 +163,10 @@ export function NetworkOverview() {
         </div>
       </div>
 
-      {/* Sprint 3 holding cards */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <WipCard
-          title="Uptime / Downtime"
-          subtitle="Station availability over time"
-          planned={["Live online/offline status", "Uptime % per station", "Downtime timeline"]}
-        />
-        <WipCard
-          title="Faults & Alerts"
-          subtitle="Reliability hot-spots"
-          planned={["Top 5 most common faults", "Top 3 fault-prone stations per area", "Risk-ranked alerts"]}
-        />
+      {/* Reliability, from the operations data (detail on Fault Diagnostics) */}
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <UptimeCard />
+        <FaultsCard />
       </div>
 
       <StationMap />

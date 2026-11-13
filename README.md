@@ -144,8 +144,9 @@ On macOS, LightGBM needs `libomp` (`brew install libomp`).
   (30 / 90 days / 12 months) drives the windowed KPIs (sessions, energy, CO₂
   avoided, gasoline saved, charging efficiency) and an energy trend; plus
   all-time views: top stations per area, energy by ZIP, charger-type mix (with
-  station count), and a station map. The "Uptime / Downtime" and
-  "Faults & Alerts" cards are still placeholders.
+  station count), and a station map. Two reliability cards summarise the last
+  12 months: network uptime with the lowest-uptime stations, and the top faults
+  with the ports most likely to fail next (detail on Fault Diagnostics).
 - **Stations** — searchable, sortable, paginated table of every station with CSV
   export; click a row to drill into that station on Load Utilization.
 - **Load Utilization** — hourly demand heatmap, per-station hourly energy (up to
