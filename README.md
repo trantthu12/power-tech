@@ -10,18 +10,31 @@ views.
 
 **https://power-tech-dashboard.vercel.app**
 
+![Network Overview](docs/screenshots/network-overview.png)
+
+| Infrastructure Planning | Fault Diagnostics |
+| --- | --- |
+| ![Infrastructure Planning: station action matrix](docs/screenshots/infrastructure-planning.png) | ![Fault Diagnostics: risk-ranked alerts](docs/screenshots/fault-diagnostics.png) |
+
 ## Tech stack
 
 | Area | Technology |
 | --- | --- |
 | Framework | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
 | Build tool | [Vite 6](https://vite.dev/) |
-| Hosting / CI | [Vercel](https://vercel.com/) (auto-deploy on push to `main`) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com/) |
+| Routing | [React Router 7](https://reactrouter.com/) |
+| Data fetching | [TanStack Query 5](https://tanstack.com/query) |
+| Charts / map | [Recharts](https://recharts.org/), [Leaflet](https://leafletjs.com/) via react-leaflet |
+| Data export | Python (pandas, LightGBM, scikit-learn), see `scripts/requirements.txt` |
+| CI | GitHub Actions: lint, type-check and build on every push and PR to `develop` / `main` |
+| Hosting | [Vercel](https://vercel.com/) (auto-deploy on push to `main`) |
 
 ## Prerequisites
 
 - **Node.js ≥ 20** (LTS recommended)
 - **npm** (ships with Node)
+- **Python ≥ 3.9**, only to re-export the data files (see [Data pipeline](#data-pipeline))
 
 ## Getting started
 
@@ -55,10 +68,13 @@ npm run preview
 
 ```
 power-tech/
+├── .github/workflows/    # CI: lint, type-check, build
+├── docs/screenshots/     # Images used in this README
 ├── public/               # Static assets (logos, favicon)
 ├── scripts/              # Python exporters: team workbook -> src/data/*.json
 │   ├── export_dashboard_json.py
-│   └── export_ops_json.py
+│   ├── export_ops_json.py
+│   └── requirements.txt
 ├── src/
 │   ├── pages/            # One component per route (Network Overview, Stations, …)
 │   ├── components/       # Reusable UI (cards, charts, map, KPI tiles)
@@ -68,9 +84,12 @@ power-tech/
 │   │   ├── city-context.tsx  # Active-city state
 │   │   └── filter-context.tsx# Time-range filter state
 │   ├── services/         # Data access layer
-│   │   └── api.ts            # Single boundary every page reads through
-│   ├── data/             # Baked static dataset (real, cleaned open data)
-│   │   └── boulder-data.json
+│   │   ├── api.ts            # Sessions, energy, revenue (boulder-data.json)
+│   │   ├── mock-data.ts      # Station aggregates behind api.ts
+│   │   └── ops.ts            # Ports, reliability, faults, planning (boulder-ops.json)
+│   ├── data/             # Baked static datasets
+│   │   ├── boulder-data.json # Real sessions, aggregated
+│   │   └── boulder-ops.json  # Operations data, partly synthetic
 │   ├── types/            # Shared TypeScript types
 │   ├── App.tsx           # Route definitions
 │   └── main.tsx          # App entry point
@@ -78,10 +97,11 @@ power-tech/
 └── vite.config.ts
 ```
 
-**Service-layer boundary.** Every page/component reads data through
-`src/services/api.ts` rather than importing JSON directly. This keeps a clean
-seam: the static JSON source can later be swapped for a real backend API without
-touching any page code.
+**Service-layer boundary.** Pages never import JSON directly. They read through
+`src/services/api.ts` (session data) and `src/services/ops.ts` (operations
+data), via the TanStack Query hooks in `src/lib/queries.ts`. A real backend API
+can later replace the static JSON without changes to page code.
+`boulder-ops.json` loads lazily, so only the last three pages download it.
 
 ## Data pipeline
 
@@ -124,7 +144,8 @@ On macOS, LightGBM needs `libomp` (`brew install libomp`).
   (30 / 90 days / 12 months) drives the windowed KPIs (sessions, energy, CO₂
   avoided, gasoline saved, charging efficiency) and an energy trend; plus
   all-time views: top stations per area, energy by ZIP, charger-type mix (with
-  station count), and a station map.
+  station count), and a station map. The "Uptime / Downtime" and
+  "Faults & Alerts" cards are still placeholders.
 - **Stations** — searchable, sortable, paginated table of every station with CSV
   export; click a row to drill into that station on Load Utilization.
 - **Load Utilization** — hourly demand heatmap, per-station hourly energy (up to
